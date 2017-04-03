@@ -18,6 +18,7 @@ function setup() {
       lattice[a][b].x = a;
       lattice[a][b].y = b;
       lattice[a][b].owner = random(possibleOwners);
+      lattice[a][b].CalcColor();
       lattice[a][b].display();
       // print(maxOwner);
       lattice[a][b].calcEatenBy(maxOwner);
@@ -72,7 +73,7 @@ function draw() {
  //  shuffle(randLatArray);
  // // print(randLatArray[1]);
   
-  var numSteps = 5000;
+  var numSteps = 10000;
   
   for (var i = 0;i<numSteps; i++){
     // var k = Math.floor(random(width*height));
@@ -99,7 +100,7 @@ function draw() {
 
     if(y>0){
       lattice[x][y].tryToEat(lattice[x][y-1],maxOwner);
-      lattice[x][y-1].display();
+      // lattice[x][y-1].display();
       // if(lattice[x][y].owner == lattice[x][y-1].eatenBy){
       //     lattice[x][y-1].owner=lattice[x][y].owner;
       //     lattice[x][y-1].calcEatenBy();
@@ -107,7 +108,7 @@ function draw() {
         }
     if(x+1<width){
       lattice[x][y].tryToEat(lattice[x+1][y],maxOwner);
-      lattice[x+1][y].display();
+      // lattice[x+1][y].display();
         // if(lattice[x][y].owner == lattice[x+1][y].eatenBy){
         //   lattice[x+1][y].owner=lattice[x][y].owner;
         //   lattice[x+1][y].calcEatenBy();
@@ -115,7 +116,7 @@ function draw() {
         }
     if(y+1<height){
       lattice[x][y].tryToEat(lattice[x][y+1],maxOwner);
-      lattice[x][y+1].display();
+      // lattice[x][y+1].display();
       // if(lattice[x][y].owner == lattice[x][y+1].eatenBy){
       //     lattice[x][y+1].owner=lattice[x][y].owner;
       //     lattice[x][y+1].calcEatenBy();
@@ -123,7 +124,7 @@ function draw() {
         }
     if(x>0){
       lattice[x][y].tryToEat(lattice[x-1][y],maxOwner);
-      lattice[x-1][y].display();
+      // lattice[x-1][y].display();
       // if(lattice[x][y].owner == lattice[x-1][y].eatenBy){
       //     lattice[x-1][y].owner=lattice[x][y].owner;
       //     lattice[x-1][y].calcEatenBy();
@@ -249,8 +250,11 @@ function LatticePoint() {
   this.eatenBy = 1;
   this.lifeTime = 0;
 
+  this.clr = color(0,0,0);
+
   this.display = function(){
-    this.CalcColor();
+    // this.CalcColor();
+    stroke(this.clr);
     point(this.x,this.y);
   }
 
@@ -258,34 +262,35 @@ function LatticePoint() {
 
     switch (this.owner) {
       case 0:
-        stroke(255-this.lifeTime, 0, 0);
+        this.clr = color(255-this.lifeTime, 0, 0);
+
         // this.eatenBy = 2;
         break;
       case 1:
-        stroke(0, 255-this.lifeTime, 0);
+        this.clr = color(0, 255-this.lifeTime, 0);
         // this.eatenBy = 0;
         break;
       case 2:
-        stroke(0, 0, 255-this.lifeTime);
+        this.clr = color(0, 0, 255-this.lifeTime);
         // this.eatenBy = 1;
         break;
       case 3:
-        stroke(250,250,250);
+        this.clr = color(250,250,250);
         break;
       case 4:
-        stroke(0,150,150);
+        this.clr = color(0,150,150);
         break;
       case 5:
-        stroke(150,0,150);
+        this.clr = color(150,0,150);
         break;
       case 6:
-        stroke(150,150,0);
+        this.clr = color(150,150,0);
         break;
       case 7:
-        stroke(100,100,100);
+        this.clr = color(100,100,100);
         break;
       default:
-        stroke(0);
+        this.clr = color(0);
         break;
     }
 
@@ -299,7 +304,9 @@ function LatticePoint() {
     if (l.eatenBy == this.owner){
       l.owner = this.owner;
       l.calcEatenBy(max);
-      l.lifeTime = 0;
+      // l.lifeTime = 0;
+      l.CalcColor();
+      l.display();
     }
   }
 
