@@ -1,6 +1,63 @@
 // import java.util.Collections;
 var lattice = [];
-var maxOwner;
+// var maxOwner;
+
+// var preyMatrix = [
+//   [0,0,1],
+//   [1,0,0],
+//   [0,1,0],
+// ];
+
+
+// var preyMatrix = [
+//   [0,1,0,0,0,0],
+//   [0,0,1,0,0,0],
+//   [0,0,0,1,0,0],
+//   [0,0,0,0,1,0],
+//   [0,0,0,0,0,1],
+//   [1,0,0,0,0,0],
+//   [0,1,0,0,0,0]
+// ];
+
+// var preyMatrix = [
+//   [0,1,1,1,0,0,0],
+//   [0,0,1,1,1,0,0],
+//   [0,0,0,1,1,1,0],
+//   [0,0,0,0,1,1,1],
+//   [1,0,0,0,0,1,1],
+//   [1,1,0,0,0,0,1],
+//   [1,1,1,0,0,0,0]
+// ];
+
+// var preyMatrix = [
+//   [0,1,0,1,0,1,0],
+//   [0,0,1,0,1,0,1],
+//   [1,0,0,1,0,1,0],
+//   [0,1,0,0,1,0,1],
+//   [1,0,1,0,0,1,0],
+//   [0,1,0,1,0,0,1],
+//   [1,0,1,0,1,0,0]
+// ];
+
+// var preyMatrix = [
+//   [0,1,1,0,0,0,0],
+//   [0,0,1,1,0,0,0],
+//   [0,0,0,1,1,0,0],
+//   [0,0,0,0,1,1,0],
+//   [0,0,0,0,0,1,1],
+//   [0,0,0,0,0,0,1],
+//   [1,0,0,0,0,0,0]
+// ];
+
+var preyMatrix = [
+  [0,1,0,0,0,0,0],
+  [0,0,1,0,0,0,0],
+  [0,0,0,1,0,0,0],
+  [0,0,0,0,1,0,0],
+  [0,0,0,0,0,1,0],
+  [0,0,0,0,0,0,1],
+  [1,0,0,0,0,0,0]
+];
 
 function setup() {
  // createCanvas(640, 480);
@@ -8,7 +65,8 @@ function setup() {
   createCanvas(384,216); // Fullscreen
   background(255);
 
-  var possibleOwners = [0, 1, 2,3,4,5,6,7];
+  var possibleOwners = [0, 1, 2,3,4,5,6];
+  // var possibleOwners = [0,1,2];
  maxOwner = possibleOwners.length-1;
 
   for (var a = 0; a < width; a++) {
@@ -21,7 +79,7 @@ function setup() {
       lattice[a][b].CalcColor();
       lattice[a][b].display();
       // print(maxOwner);
-      lattice[a][b].calcEatenBy(maxOwner);
+      // lattice[a][b].calcEatenBy(maxOwner);
      // lattice[a][b].eatenBy = random(possibleOwners); 
       
       //Random eaten by
@@ -85,21 +143,21 @@ function draw() {
     // var dir = random([0,1,2,3]);
       // print(lattice[x][y].owner,lattice[x][y].eatenBy);
 
-      if (y==0){
-        lattice[x][y].tryToEat(lattice[x][height-1],maxOwner);
-      }
-      if (x==0){
-        lattice[x][y].tryToEat(lattice[width-1][y],maxOwner);
-      }
-      if (y==height){
-        lattice[x][y].tryToEat(lattice[x][0],maxOwner);
-      }
-      if (x==width){
-        lattice[x][y].tryToEat(lattice[0][y],maxOwner);
-      }
+      // if (y==0){
+      //   lattice[x][y].tryToEat(lattice[x][height-1],maxOwner);
+      // }
+      // if (x==0){
+      //   lattice[x][y].tryToEat(lattice[width-1][y],maxOwner);
+      // }
+      // if (y==height){
+      //   lattice[x][y].tryToEat(lattice[x][0],maxOwner);
+      // }
+      // if (x==width){
+      //   lattice[x][y].tryToEat(lattice[0][y],maxOwner);
+      // }
 
     if(y>0){
-      lattice[x][y].tryToEat(lattice[x][y-1],maxOwner);
+      lattice[x][y].tryToEat(lattice[x][y-1]);
       // lattice[x][y-1].display();
       // if(lattice[x][y].owner == lattice[x][y-1].eatenBy){
       //     lattice[x][y-1].owner=lattice[x][y].owner;
@@ -107,7 +165,7 @@ function draw() {
       //     }
         }
     if(x+1<width){
-      lattice[x][y].tryToEat(lattice[x+1][y],maxOwner);
+      lattice[x][y].tryToEat(lattice[x+1][y]);
       // lattice[x+1][y].display();
         // if(lattice[x][y].owner == lattice[x+1][y].eatenBy){
         //   lattice[x+1][y].owner=lattice[x][y].owner;
@@ -115,7 +173,7 @@ function draw() {
         //   }
         }
     if(y+1<height){
-      lattice[x][y].tryToEat(lattice[x][y+1],maxOwner);
+      lattice[x][y].tryToEat(lattice[x][y+1]);
       // lattice[x][y+1].display();
       // if(lattice[x][y].owner == lattice[x][y+1].eatenBy){
       //     lattice[x][y+1].owner=lattice[x][y].owner;
@@ -123,7 +181,7 @@ function draw() {
       //     }
         }
     if(x>0){
-      lattice[x][y].tryToEat(lattice[x-1][y],maxOwner);
+      lattice[x][y].tryToEat(lattice[x-1][y]);
       // lattice[x-1][y].display();
       // if(lattice[x][y].owner == lattice[x-1][y].eatenBy){
       //     lattice[x-1][y].owner=lattice[x][y].owner;
@@ -131,6 +189,18 @@ function draw() {
       //     }
         }
 
+    if(x>0 && y >0){
+      lattice[x][y].tryToEat(lattice[x-1][y-1]);
+    }
+    if(x+1<width && y >0){
+      lattice[x][y].tryToEat(lattice[x+1][y-1]);
+    }
+    if(x>0 && y+1<height){
+      lattice[x][y].tryToEat(lattice[x-1][y+1]);
+    }
+    if(x+1<width && y +1<height){
+      lattice[x][y].tryToEat(lattice[x+1][y+1]);
+    }
         // lattice[x][y].display();
   // lattice[x][y].display();
 
@@ -140,6 +210,14 @@ function draw() {
       // lattice[x2][y2].owner = lattice[x][y].owner;
     // }
 
+    // if(x+6<width){
+    //   lattice[x][y].tryToEat(lattice[x+6][y],maxOwner);
+    //   // lattice[x+1][y].display();
+    //     // if(lattice[x][y].owner == lattice[x+1][y].eatenBy){
+    //     //   lattice[x+1][y].owner=lattice[x][y].owner;
+    //     //   lattice[x+1][y].calcEatenBy();
+    //     //   }
+    //     }
 
 
     // if(y-2>0){
@@ -262,20 +340,20 @@ function LatticePoint() {
 
     switch (this.owner) {
       case 0:
-        this.clr = color(255-this.lifeTime, 0, 0);
+        this.clr = color(200, 0, 0);
 
         // this.eatenBy = 2;
         break;
       case 1:
-        this.clr = color(0, 255-this.lifeTime, 0);
+        this.clr = color(0, 200, 0);
         // this.eatenBy = 0;
         break;
       case 2:
-        this.clr = color(0, 0, 255-this.lifeTime);
+        this.clr = color(0, 0, 200);
         // this.eatenBy = 1;
         break;
       case 3:
-        this.clr = color(250,250,250);
+        this.clr = color(150,150,0);
         break;
       case 4:
         this.clr = color(0,150,150);
@@ -284,7 +362,7 @@ function LatticePoint() {
         this.clr = color(150,0,150);
         break;
       case 6:
-        this.clr = color(150,150,0);
+        this.clr = color(200,200,200);
         break;
       case 7:
         this.clr = color(100,100,100);
@@ -300,24 +378,27 @@ function LatticePoint() {
     // this.lifeTime = 0;
   }
 
-  this.tryToEat = function(l,max){
-    if (l.eatenBy == this.owner){
+  this.tryToEat = function(l){
+    // print(preyMatrix[l.eatenBy][this.owner])
+    // print(preyMatrix[l.eatenBy][this.owner] == 1)
+    if (preyMatrix[l.owner][this.owner] == 1){
+   // if (l.eatenBy == this.owner){
       l.owner = this.owner;
-      l.calcEatenBy(max);
+      // l.calcEatenBy(max);
       // l.lifeTime = 0;
       l.CalcColor();
       l.display();
     }
   }
 
-  this.calcEatenBy = function(max){
+  // this.calcEatenBy = function(max){
 
-      if (this.owner == max){
-        this.eatenBy = 0;
-      } else{
-        this.eatenBy = this.owner+1;
-      }
-      // print(this.owner,this.eatenBy);
-  }
+  //     if (this.owner == max){
+  //       this.eatenBy = 0;
+  //     } else{
+  //       this.eatenBy = this.owner+1;
+  //     }
+  //     // print(this.owner,this.eatenBy);
+  // }
   
 }
