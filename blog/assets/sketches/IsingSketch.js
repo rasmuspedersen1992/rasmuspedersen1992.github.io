@@ -12,9 +12,13 @@ function setup() {
 
 	var possibleSpins = [-1,1];
 
-
-  canvas = createCanvas(710, 400);
-  canvas.parent('simple-sketch-holder'); // this ensures that the sketch will be positioned properly
+  var canvasDiv = document.getElementById('setup_p5_sketch');
+  var divWidth = canvasDiv.offsetWidth;
+  var divHeight = 200;
+  var canvas = createCanvas(divWidth, divHeight);
+  canvas.parent('setup_p5_sketch');
+  // canvas = createCanvas(710, 400);
+  // canvas.parent('simple-sketch-holder'); // this ensures that the sketch will be positioned properly
   // createCanvas(200, 200); 
   // createCanvas(400, 400); 
 	for (var a = 0; a < width; a++) {
