@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.2">Jekyll</generator><link href="http://rasmuspedersen1992.github.io/blog/feed.xml" rel="self" type="application/atom+xml" /><link href="http://rasmuspedersen1992.github.io/blog/" rel="alternate" type="text/html" /><updated>2018-02-26T17:15:02+01:00</updated><id>http://rasmuspedersen1992.github.io/blog/</id><title type="html">Mathematical modelling, random ramblings and other obscurities</title><subtitle>Personal blog with various stuff.</subtitle><entry><title type="html">First p5 sketch post</title><link href="http://rasmuspedersen1992.github.io/blog/p5/post/2018/02/25/P5Test.html" rel="alternate" type="text/html" title="First p5 sketch post" /><published>2018-02-25T22:00:00+01:00</published><updated>2018-02-25T22:00:00+01:00</updated><id>http://rasmuspedersen1992.github.io/blog/p5/post/2018/02/25/P5Test</id><content type="html" xml:base="http://rasmuspedersen1992.github.io/blog/p5/post/2018/02/25/P5Test.html">&lt;!-- 
+&lt;div id=&quot;simple-sketch-holder&quot;&gt;
+    &lt;script type=&quot;text/javascript&quot; src=&quot;IsingSketch.js&quot;&gt;&lt;/script&gt;
+&lt;/div&gt; --&gt;
+&lt;div id=&quot;setup_p5_sketch&quot; style=&quot;height: 300px; position:relative;&quot;&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;8
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Inspired by Daniel Shiffman bla bla bla yadda yadda yadda&lt;/p&gt;</content><author><name></name></author><summary type="html"></summary></entry><entry><title type="html">Jupytertest</title><link href="http://rasmuspedersen1992.github.io/blog/2018/02/22/JupyterTest.html" rel="alternate" type="text/html" title="Jupytertest" /><published>2018-02-22T00:00:00+01:00</published><updated>2018-02-22T00:00:00+01:00</updated><id>http://rasmuspedersen1992.github.io/blog/2018/02/22/JupyterTest</id><content type="html" xml:base="http://rasmuspedersen1992.github.io/blog/2018/02/22/JupyterTest.html">&lt;p&gt;443
+3495i
+4
+5
+4
+5454&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;8
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Inspired by Daniel Shiffman bla bla bla yadda yadda yadda&lt;/p&gt;</content><author><name></name></author><summary type="html">443 3495i 4 5 4 5454</summary></entry><entry><title type="html">First test post!</title><link href="http://rasmuspedersen1992.github.io/blog/test/post/2018/02/21/First-Testpost.html" rel="alternate" type="text/html" title="First test post!" /><published>2018-02-21T22:00:00+01:00</published><updated>2018-02-21T22:00:00+01:00</updated><id>http://rasmuspedersen1992.github.io/blog/test/post/2018/02/21/First-Testpost</id><content type="html" xml:base="http://rasmuspedersen1992.github.io/blog/test/post/2018/02/21/First-Testpost.html">&lt;p&gt;Very first post, trying to figure out how Jekyll works before checking out different plugins.&lt;/p&gt;
+
+&lt;p&gt;First however, a small test for how links work. &lt;a href=&quot;http://rasmuspedersen.com&quot;&gt;This&lt;/a&gt; should link to the main page.&lt;/p&gt;</content><author><name></name></author><summary type="html">Very first post, trying to figure out how Jekyll works before checking out different plugins. First however, a small test for how links work. This should link to the main page.</summary></entry></feed>
