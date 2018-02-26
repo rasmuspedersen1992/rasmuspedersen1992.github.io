@@ -11,7 +11,7 @@ function setup() {
 	temperature = 2;
 
 	var possibleSpins = [-1,1];
-    var divName = 'simple-sketch-holder';
+    var divName = 'ising_sketch';
   var canvasDiv = document.getElementById(divName);
   var divWidth = canvasDiv.offsetWidth;
   var divHeight = 250;
