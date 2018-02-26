@@ -5,8 +5,11 @@ var x = 100,
 
 function setup() {
   // find the size of the underlying div
-  var divWidth = $("#setup_p5_sketch").width();
-  var divHeight = $("#setup_p5_sketch").height();
+  var canvasDiv = document.getElementById('setup_p5_sketch');
+  var divWidth = canvasDiv.offsetWidth;
+  var divHeight = 200;
+  // var divWidth = $("#setup_p5_sketch").width();
+  // var divHeight = $("#setup_p5_sketch").height();
   var myCanvas = createCanvas(divWidth, divHeight);
   myCanvas.parent('setup_p5_sketch');
   strokeWeight(20.0);
