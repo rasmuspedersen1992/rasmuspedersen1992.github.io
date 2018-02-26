@@ -11,12 +11,12 @@ function setup() {
 	temperature = 2;
 
 	var possibleSpins = [-1,1];
-
-  var canvasDiv = document.getElementById('ising_sketch');
+    var divName = 'simple-sketch-holder';
+  var canvasDiv = document.getElementById(divName);
   var divWidth = canvasDiv.offsetWidth;
-  var divHeight = 200;
+  var divHeight = 250;
   var canvas = createCanvas(divWidth, divHeight);
-  canvas.parent('ising_sketch');
+  canvas.parent(divName);
   // canvas = createCanvas(710, 400);
   // canvas.parent('simple-sketch-holder'); // this ensures that the sketch will be positioned properly
   // createCanvas(200, 200); 
