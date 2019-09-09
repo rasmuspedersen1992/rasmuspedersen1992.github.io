@@ -1,166 +1,284 @@
-var allCells = [];
-var occupiedGrids = [];
-var startCell;
+// Model parameters
+var diffDeathRate = 0; // Rate of random death for differentiated cells (unit: per time-step)
+var diffMoveRate = 0.05; // Rate of movement for differentiated cells (unit: per time-step) 
+var stemDivRate = 0.1; // Rate of division for stem cells (unit: per time-step)
+var diffDivRate = 0.1; // Rate of division for differentiated cells (unit: per time-step)
+var rhoMax = 2; // Max number of divisions before cell dies
+var maturationAge = 10; // Number of time-steps before cell mature and start dividing
 
-var diffDeathRate = 0;
-var diffMoveRate = 0.5;
-var stemDivRate = 0.1;
-var diffDivRate = 0.1;
-var rhoMax = 2;
-var maturationAge = 1;
+var allCells = []; // Array for all cells
+var maxCellsAllowed = 3000; // Simulation stops when the cell-count reaches this number
 
-var maxCellsAllowed = 3000;
+var curScale = 10; // Scaling factor of cells (1 -> one-pixel size)
+var timeScale = 1; // Number of frames between updates
+var simTime = 0; // Number of frames simulated
 
+// Interactivity
 var simulationRunning = true;
+var showControls = true; // Whether to show the controls or not
+var allButtons = []; // Array for keeping track of all buttons
 
-//var zoomLevel = 5;
-var curScale = 6;
+// Setup function is run once, on page-load
 function setup() {
-	//createCanvas(800, 600,WEBGL); 
-	createCanvas(800, 600); 
+	createCanvas(800, 800); 
+	//createCanvas(800, 800,WEBGL); // WEBGL can be used for easier 3D 
+	
 	noStroke(); // For not drawing borders
-
+	
+	// Create buttons for interactivity
+	var buttonDist = 20;
+	var buttonOffset = 10;
+	var buttonXsize = 30;
+	var buttonYsize = 20;
+	// Reset button
+	resetButton = createButton('Reset'); // Create the button, and set its text
+	resetButton.position(10,buttonOffset); // Position it
+	resetButton.mousePressed(initializeSimulation); // Assign it a function to run
+	resetButton.size(60,40); // Set the size of the button
+	allButtons.push(resetButton); // Add it to the array of all buttons
+	// Death rate 
+	deathUpButton = createButton('+');
+	deathUpButton.position(10,buttonDist*2+buttonOffset);
+	deathUpButton.mousePressed(incDeathRate);
+	deathUpButton.size(buttonXsize,buttonYsize);
+	allButtons.push(deathUpButton);
+	deathDownButton = createButton('-');
+	deathDownButton.position(40,buttonDist*2+buttonOffset);
+	deathDownButton.mousePressed(decDeathRate);
+	deathDownButton.size(buttonXsize,buttonYsize);
+	allButtons.push(deathDownButton);
+	// Division rate (Same for both stem and non-stem)
+	divUpButton = createButton('+');
+	divUpButton.position(10,buttonDist*3+buttonOffset);
+	divUpButton.mousePressed(incDivRate);
+	divUpButton.size(buttonXsize,buttonYsize);
+	allButtons.push(divUpButton);
+	divDownButton = createButton('-');
+	divDownButton.position(40,buttonDist*3+buttonOffset);
+	divDownButton.mousePressed(decDivRate);
+	divDownButton.size(buttonXsize,buttonYsize);
+	allButtons.push(divDownButton);
+	// Maturation time
+	matUpButton = createButton('+');
+	matUpButton.position(10,buttonDist*4+buttonOffset);
+	matUpButton.mousePressed(incMat);
+	matUpButton.size(buttonXsize,buttonYsize);
+	allButtons.push(matUpButton);
+	matDownButton = createButton('-');
+	matDownButton.position(40,buttonDist*4+buttonOffset);
+	matDownButton.mousePressed(decMat);
+	matDownButton.size(buttonXsize,buttonYsize);
+	allButtons.push(matDownButton);
+	// Divisions before cell death
+	rhoUpButton = createButton('+');
+	rhoUpButton.position(10,buttonDist*5+buttonOffset);
+	rhoUpButton.mousePressed(incRho);
+	rhoUpButton.size(buttonXsize,buttonYsize);
+	allButtons.push(rhoUpButton);
+	rhoDownButton = createButton('-');
+	rhoDownButton.position(40,buttonDist*5+buttonOffset);
+	rhoDownButton.mousePressed(decRho);
+	rhoDownButton.size(buttonXsize,buttonYsize);
+	allButtons.push(rhoDownButton);
+	// Timescale
+	timeUpButton = createButton('+');
+	timeUpButton.position(10,buttonDist*6+buttonOffset);
+	timeUpButton.mousePressed(incTime);
+	timeUpButton.size(buttonXsize,buttonYsize);
+	allButtons.push(timeUpButton);
+	timeDownButton = createButton('-');
+	timeDownButton.position(40,buttonDist*6+buttonOffset);
+	timeDownButton.mousePressed(decTime);
+	timeDownButton.size(buttonXsize,buttonYsize);
+	allButtons.push(timeDownButton);
 
 	// Define colors
-	colorStem  = color(150,255,150);
+	colorStem  = color(150,200,150);
 	colorYoung = color(220,220,220);
 	colorDiff  = color(150,150,150);
-	colorDead  = color(255, 100,100);
-	colorQuie  = color(100, 100,100);
+	colorDead  = color(255,100,100);
+	colorQuie  = color(100,100,100);
+	
+	// For simplicity, we'll set division-rates equal for both cell types
+	stemDivRate = diffDivRate;
+	
+	// Set the interactive buttons display state to the default "showControls"
+	updateButtons();
 
 	// Start simulation
 	initializeSimulation();
 }
 
+
+// Draw loop, is run every frame
+function draw() {
+	// Make a single-colored background
+	//background(255,255,255); // White
+	background(150,100,100); // Red-ish
+	
+	// As default, top-left corner of sketch is (0,0). 
+	// For simplicity, we shift the "the camera", so (0,0) is in the middle
+	translate(width/2,height/2); // Move center for non-WEBGL version
+	
+	// Go through the array of cells, and display them
+	for (var k = 0; k < allCells.length; k++) {
+		allCells[k].display();
+	}
+  
+	// If there are not too many cells, and simulation is not paused
+	if (simulationRunning && (allCells.length < maxCellsAllowed)){
+		
+		// Only update cells every timeScale frame, allowing for the user to slow down simulation
+		if ((frameCount % timeScale) == 0){
+			simTime++; // Increment number of simulation time-steps taken
+		
+			// Go through all cells (Iterate backwards for removal)
+			for (var k = allCells.length-1; k >= 0; k--){
+				// Only update cell if it is not quiescent
+				if (allCells[k].state !='quiescent'){ 
+					allCells[k].update(); 
+				}
+							
+				// Remove dead cells from the array
+				if (allCells[k].state =='dead'){
+					// Draw the dead cell again, so it is there for a single frame.
+					allCells[k].display();
+					// And remove it from the array
+					allCells.splice(k,1);
+				}
+			}		
+		}
+	}
+
+	// If controls are set to be shown, draw the text
+	if (showControls){
+		fill(color(0,0,0)); // Black color
+		textSize(16); // Font-size
+		var textDist = 20;
+		var xOffset = 80;
+		var yOffset = 65;
+		text("Time elapsed: "+ simTime,-width/2+xOffset,-height/2+25);
+		text("Cell count: "+ allCells.length,-width/2+xOffset,-height/2+45);
+		text('Death rate: '+diffDeathRate.toFixed(2),-width/2+xOffset,-height/2+yOffset);
+		text('Division rate: '+diffDivRate.toFixed(2),-width/2+xOffset,-height/2+yOffset+textDist);
+		text('Maturation time: '+maturationAge,-width/2+xOffset,-height/2+yOffset+textDist*2);
+		text('Max cell age: '+rhoMax,-width/2+xOffset,-height/2+yOffset+textDist*3);
+		text('Update every '+timeScale+ ' frames',-width/2+xOffset,-height/2+yOffset+textDist*4);
+		text('Press h to show/hide controls',-width/2+10,-height/2+yOffset+textDist*5+5);
+		text('Press r to reset',-width/2+10,-height/2+yOffset+textDist*6+5);
+	}
+}
+
+
+// Function for reseting simulation
 function initializeSimulation(){
 	// Make sure array of cells is empty
 	allCells = [];  
 	// Instantiate starting stem-cell
 	iniPosition = createVector(1,1);
-	startCell = new Cell(iniPosition,'stem');
+	var startCell = new Cell(iniPosition,'stem');
 	// Add to list of all cells
 	allCells.push(startCell);
+	// Reset time
+	simTime = 0
+}
+// Functions for buttons
+function incDeathRate(){ // Increase death rate
+	diffDeathRate = diffDeathRate + 0.01;
+	if (diffDeathRate > 1){
+		diffDeathRate = 1;
+	}
+}
+function decDeathRate(){ // Decrease death rate
+	diffDeathRate = diffDeathRate - 0.01;
+	if (diffDeathRate < 0){
+		diffDeathRate = 0;
+	}
+}
+function incDivRate(){ // Increase division rate
+	diffDivRate = diffDivRate + 0.01;
+	if (diffDivRate > 1){
+		diffDivRate = 1;
+	}
+}
+function decDivRate(){ // Decrease division rate
+	diffDivRate = diffDivRate - 0.01;
+	if (diffDivRate < 0){
+		diffDivRate = 0;
+	}
+}
+function incMat(){ // Increase number of maturation-frames
+	maturationAge = maturationAge + 1;
+}
+function decMat(){ // Decrease number of maturation-frames
+	maturationAge = maturationAge - 1;
+	if (maturationAge < 0){
+		maturationAge = 0;
+	}
+}
+function incRho(){ // Increase rho (Number of division before cell death)
+	rhoMax = rhoMax + 1;
+}
+function decRho(){ // Decrease rho (Number of division before cell death)
+	rhoMax = rhoMax - 1;
+	if (rhoMax < 0){
+		rhoMax = 0;
+	}
+}
+function incTime(){ // Increase timescale / frame-update-skips
+	timeScale = timeScale + 1;
+}
+function decTime(){ // Decrease timescale / frame-update-skips
+	timeScale = timeScale - 1;
+	if (timeScale < 0){
+		timeScale = 0;
+	}
 }
 
+// Function for updating the display-state of the buttons
+function updateButtons(){
+	for (var b = 0; b < allButtons.length;b++){
+		if (showControls){
+			allButtons[b].show();
+		} else {
+			allButtons[b].hide();
+		}
+	}
+}
+
+// keyPressed() detects keyboard presses, allowing for easy interactivity.
 function keyPressed(){
 	// If the user presses "r" on the keyboard, reset simulation
 	if (keyCode== 82){
 		initializeSimulation();
 	}
-	// If the user presses spcae on the keyboard, pause/unpause
+	// If the user presses space on the keyboard, pause/unpause
 	if (keyCode== 32){
 		simulationRunning = !simulationRunning;
 	}
-	
-	// For testing interactive stuff
-	// --- diffDeathRate ---
-	var deltaDeathRate = 0.01;
-	if (keyCode== 84){
-			diffDeathRate = diffDeathRate + deltaDeathRate;
-		if (diffDeathRate > 1){
-			diffDeathRate = 1;
-		}
-	}
-	if (keyCode== 71){
-		diffDeathRate = 0;		
-	}
-	if (keyCode== 66){
-			diffDeathRate = diffDeathRate - deltaDeathRate;
-		if (diffDeathRate < 0){
-			diffDeathRate = 0;
-		}
-	}
-	
-	// --- diffDeathRate ---
-	var deltaMoveRate = 0.01;
-	if (keyCode== 89){
-			diffMoveRate = diffMoveRate + deltaMoveRate;
-		if (diffMoveRate > 1){
-			diffMoveRate = 1;
-		}
-	}
+	// If the user pressed "h", change control-display, and update button states
 	if (keyCode== 72){
-		diffMoveRate = 0;		
-	}
-	if (keyCode== 78){
-			diffMoveRate = diffMoveRate - deltaMoveRate;
-		if (diffMoveRate < 0){
-			diffMoveRate = 0;
-		}
-	}
-	
-	// --- rhoMax ---
-	var deltarho = 1;
-	if (keyCode== 85){
-			rhoMax = rhoMax + deltarho;
-	}
-	if (keyCode== 724){
-		rhoMax = 0;		
-	}
-	if (keyCode== 77){
-			rhoMax = rhoMax - deltarho;
-		if (rhoMax < 0){
-			rhoMax = 0;
-		}
+		showControls = !showControls;		
+		updateButtons();
 	}
 }
 
-// Draw stuff
-function draw() {
-	
-  background(150,100,100); 
-  translate(width/2,height/2); // Move center for non-WEBGL version
-  //scale(zoomLevel);
-  
-  // If there are not too many cells, and simulation is not paused
-  if (simulationRunning && (allCells.length < maxCellsAllowed)){
-	  
-	for (var k = 0; k < allCells.length; k++) {
-		// For testing
-		//if ((frameCount % 10)==0){
-		allCells[k].update(); 
-		//}
-		allCells[k].display();
-	}
-	// Remove dead cells (Iterate backwards for removal)
-	for (var k = allCells.length-1; k > 0; k--){
-		if (allCells[k].state =='dead'){
-			allCells.splice(k,1);
-		// Also stop considering the cell if all its neighbours are quiescent
-		//} else if (allCells[k].numQuiescentNeighbours == 8){
-			//allCells.splice(k,1);		
-			
-			// !!! DOESNT WORK, BAD IDEA. Thought it would optimize stuff, but it doesn't
-		}
-	}
-	// If max cells is reached, stop simulation
-	} else {	  
-		// Simply display all cells, but don't update them
-		for (var k = 0; k < allCells.length; k++) {
-			allCells[k].display();
-		} 
-	}
-
-	var textDist = 30;
-  fill(color(0,0,0));
-  text('Press space to pause',-width/2,-textDist*2)
-  text('Press r to reset',-width/2,-textDist)
-  text('Press other letters to change variables',-width/2,0)
-  text('Death rate: '+diffDeathRate.toFixed(2),-width/2,textDist)
-  text('Move rate: '+diffMoveRate.toFixed(2),-width/2,textDist*2)
-  text('Stem-cell division rate: '+stemDivRate.toFixed(2),-width/2,textDist*3)
-  text('Other cells division rate: '+diffDivRate.toFixed(2),-width/2,textDist*4)
-  text('Max number of divisions: '+rhoMax,-width/2,textDist*5)
-  text('Maturation age: '+maturationAge,-width/2,textDist*6)
-/*var diffDivRate = 0.1;
-var rhoMax = 2;
-var maturationAge = 1;
-*/
-	
-}
-
+// Class definition of a cell
 class Cell {
-	    
+	
+	// Constructor function for the cell
+	constructor(iniPosition,state) {
+		this.x = iniPosition.x;
+		this.y = iniPosition.y;
+		this.pos = iniPosition;
+		this.size = 1;
+		this.state = state;
+		this.age = 0;
+		this.rho = rhoMax; // Default value
+		this.numQuiescentNeighbours = 0;
+		this.getColor();
+	}
+	// Function for updating the color-variable
 	getColor(){
 		switch (this.state) {
 		  case 'stem':
@@ -180,19 +298,11 @@ class Cell {
 			break;
 		}	  
 	}
-  constructor(iniPosition,state) {
-    this.x = iniPosition.x;
-    this.y = iniPosition.y;
-	this.pos = iniPosition;
-	this.size = 1;
-	this.state = state;
-	this.age = 0;
-	this.rho = rhoMax; // Default value
-	this.numQuiescentNeighbours = 0;
-  }
   
-  findNeighbours(){
-	// Check if neighbouring points are occupied	  
+  // Function for finding neighbours. Returns directions without neighbours
+  // This function could probably be improved and optimized
+  findNeighbours(){	  
+	// First, define the eight neighbouring locations
 	var neighN  = this.pos.copy().add(createVector(0,-1));
 	var neighS  = this.pos.copy().add(createVector(0, 1));
 	var neighE  = this.pos.copy().add(createVector( 1,0));
@@ -201,7 +311,8 @@ class Cell {
 	var neighSE = this.pos.copy().add(createVector(1, 1));
 	var neighNW = this.pos.copy().add(createVector(-1,-1));
 	var neighSW = this.pos.copy().add(createVector(-1,1));
-
+	
+	// Make a dictionary, for translating direction-number into location
 	var directionDict ={};
 	directionDict[0] = neighN;
 	directionDict[1] = neighS;
@@ -212,6 +323,7 @@ class Cell {
 	directionDict[6] = neighNW;
 	directionDict[7] = neighSW;
 
+	// Array of all free directions. Starts with all directions
 	var freeDirections = [0,1,2,3,4,5,6,7];
 	var numQuiescentNeighbours = 0;
 	for (var k = 0; k < allCells.length; k++) {
@@ -346,6 +458,7 @@ class Cell {
 					// If there is no space around the cell, turn quiescent
 					if (freeDirections.length < 1){
 						this.state = 'quiescent';
+						this.getColor();
 					} else {
 		  
 						// Probability for differentiated cells to move around
@@ -363,6 +476,7 @@ class Cell {
 					// Mature if age is above maturation age
 					if (this.age > maturationAge){
 						this.state = 'diff';
+						this.getColor();
 					}
 					
 				break;
@@ -370,6 +484,7 @@ class Cell {
 					// If there is no space around the cell, turn quiescent
 					if (freeDirections.length < 1){
 						this.state = 'quiescent';
+						this.getColor();
 					} else {
 						// Probability for differentiated cells to move around
 						if (random() < diffMoveRate){
@@ -385,6 +500,7 @@ class Cell {
 						// Probability of spontaneous cell-death
 						if (random() < diffDeathRate){
 							this.state = 'dead';
+							this.getColor();
 						}
 						
 						// Check for space again, and try to divide
@@ -409,6 +525,7 @@ class Cell {
 						// If capacity is exhausted, kill the cell
 						if (this.rho <= 0){
 							this.state = 'dead';
+							this.getColor();
 						}
 					}
 					
@@ -419,12 +536,11 @@ class Cell {
 	  }
   }
   
-  display(){
-	this.getColor();
-	fill(this.color);
-	//rect(this.pos.x,this.pos.y,this.size,this.size);
-	
-	rect(this.pos.x*curScale,this.pos.y*curScale,this.size*curScale,this.size*curScale);
-	//ellipse(this.pos.x*curScale,this.pos.y*curScale,this.size*curScale*1.5);
-  }  
+	display(){
+		// Set the current fill 
+		fill(this.color);
+		// Draw a rectangle
+		rect(this.pos.x*curScale,this.pos.y*curScale,this.size*curScale,this.size*curScale);
+		//ellipse(this.pos.x*curScale,this.pos.y*curScale,this.size*curScale*1.5);
+	}  
 }
