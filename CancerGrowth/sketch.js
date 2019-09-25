@@ -174,8 +174,9 @@ function draw() {
 		text('Maturation time: '+maturationAge,-width/2+xOffset,-height/2+yOffset+textDist*2);
 		text('Max cell age: '+rhoMax,-width/2+xOffset,-height/2+yOffset+textDist*3);
 		text('Update every '+timeScale+ ' frames',-width/2+xOffset,-height/2+yOffset+textDist*4);
-		text('Press h to show/hide controls',-width/2+10,-height/2+yOffset+textDist*5+5);
+		text('Press p to pause',-width/2+10,-height/2+yOffset+textDist*5+5);
 		text('Press r to reset',-width/2+10,-height/2+yOffset+textDist*6+5);
+		text('Press h to show/hide controls',-width/2+10,-height/2+yOffset+textDist*7+5);
 	}
 }
 
@@ -262,8 +263,8 @@ function keyPressed(){
 	if (keyCode== 82){
 		initializeSimulation();
 	}
-	// If the user presses space on the keyboard, pause/unpause
-	if (keyCode== 32){
+	// If the user presses "p" on the keyboard, pause/unpause
+	if (keyCode== 80){
 		simulationRunning = !simulationRunning;
 	}
 	// If the user pressed "h", change control-display, and update button states
