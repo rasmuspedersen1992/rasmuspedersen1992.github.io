@@ -3,7 +3,7 @@
 // Simulation made for blog post for mathematical oncology blog
 // http://blog.mathematical-oncology.org/ 
 
-// Version 0.99
+// Version 1.00
 // Created by Rasmus Kristoffer Pedersen
 // rasmuspedersen1992@gmail.com
 
@@ -17,7 +17,9 @@ var rhoMax = 2; // Max number of divisions before cell dies
 var maturationAge = 10; // Number of time-steps before cell mature and start dividing
 
 var allCells = []; // Array for all cells
-var maxCellsAllowed = 4000; // Simulation stops when the cell-count reaches this number
+var maxCellsAllowed = 45000; // Simulation stops when the cell-count reaches this number, which is approximately a full screen
+
+var occuPos;// Dictionary for keeping track of occupied positions
 
 var curScale = 5; // Scaling factor of cells (1 -> one-pixel size)
 var timeScale = 1; // Number of frames between updates
@@ -114,7 +116,7 @@ function setup() {
 	
 	// Set the interactive buttons display state to the default "showControls"
 	updateButtons();
-
+	
 	// Start simulation
 	initializeSimulation();
 }
@@ -153,6 +155,8 @@ function draw() {
 				if (allCells[k].state =='dead'){
 					// Draw the dead cell again, so it is there for a single frame.
 					allCells[k].display();
+					// Remove its position from the dictionary of occupied positions
+					occuPos.remove(posToDictKey(allCells[k].pos.x,allCells[k].pos.y));
 					// And remove it from the array
 					allCells.splice(k,1);
 				}
@@ -160,7 +164,7 @@ function draw() {
 		}
 	}
 
-	// If controls are set to be shown, draw the text
+	// If controls are set to be shown, draw the text, buttons and legend
 	if (showControls){
 		fill(color(0,0,0)); // Black color
 		textSize(16); // Font-size
@@ -177,22 +181,72 @@ function draw() {
 		text('Press p to pause',-width/2+10,-height/2+yOffset+textDist*5+5);
 		text('Press r to reset',-width/2+10,-height/2+yOffset+textDist*6+5);
 		text('Press h to show/hide controls',-width/2+10,-height/2+yOffset+textDist*7+5);
+		
+		// Also show a legend for the cell colors 
+		var legendX = -390;
+		var legendY = -180;
+		var legendCellSize = 20;
+		var legendCellYDiff = legendCellSize+10;
+		var legendTextXOff = 30;
+		var legendTextYOff = 15;
+		// Set stroke color to black for borders on legend
+		stroke(color(0,0,0));
+		strokeWeight(2);
+		// Set the fill color
+		fill(colorStem);
+		// Draw a rectangle
+		rect(legendX,legendY,legendCellSize,legendCellSize);
+		// Set the fill color
+		fill(colorYoung);
+		// Draw a rectangle
+		rect(legendX,legendY+legendCellYDiff,legendCellSize,legendCellSize);
+		// Set the fill color
+		fill(colorDiff);
+		// Draw a rectangle
+		rect(legendX,legendY+2*legendCellYDiff,legendCellSize,legendCellSize);
+		// Set the fill color
+		fill(colorQuie);
+		// Draw a rectangle
+		rect(legendX,legendY+3*legendCellYDiff,legendCellSize,legendCellSize);
+		// Set the fill color
+		fill(colorDead);
+		// Draw a rectangle
+		rect(legendX,legendY+4*legendCellYDiff,legendCellSize,legendCellSize);
+		// Turn off stroke again
+		noStroke()
+		// Make the text
+		fill(color(0,0,0));
+		text('Stem cell'     ,legendX+legendTextXOff,legendY+legendTextYOff);
+		text('Immature cell' ,legendX+legendTextXOff,legendY+legendTextYOff+legendCellYDiff);
+		text('Mature cell'   ,legendX+legendTextXOff,legendY+legendTextYOff+2*legendCellYDiff);
+		text('Quiescent cell',legendX+legendTextXOff,legendY+legendTextYOff+3*legendCellYDiff);
+		text('Dead cell'     ,legendX+legendTextXOff,legendY+legendTextYOff+4*legendCellYDiff);
 	}
 }
-
 
 // Function for reseting simulation
 function initializeSimulation(){
 	// Make sure array of cells is empty
 	allCells = [];  
 	// Instantiate starting stem-cell
-	iniPosition = createVector(1,1);
+	iniPosition = createVector(0,0);
 	var startCell = new Cell(iniPosition,'stem');
 	// Add to list of all cells
 	allCells.push(startCell);
+	// Add to list of occupied positions
+	var KeyString = posToDictKey(iniPosition.x,iniPosition.y);
+	occuPos = createStringDict(KeyString,'stem');
+
 	// Reset time
 	simTime = 0
 }
+
+// Function for formatting positions into the string used in the occupid positions dictionary
+function posToDictKey(x,y){
+	var toReturn = x.toString()+ ',' + y.toString();
+	return toReturn
+}
+
 // Functions for buttons
 function incDeathRate(){ // Increase death rate
 	diffDeathRate = diffDeathRate + 0.01;
@@ -311,137 +365,98 @@ class Cell {
 	}
   
   // Function for finding neighbours. Returns directions without neighbours
-  // This function could probably be improved and optimized
-  findNeighbours(){	  
-
-
-	// Array of all free directions. Starts with all directions
+  // Some optimization is probably possible
+  findNeighbours(){
+  	// Array of all free directions. Starts with all directions
 	var freeDirections = [0,1,2,3,4,5,6,7];
-	var numQuiescentNeighbours = 0;
-	for (var k = 0; k < allCells.length; k++) {
-		// Calculate the distance between the current cell and the k'th cell
-		 var distBetweenCells = (pow(this.pos.x-allCells[k].pos.x,2)+pow(this.pos.y-allCells[k].pos.y,2));
-		// var distBetweenCells = (abs(this.pos.x-allCells[k].pos.x)+abs(this.pos.y-allCells[k].pos.y));
-		if (distBetweenCells < 3){
-			
-				// First, define the eight neighbouring locations
-				var neighN  = this.pos.copy().add(createVector(0,-1));
-				var neighS  = this.pos.copy().add(createVector(0, 1));
-				var neighE  = this.pos.copy().add(createVector( 1,0));
-				var neighW  = this.pos.copy().add(createVector(-1,0));
-				var neighNE = this.pos.copy().add(createVector(1, -1));
-				var neighSE = this.pos.copy().add(createVector(1, 1));
-				var neighNW = this.pos.copy().add(createVector(-1,-1));
-				var neighSW = this.pos.copy().add(createVector(-1,1));
-				
-				// Make a dictionary, for translating direction-number into location
-				var directionDict ={};
-				directionDict[0] = neighN;
-				directionDict[1] = neighS;
-				directionDict[2] = neighE;
-				directionDict[3] = neighW;
-				directionDict[4] = neighNE;
-				directionDict[5] = neighSE;
-				directionDict[6] = neighNW;
-				directionDict[7] = neighSW;
-			//if (allCells[k].numQuiescentNeighbours < 8){
-			
-				// If the position of the cell is north of here
-				if (allCells[k].pos.equals(neighN)){
-					// If it is quiescent...
-					if (allCells[k].state == 'quiescent'){
-						// ... add one to the count of quiescent neighbours
-						numQuiescentNeighbours++;
-					}
-					// Remove north from the array of free directions
-					for (var j = freeDirections.length; j >= 0; j--){
-						if (freeDirections[j] == 0){
-							freeDirections.splice(j,1);
-						}
-					}
-				} 
-				
-				// Same thing for all other directions
-				if (allCells[k].pos.equals(neighS)){
-					if (allCells[k].state == 'quiescent'){
-						numQuiescentNeighbours++;
-					}
-					for (var j = freeDirections.length; j >= 0; j--){
-						if (freeDirections[j] == 1){
-							freeDirections.splice(j,1);
-						}
-					}
-				}
-				
-				if (allCells[k].pos.equals(neighE)){
-					if (allCells[k].state == 'quiescent'){
-						numQuiescentNeighbours++;
-					}
-					for (var j = freeDirections.length; j >= 0; j--){
-						if (freeDirections[j] == 2){
-							freeDirections.splice(j,1);
-						}
-					}
-				}
-				
-				if (allCells[k].pos.equals(neighW)){
-					if (allCells[k].state == 'quiescent'){
-						numQuiescentNeighbours++;
-					}
-					for (var j = freeDirections.length; j >= 0; j--){
-						if (freeDirections[j] == 3){
-							freeDirections.splice(j,1);
-						}
-					}
-				}
-				
-				if (allCells[k].pos.equals(neighNE)){
-					if (allCells[k].state == 'quiescent'){
-						numQuiescentNeighbours++;
-					}			
-					for (var j = freeDirections.length; j >= 0; j--){
-						if (freeDirections[j] == 4){
-							freeDirections.splice(j,1);
-						}
-					}
-				}
-				
-				if (allCells[k].pos.equals(neighSE)){
-					if (allCells[k].state == 'quiescent'){
-						numQuiescentNeighbours++;
-					}
-					for (var j = freeDirections.length; j >= 0; j--){
-						if (freeDirections[j] == 5){
-							freeDirections.splice(j,1);
-						}
-					}
-				}
-				
-				if (allCells[k].pos.equals(neighNW)){
-					if (allCells[k].state == 'quiescent'){
-						numQuiescentNeighbours++;
-					}
-					for (var j = freeDirections.length; j >= 0; j--){
-						if (freeDirections[j] == 6){
-							freeDirections.splice(j,1);
-						}
-					}
-				}
-				
-				if (allCells[k].pos.equals(neighSW)){
-					if (allCells[k].state == 'quiescent'){
-						numQuiescentNeighbours++;
-					}
-					for (var j = freeDirections.length; j >= 0; j--){
-						if (freeDirections[j] == 7){
-							freeDirections.splice(j,1);
-						}
-					}
-				}
-			//}
+	// First, define the eight neighbouring locations
+	var neighN  = this.pos.copy().add(createVector(0,-1));
+	var neighS  = this.pos.copy().add(createVector(0, 1));
+	var neighE  = this.pos.copy().add(createVector( 1,0));
+	var neighW  = this.pos.copy().add(createVector(-1,0));
+	var neighNE = this.pos.copy().add(createVector(1, -1));
+	var neighSE = this.pos.copy().add(createVector(1, 1));
+	var neighNW = this.pos.copy().add(createVector(-1,-1));
+	var neighSW = this.pos.copy().add(createVector(-1,1));
+	
+	// Make a dictionary, for translating direction-number into location
+	var directionDict ={};
+	directionDict[0] = neighN;
+	directionDict[1] = neighS;
+	directionDict[2] = neighE;
+	directionDict[3] = neighW;
+	directionDict[4] = neighNE;
+	directionDict[5] = neighSE;
+	directionDict[6] = neighNW;
+	directionDict[7] = neighSW;
+	
+	// Check if the directions are in the occuPos dictionary
+	// And remove it from the "freeDirections" vector if it is
+	if (occuPos.hasKey(posToDictKey(neighN.x,neighN.y))){
+		for (var j = freeDirections.length; j >= 0; j--){
+			if (freeDirections[j] == 0){
+				freeDirections.splice(j,1);
+			}
 		}
 	}
-	return [freeDirections,directionDict,numQuiescentNeighbours];
+	if (occuPos.hasKey(posToDictKey(neighS.x,neighS.y))){
+		for (var j = freeDirections.length; j >= 0; j--){
+			if (freeDirections[j] == 1){
+				freeDirections.splice(j,1);
+			}
+		}
+	}
+	
+	if (occuPos.hasKey(posToDictKey(neighE.x,neighE.y))){
+		for (var j = freeDirections.length; j >= 0; j--){
+			if (freeDirections[j] == 2){
+				freeDirections.splice(j,1);
+			}
+		}
+	}
+	
+	if (occuPos.hasKey(posToDictKey(neighW.x,neighW.y))){
+		for (var j = freeDirections.length; j >= 0; j--){
+			if (freeDirections[j] == 3){
+				freeDirections.splice(j,1);
+			}
+		}
+	}
+	
+	if (occuPos.hasKey(posToDictKey(neighNE.x,neighNE.y))){
+		for (var j = freeDirections.length; j >= 0; j--){
+			if (freeDirections[j] == 4){
+				freeDirections.splice(j,1);
+			}
+		}
+	}
+	
+	if (occuPos.hasKey(posToDictKey(neighSE.x,neighSE.y))){
+		for (var j = freeDirections.length; j >= 0; j--){
+			if (freeDirections[j] == 5){
+				freeDirections.splice(j,1);
+			}
+		}
+	}
+	
+	if (occuPos.hasKey(posToDictKey(neighNW.x,neighNW.y))){
+		for (var j = freeDirections.length; j >= 0; j--){
+			if (freeDirections[j] == 6){
+				freeDirections.splice(j,1);
+			}
+		}
+	}
+	
+	if (occuPos.hasKey(posToDictKey(neighSW.x,neighSW.y))){
+		for (var j = freeDirections.length; j >= 0; j--){
+			if (freeDirections[j] == 7){
+				freeDirections.splice(j,1);
+			}
+		}
+	}
+	
+	// Return the vector of free directions and the dictionary for translating the vector 
+	return [freeDirections,directionDict];
   }
   
   // Sets the color of the cell to be the quiescent color
@@ -457,16 +472,22 @@ class Cell {
 	if (this.state == 'young'){				
 		// Mature if age is above maturation age
 		if (this.age > maturationAge){
+			// Update the dictionary of occupied position 
+			// (In the current model, the cell-types of the neighbours are not important)
+			// (But it could be an interesting extension, so we'll keep track of it in occuPos)
+			occuPos.set(posToDictKey(this.pos.x,this.pos.y),'diff');
+			
+			// Set the state of the cell to the mature type
 			this.state = 'diff';
 			this.getColor();
 		}
 	}
 
-	// Skip cell if it is quiescent
+	// // Skip cell if it is quiescent
 	// if (this.state != 'quiescent'){
-	  
-	var [freeDirections,directionDict,numQuiescentNeighbours] = this.findNeighbours();
-	this.numQuiescentNeighbours = numQuiescentNeighbours;
+	
+	// Get the free neighbouring directions
+	var [freeDirections,directionDict] = this.findNeighbours();
 
 	// If there is no space around the cell, color the cell quiescent
 	if (freeDirections.length < 1){
@@ -479,6 +500,7 @@ class Cell {
 			this.getColor();
 		
 		switch(this.state){
+			
 			case 'stem':	
 				// Probability of stem cell division
 				if (random() < stemDivRate){
@@ -489,24 +511,32 @@ class Cell {
 					// Instantiate a new cell at that position
 					var newCell = new Cell(newPos,'young');
 					// Add it to the array of all cells
-					allCells.push(newCell);							
+					allCells.push(newCell);	
+					// Add to list of occupied positions
+					occuPos.create(posToDictKey(newPos.x,newPos.y),'young');						
 				}
-				
 			break;
+			
 			case 'young':	
+			
 				// Probability for differentiated cells to move around
 				if (random() < diffMoveRate){
 					// Pick a random free direction
 					var randDir = freeDirections[Math.floor(Math.random()*freeDirections.length)];
 					// Get the corresponding position
 					var newPos = directionDict[randDir];
+					
+					// Add new position to list of occupied positions
+					occuPos.create(posToDictKey(newPos.x,newPos.y),'young');
+					// Remove the current position from the dictionary of occupied positions
+					occuPos.remove(posToDictKey(this.pos.x,this.pos.y));	
+					
 					// Change the coordinates of the cell
 					this.pos.x = newPos.x;
 					this.pos.y = newPos.y;
 				}
-
-				
 			break;
+			
 			case 'diff':	
 		
 				// Probability for differentiated cells to move around
@@ -515,6 +545,12 @@ class Cell {
 					var randDir = freeDirections[Math.floor(Math.random()*freeDirections.length)];
 					// Get the corresponding position
 					var newPos = directionDict[randDir];
+					
+					// Add new position to list of occupied positions
+					occuPos.create(posToDictKey(newPos.x,newPos.y),'diff');
+					// Remove the current position from the dictionary of occupied positions
+					occuPos.remove(posToDictKey(this.pos.x,this.pos.y));	
+					
 					// Change the coordinates of the cell
 					this.pos.x = newPos.x;
 					this.pos.y = newPos.y;
@@ -522,12 +558,14 @@ class Cell {
 			
 				// Probability of spontaneous cell-death
 				if (random() < diffDeathRate){
+					// Set its state to dead
 					this.state = 'dead';
+					// Update the color
 					this.getColor();
 				}
 				
 				// Check for space again, and try to divide
-				[freeDirections,directionDict,numQuiescentNeighbours] = this.findNeighbours();
+				[freeDirections,directionDict] = this.findNeighbours();
 				if (freeDirections.length > 0){
 					// Probability of differentiated cell division
 					if (random() < diffDivRate){
@@ -535,6 +573,10 @@ class Cell {
 						var randDir = freeDirections[Math.floor(Math.random()*freeDirections.length)];
 						// Get the corresponding position
 						var newPos = directionDict[randDir];
+						
+						// Add new position to list of occupied positions
+						occuPos.create(posToDictKey(newPos.x,newPos.y),'young');
+						
 						// Instantiate a new cell at that position
 						var newCell = new Cell(newPos,'young');
 						// Add it to the array of all cells
@@ -547,12 +589,15 @@ class Cell {
 				
 				// If capacity is exhausted, kill the cell
 				if (this.rho <= 0){
+					// Set its state to dead
 					this.state = 'dead';
-					this.getColor();
+					// Update the color
+					this.getColor();	
 				}
-				
 			break;
-			case 'dead':		
+			
+			case 'dead':	
+				// Dead cells do nothing, and are removed in main draw loop at next frame
 			break;
 		}
 	}
