@@ -48,6 +48,12 @@ function setup() {
 	resetButton.mousePressed(initializeSimulation); // Assign it a function to run
 	resetButton.size(60,40); // Set the size of the button
 	allButtons.push(resetButton); // Add it to the array of all buttons
+	// Pause button
+	pauseButton = createButton('Pause'); // Create the button, and set its text
+	pauseButton.position(10,buttonOffset+buttonDist*7); // Position it
+	pauseButton.mousePressed(pauseSwitch); // Assign it a function to run
+	pauseButton.size(60,40); // Set the size of the button
+	allButtons.push(pauseButton); // Add it to the array of all buttons
 	// Death rate 
 	deathUpButton = createButton('+');
 	deathUpButton.position(10,buttonDist*2+buttonOffset);
@@ -178,8 +184,8 @@ function draw() {
 		text('Maturation time: '+maturationAge,-width/2+xOffset,-height/2+yOffset+textDist*2);
 		text('Max cell age: '+rhoMax,-width/2+xOffset,-height/2+yOffset+textDist*3);
 		text('Update every '+timeScale+ ' frames',-width/2+xOffset,-height/2+yOffset+textDist*4);
-		text('Press p to pause',-width/2+10,-height/2+yOffset+textDist*5+5);
-		text('Press r to reset',-width/2+10,-height/2+yOffset+textDist*6+5);
+		text('Press p to pause',-width/2+xOffset,-height/2+yOffset+textDist*5);
+		text('Press r to reset',-width/2+xOffset,-height/2+yOffset+textDist*6);
 		text('Press h to show/hide controls',-width/2+10,-height/2+yOffset+textDist*7+5);
 		
 		// Also show a legend for the cell colors 
@@ -309,6 +315,11 @@ function updateButtons(){
 			allButtons[b].hide();
 		}
 	}
+}
+
+// Function for pausing/unpausing the simulation
+function pauseSwitch(){
+	simulationRunning = !simulationRunning;
 }
 
 // keyPressed() detects keyboard presses, allowing for easy interactivity.
