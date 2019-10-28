@@ -3,7 +3,7 @@
 // Simulation made for blog post for mathematical oncology blog
 // http://blog.mathematical-oncology.org/ 
 
-// Version 1.00
+// Version 1.01
 // Created by Rasmus Kristoffer Pedersen
 // rasmuspedersen1992@gmail.com
 
@@ -19,6 +19,13 @@ var maturationAge = 10; // Number of time-steps before cell mature and start div
 var allCells = []; // Array for all cells
 var maxCellsAllowed = 45000; // Simulation stops when the cell-count reaches this number, which is approximately a full screen
 
+// Make variables for counting cells
+var numStem = 1;
+var numImm = 0;
+var numMat = 0;
+var numQui = 0;
+var numDea = 0;
+
 var occuPos;// Dictionary for keeping track of occupied positions
 
 var curScale = 5; // Scaling factor of cells (1 -> one-pixel size)
@@ -26,13 +33,15 @@ var timeScale = 1; // Number of frames between updates
 var simTime = 0; // Number of frames simulated
 
 // Interactivity
-var simulationRunning = true;
+var simulationRunning = false; // Start the simulation paused
 var showControls = true; // Whether to show the controls or not
 var allButtons = []; // Array for keeping track of all buttons
 
+var canvas;
+
 // Setup function is run once, on page-load
 function setup() {
-	createCanvas(800, 800); 
+	canvas = createCanvas(800, 800); 
 	//createCanvas(800, 800,WEBGL); // WEBGL can be used for easier 3D 
 	
 	noStroke(); // For not drawing borders
@@ -42,13 +51,21 @@ function setup() {
 	var buttonOffset = 10;
 	var buttonXsize = 30;
 	var buttonYsize = 20;
+	// Initial start button 
+	startButton = createButton('Click to start'); // Create the button, and set the text
+	var startButtonWidth = 150;
+	startButton.position(width/2-startButtonWidth/2,height/2+startButtonWidth/2);
+	startButton.size(startButtonWidth,startButtonWidth/2);
+	startButton.mousePressed(pauseSwitch);
+	startButton.style("font-size : 24px; font-weight: bold");
+	
 	// Reset button
 	resetButton = createButton('Reset'); // Create the button, and set its text
 	resetButton.position(10,buttonOffset); // Position it
 	resetButton.mousePressed(initializeSimulation); // Assign it a function to run
 	resetButton.size(60,40); // Set the size of the button
 	allButtons.push(resetButton); // Add it to the array of all buttons
-	// Pause button
+	// Death rate 
 	pauseButton = createButton('Pause'); // Create the button, and set its text
 	pauseButton.position(10,buttonOffset+buttonDist*7); // Position it
 	pauseButton.mousePressed(pauseSwitch); // Assign it a function to run
@@ -128,7 +145,7 @@ function setup() {
 }
 
 
-// Draw loop, is run every frame
+// Draw loop, is automatically run every frame
 function draw() {
 	// Make a single-colored background
 	//background(255,255,255); // White
@@ -142,12 +159,16 @@ function draw() {
 	for (var k = 0; k < allCells.length; k++) {
 		allCells[k].display();
 	}
+	
   
 	// If there are not too many cells, and simulation is not paused
 	if (simulationRunning && (allCells.length < maxCellsAllowed)){
 		
 		// Only update cells every timeScale frame, allowing for the user to slow down simulation
 		if ((frameCount % timeScale) == 0){
+			// Set the counter for dead cells to zero, to only show how the current dead cells
+			numDea = 0;
+			
 			simTime++; // Increment number of simulation time-steps taken
 		
 			// Go through all cells (Iterate backwards for removal)
@@ -172,8 +193,11 @@ function draw() {
 
 	// If controls are set to be shown, draw the text, buttons and legend
 	if (showControls){
-		fill(color(0,0,0)); // Black color
-		textSize(16); // Font-size
+		canvas.drawingContext.miterLimit = 2; // Small hack for nicer text
+		fill(color(255,255,255)); // Black color
+		stroke(color(0,0,0));
+		strokeWeight(3);
+		textSize(18); // Font-size
 		var textDist = 20;
 		var xOffset = 80;
 		var yOffset = 65;
@@ -191,10 +215,12 @@ function draw() {
 		// Also show a legend for the cell colors 
 		var legendX = -390;
 		var legendY = -180;
-		var legendCellSize = 20;
+		var legendCellSize = 40;
 		var legendCellYDiff = legendCellSize+10;
-		var legendTextXOff = 30;
-		var legendTextYOff = 15;
+		var legendTextXOff = 50;
+		var legendTextYOff = 25;
+		//var legendTextXOff = 30;
+		//var legendTextYOff = 15;
 		// Set stroke color to black for borders on legend
 		stroke(color(0,0,0));
 		strokeWeight(2);
@@ -218,15 +244,26 @@ function draw() {
 		fill(colorDead);
 		// Draw a rectangle
 		rect(legendX,legendY+4*legendCellYDiff,legendCellSize,legendCellSize);
-		// Turn off stroke again
-		noStroke()
 		// Make the text
-		fill(color(0,0,0));
+		fill(color(255,255,255)); // Black color
+		stroke(color(0,0,0));
+		strokeWeight(3);
+		textSize(14);
+		textAlign(CENTER);
+		text(numStem,legendX+legendCellSize/2,legendY+legendTextYOff)
+		text(numImm,legendX+legendCellSize/2,legendY+legendTextYOff+legendCellYDiff)
+		text(numMat,legendX+legendCellSize/2,legendY+legendTextYOff+2*legendCellYDiff)
+		text(numQui,legendX+legendCellSize/2,legendY+legendTextYOff+3*legendCellYDiff)
+		text(numDea,legendX+legendCellSize/2,legendY+legendTextYOff+4*legendCellYDiff)
+		textAlign(LEFT);
+		textSize(18);
 		text('Stem cell'     ,legendX+legendTextXOff,legendY+legendTextYOff);
 		text('Immature cell' ,legendX+legendTextXOff,legendY+legendTextYOff+legendCellYDiff);
 		text('Mature cell'   ,legendX+legendTextXOff,legendY+legendTextYOff+2*legendCellYDiff);
 		text('Quiescent cell',legendX+legendTextXOff,legendY+legendTextYOff+3*legendCellYDiff);
 		text('Dead cell'     ,legendX+legendTextXOff,legendY+legendTextYOff+4*legendCellYDiff);
+		// Turn off stroke again
+		noStroke()
 	}
 }
 
@@ -320,6 +357,7 @@ function updateButtons(){
 // Function for pausing/unpausing the simulation
 function pauseSwitch(){
 	simulationRunning = !simulationRunning;
+	startButton.hide();
 }
 
 // keyPressed() detects keyboard presses, allowing for easy interactivity.
@@ -351,7 +389,7 @@ class Cell {
 		this.state = state;
 		this.age = 0;
 		this.rho = rhoMax; // Default value
-		this.numQuiescentNeighbours = 0;
+		this.isQuiescent = false;
 		this.getColor();
 	}
 	// Function for updating the color-variable
@@ -491,11 +529,14 @@ class Cell {
 			// Set the state of the cell to the mature type
 			this.state = 'diff';
 			this.getColor();
+			
+			if (this.isQuiescent == false){
+				// Update counters
+				numImm--;
+				numMat++;
+			}
 		}
 	}
-
-	// // Skip cell if it is quiescent
-	// if (this.state != 'quiescent'){
 	
 	// Get the free neighbouring directions
 	var [freeDirections,directionDict] = this.findNeighbours();
@@ -506,9 +547,37 @@ class Cell {
 		if (this.state != 'stem'){
 			this.setColorQuiescent(); 
 		}
+		
+		if (this.isQuiescent == false){
+			// For updating counters:
+			if (this.state == 'young'){
+				numImm--;
+			}
+			if (this.state == 'diff'){
+				numMat--;
+			}
+			// Change the state, for counting
+			this.isQuiescent = true;
+			// Update counter
+			numQui++;
+		}
+		
 	// If there is space, do cell-specific actions
 	} else {
-			this.getColor();
+		// Set the color
+		this.getColor();
+			
+		// For updating counters:
+		if (this.isQuiescent){
+			numQui--;
+			this.isQuiescent = false;
+			if (this.state == 'young'){
+				numImm++;
+			}
+			if (this.state == 'diff'){
+				numMat++;
+			}
+		}
 		
 		switch(this.state){
 			
@@ -523,6 +592,9 @@ class Cell {
 					var newCell = new Cell(newPos,'young');
 					// Add it to the array of all cells
 					allCells.push(newCell);	
+					// Update counter
+					numImm++;
+					
 					// Add to list of occupied positions
 					occuPos.create(posToDictKey(newPos.x,newPos.y),'young');						
 				}
@@ -530,7 +602,7 @@ class Cell {
 			
 			case 'young':	
 			
-				// Probability for differentiated cells to move around
+				// Probability for immature differentiated cells to move around
 				if (random() < diffMoveRate){
 					// Pick a random free direction
 					var randDir = freeDirections[Math.floor(Math.random()*freeDirections.length)];
@@ -573,6 +645,9 @@ class Cell {
 					this.state = 'dead';
 					// Update the color
 					this.getColor();
+					// Update counters
+					numDea++;
+					numMat--;
 				}
 				
 				// Check for space again, and try to divide
@@ -591,24 +666,31 @@ class Cell {
 						// Instantiate a new cell at that position
 						var newCell = new Cell(newPos,'young');
 						// Add it to the array of all cells
-						allCells.push(newCell);		
+						allCells.push(newCell);	
+						// Update counter
+						numImm++;
 
 						// Decrease capacity
 						this.rho--;
 					}
 				}
 				
-				// If capacity is exhausted, kill the cell
-				if (this.rho <= 0){
-					// Set its state to dead
-					this.state = 'dead';
-					// Update the color
-					this.getColor();	
+				if (this.state != 'dead'){
+					// If capacity is exhausted, kill the cell
+					if (this.rho <= 0){
+						// Set its state to dead
+						this.state = 'dead';
+						// Update the color
+						this.getColor();	
+						// Update counter
+						numDea++;
+						numMat--;
+					}
 				}
 			break;
 			
 			case 'dead':	
-				// Dead cells do nothing, and are removed in main draw loop at next frame
+				// Dead cells do nothing, and are removed in the main draw loop at next frame
 			break;
 		}
 	}
