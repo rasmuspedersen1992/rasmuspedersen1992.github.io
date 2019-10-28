@@ -3,7 +3,7 @@
 // Simulation made for blog post for mathematical oncology blog
 // http://blog.mathematical-oncology.org/ 
 
-// Version 1.01
+// Version 1.02
 // Created by Rasmus Kristoffer Pedersen
 // rasmuspedersen1992@gmail.com
 
@@ -282,6 +282,13 @@ function initializeSimulation(){
 
 	// Reset time
 	simTime = 0
+	
+	// Reset counters
+	numStem = 1;
+	numImm = 0;
+	numMat = 0;
+	numQui = 0;
+	numDea = 0;
 }
 
 // Function for formatting positions into the string used in the occupid positions dictionary
