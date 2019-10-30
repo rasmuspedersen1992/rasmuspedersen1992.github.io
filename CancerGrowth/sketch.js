@@ -3,7 +3,7 @@
 // Simulation made for blog post for mathematical oncology blog
 // http://blog.mathematical-oncology.org/ 
 
-// Version 1.02
+// Version 1.02 - Fitted for blog-post
 // Created by Rasmus Kristoffer Pedersen
 // rasmuspedersen1992@gmail.com
 
@@ -38,13 +38,29 @@ var showControls = true; // Whether to show the controls or not
 var allButtons = []; // Array for keeping track of all buttons
 
 var canvas;
+var curFontSize = 18;
 
 // Setup function is run once, on page-load
 function setup() {
-	canvas = createCanvas(800, 800); 
+	var divWidth = document.getElementById('sketch-holder').offsetWidth;
+	
+	canvas = createCanvas(divWidth, divWidth); 
+	canvas.parent('sketch-holder');
 	//createCanvas(800, 800,WEBGL); // WEBGL can be used for easier 3D 
 	
+	// Set a font-size dependent on width
+	if  (divWidth < 600){ // Small screen (Such as phones)
+		curFontSize = 12;
+	}
+	else if (divWidth > 1000){ // Large screen
+		curFontSize = 22;
+	} else { // Default scenario
+		curFontSize = 18;
+	}
+			
+	
 	noStroke(); // For not drawing borders
+	
 	
 	// Create buttons for interactivity
 	var buttonDist = 20;
@@ -53,75 +69,89 @@ function setup() {
 	var buttonYsize = 20;
 	// Initial start button 
 	startButton = createButton('Click to start'); // Create the button, and set the text
+	startButton.parent('sketch-holder');
 	var startButtonWidth = 150;
-	startButton.position(width/2-startButtonWidth/2,height/2+startButtonWidth/2);
+// 	startButton.position(width/2-startButtonWidth/2,height/2+startButtonWidth/2);
+	startButton.position(divWidth/2-startButtonWidth/2,divWidth/2+startButtonWidth/2);
 	startButton.size(startButtonWidth,startButtonWidth/2);
 	startButton.mousePressed(pauseSwitch);
 	startButton.style("font-size : 24px; font-weight: bold");
 	
 	// Reset button
 	resetButton = createButton('Reset'); // Create the button, and set its text
+	resetButton.parent('sketch-holder');
 	resetButton.position(10,buttonOffset); // Position it
 	resetButton.mousePressed(initializeSimulation); // Assign it a function to run
 	resetButton.size(60,40); // Set the size of the button
 	allButtons.push(resetButton); // Add it to the array of all buttons
 	// Death rate 
 	pauseButton = createButton('Pause'); // Create the button, and set its text
+	pauseButton.parent('sketch-holder');
 	pauseButton.position(10,buttonOffset+buttonDist*7); // Position it
 	pauseButton.mousePressed(pauseSwitch); // Assign it a function to run
 	pauseButton.size(60,40); // Set the size of the button
 	allButtons.push(pauseButton); // Add it to the array of all buttons
 	// Death rate 
 	deathUpButton = createButton('+');
+	deathUpButton.parent('sketch-holder');
 	deathUpButton.position(10,buttonDist*2+buttonOffset);
 	deathUpButton.mousePressed(incDeathRate);
 	deathUpButton.size(buttonXsize,buttonYsize);
 	allButtons.push(deathUpButton);
 	deathDownButton = createButton('-');
+	deathDownButton.parent('sketch-holder');
 	deathDownButton.position(40,buttonDist*2+buttonOffset);
 	deathDownButton.mousePressed(decDeathRate);
 	deathDownButton.size(buttonXsize,buttonYsize);
 	allButtons.push(deathDownButton);
 	// Division rate (Same for both stem and non-stem)
 	divUpButton = createButton('+');
+	divUpButton.parent('sketch-holder');
 	divUpButton.position(10,buttonDist*3+buttonOffset);
 	divUpButton.mousePressed(incDivRate);
 	divUpButton.size(buttonXsize,buttonYsize);
 	allButtons.push(divUpButton);
 	divDownButton = createButton('-');
+	divDownButton.parent('sketch-holder');
 	divDownButton.position(40,buttonDist*3+buttonOffset);
 	divDownButton.mousePressed(decDivRate);
 	divDownButton.size(buttonXsize,buttonYsize);
 	allButtons.push(divDownButton);
 	// Maturation time
 	matUpButton = createButton('+');
+	matUpButton.parent('sketch-holder');
 	matUpButton.position(10,buttonDist*4+buttonOffset);
 	matUpButton.mousePressed(incMat);
 	matUpButton.size(buttonXsize,buttonYsize);
 	allButtons.push(matUpButton);
 	matDownButton = createButton('-');
+	matDownButton.parent('sketch-holder');
 	matDownButton.position(40,buttonDist*4+buttonOffset);
 	matDownButton.mousePressed(decMat);
 	matDownButton.size(buttonXsize,buttonYsize);
 	allButtons.push(matDownButton);
 	// Divisions before cell death
 	rhoUpButton = createButton('+');
+	rhoUpButton.parent('sketch-holder');
 	rhoUpButton.position(10,buttonDist*5+buttonOffset);
 	rhoUpButton.mousePressed(incRho);
 	rhoUpButton.size(buttonXsize,buttonYsize);
 	allButtons.push(rhoUpButton);
 	rhoDownButton = createButton('-');
+	rhoDownButton.parent('sketch-holder');
 	rhoDownButton.position(40,buttonDist*5+buttonOffset);
 	rhoDownButton.mousePressed(decRho);
 	rhoDownButton.size(buttonXsize,buttonYsize);
 	allButtons.push(rhoDownButton);
 	// Timescale
 	timeUpButton = createButton('+');
+	timeUpButton.parent('sketch-holder');
 	timeUpButton.position(10,buttonDist*6+buttonOffset);
 	timeUpButton.mousePressed(incTime);
 	timeUpButton.size(buttonXsize,buttonYsize);
 	allButtons.push(timeUpButton);
 	timeDownButton = createButton('-');
+	timeDownButton.parent('sketch-holder');
 	timeDownButton.position(40,buttonDist*6+buttonOffset);
 	timeDownButton.mousePressed(decTime);
 	timeDownButton.size(buttonXsize,buttonYsize);
@@ -197,7 +227,7 @@ function draw() {
 		fill(color(255,255,255)); // Black color
 		stroke(color(0,0,0));
 		strokeWeight(3);
-		textSize(18); // Font-size
+		textSize(curFontSize); // Font-size
 		var textDist = 20;
 		var xOffset = 80;
 		var yOffset = 65;
@@ -213,14 +243,12 @@ function draw() {
 		text('Press h to show/hide controls',-width/2+10,-height/2+yOffset+textDist*7+5);
 		
 		// Also show a legend for the cell colors 
-		var legendX = -390;
-		var legendY = -180;
+		var legendX = -width/2 +10;
+		var legendY = -height/2 +220;
 		var legendCellSize = 40;
 		var legendCellYDiff = legendCellSize+10;
 		var legendTextXOff = 50;
 		var legendTextYOff = 25;
-		//var legendTextXOff = 30;
-		//var legendTextYOff = 15;
 		// Set stroke color to black for borders on legend
 		stroke(color(0,0,0));
 		strokeWeight(2);
@@ -256,7 +284,7 @@ function draw() {
 		text(numQui,legendX+legendCellSize/2,legendY+legendTextYOff+3*legendCellYDiff)
 		text(numDea,legendX+legendCellSize/2,legendY+legendTextYOff+4*legendCellYDiff)
 		textAlign(LEFT);
-		textSize(18);
+		textSize(curFontSize);
 		text('Stem cell'     ,legendX+legendTextXOff,legendY+legendTextYOff);
 		text('Immature cell' ,legendX+legendTextXOff,legendY+legendTextYOff+legendCellYDiff);
 		text('Mature cell'   ,legendX+legendTextXOff,legendY+legendTextYOff+2*legendCellYDiff);
