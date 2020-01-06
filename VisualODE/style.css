@@ -1,0 +1,47 @@
+html, body {
+  margin: 0;
+  padding: 0;
+
+}
+sketch-holder {
+  margin: 0;
+  display: flex;
+
+  /* This centers our sketch horizontally. */
+  justify-content: center;
+
+  /* This centers our sketch vertically.
+	-webkit-text-stroke: 0.8px black; */
+  align-items: center;
+}
+
+canvas{
+	display:block;
+}
+
+.mainWindow{
+  margin: 0;
+  display: flex;	
+  /* This centers our sketch horizontally. */
+  justify-content: center;
+
+  /* This centers our sketch vertically.
+	-webkit-text-stroke: 0.8px black; */
+  align-items: center;
+  
+  text-align: left;
+}
+
+.uiText{
+	font-family: Verdana;
+    -webkit-text-stroke: 1px black;
+    -webkit-text-fill-color: white;
+	font-size : 18px; 
+	font-weight: bold;
+}
+
+.uiButton{
+	background-color:#00ffff;	
+	border-radius:3px;
+	border:1px solid #000000;
+}
