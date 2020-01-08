@@ -439,6 +439,7 @@ function preset1(){
 	UItimeExp.value(0);
 	UIvaccine.value(0);
 	UIrebirth.value(0);
+	rebirthBool = false;
 	updateVariables();
 	startupSim()
 }
@@ -449,6 +450,7 @@ function preset2(){
 	UItimeExp.value(2);
 	UIvaccine.value(0);
 	UIrebirth.value(0);
+	rebirthBool = false;
 	updateVariables();
 	startupSim()
 }

@@ -115,7 +115,7 @@ function setup() {
   input.position(110, height+25);
   textdy= createElement('h2', 'dy/dt = ');
   textdy.position(20, height+50);
-  inputy = createInput();
+  inputy = createInput();asdf 
   inputy.position(110, height+25+50);
 */
 }  

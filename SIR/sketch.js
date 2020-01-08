@@ -97,7 +97,7 @@ var addSpeed = 20; // Maximal speed added per frame
 var particleDiameter = 10;
 var sqDia; // Squared diameter for faster calculations, calculated in setup
 var TimeInfected = 5; // Counted in seconds
-var TimeExposed = 2; // Counted in seconds
+var TimeExposed = 0; // Counted in seconds
 var rebirthRate = 0; // Rebirth rate
 var rebirthTimer = 0;
 var VaccRate = 0; // Vaccination rate
@@ -298,6 +298,8 @@ function setup() {
   startupSim()
   
   updateUI()
+  
+  
 }
 
 // Function for restarting simulation. Run at startup, and when simulation is restarted
@@ -371,35 +373,6 @@ function updateUI(){
 		UIparent.hide();
 	}
 }
-/* 
-		contCheckBox.show();
-		UIdensity.show();
-		UImodelType.show();
-		UItimeInf.show();
-		UItimeInfText;
-		UItimeExp.show();
-		UItimeExpText.show();
-		UIrebirth.show();
-		UIvaccine.show();
-		UIvaccRateText.show();
-		UIrebirthText.show();
-		UIrebirthButton.show();	
-		
-	} else {
-		contCheckBox.hide();
-		UIdensity.hide();
-		UImodelType.hide();
-		UItimeInf.hide();
-		UItimeInfText;
-		UItimeExp.hide();
-		UItimeExpText.hide();
-		UIrebirth.hide();
-		UIvaccine.hide();
-		UIvaccRateText.hide();
-		UIrebirthText.hide();
-		UIrebirthButton.hide();	
-	} */
-	
 	
 // Continuous disease checkbox function
 function myCheckedEvent(){
@@ -411,7 +384,7 @@ function myCheckedEvent(){
   }
 }
 
-// Continuous disease checkbox function
+// Rebirth checkbox function
 function rebirthCheckedEvent(){
   if (this.checked()){
     rebirthBool = true;
@@ -452,14 +425,14 @@ function draw() {
   //scale(0.5);
   
   
-/*  
+
   var curDist;
   var xDist;
   var yDist;
   var xAdd;
   var yAdd;
  // Apparently, not initializing parameters is faster in javascript(?!)
-  */
+  
   
   // Try rebirthing a particle
     /*if (random(1) < (rebirthRate/10)){
@@ -522,10 +495,14 @@ function draw() {
 		//for (var j = k+1; j < numPar; j++) { // Faster, but can lead to overlaps
 		
 			if (j != k){
-		
+		/*
 			  var xDist = curX - allPars[j].x;
 			  var yDist = curY - allPars[j].y;
-			  var curDist = pow(xDist, 2) + pow(yDist, 2);
+			  //var curDist = pow(xDist, 2) + pow(yDist, 2);
+			  var curDist = (xDist*xDist) + (yDist*yDist);*/
+			  xDist = curX - allPars[j].x;
+			  yDist = curY - allPars[j].y;
+			  curDist = (xDist*xDist) + (yDist*yDist);
 			  
 
 			 while (curDist < sqDia) {
@@ -543,9 +520,18 @@ function draw() {
 				allPars[k].y = allPars[k].y + yAdd;
 				allPars[j].y = allPars[j].y - yAdd;
 				
+				/*
+				// Try also adding some speed
+				allPars[k].vX = allPars[k].vX +10*xAdd;
+				allPars[k].vY = allPars[k].vY +10*yAdd;
+				allPars[j].vX = allPars[j].vX -10*xAdd;
+				allPars[j].vY = allPars[j].vY -10*yAdd;
+				*/
+				
 				xDist = allPars[k].x - allPars[j].x;
 				yDist = allPars[k].y - allPars[j].y;
-				curDist = pow(xDist, 2) + pow(yDist, 2);
+				curDist = (xDist*xDist) + (yDist*yDist);
+				//curDist = pow(xDist, 2) + pow(yDist, 2);
 				
 				}
 			}
@@ -562,14 +548,15 @@ function draw() {
   }
   
   
-  /*
+  
   // Debugging for performance
 	let fps = frameRate();  
 	fill(255);
 	stroke(0);
 	//textFont('Arial');
-	text("FPS: " + fps.toFixed(2), 10, height - 10);
-	*/
+	//text("FPS: " + fps.toFixed(2), 10, height - 10);
+	text("FPS: " + fps.toFixed(2), 10, 10);
+	
 	
 }
 
@@ -579,8 +566,6 @@ class Particle {
 	
 	switch (s) {
       case 'susceptible':
-        //fill(255,255,255);
-        //fill(255, 150, 0);
 		this.color = colorS;
         break;
       case 'infected':
@@ -777,66 +762,3 @@ class Particle {
 
 }
 
-// OLD
-//var xDist = allPars[k].x - allPars[j].x;
-		  //var yDist = allPars[k].y - allPars[j].y;
-		  //curDist = sqrt(pow(xDist, 2) + pow(yDist, 2));
-		  //var curDist = pow(curX - allPars[j].x, 2) + pow(curY - allPars[j].y, 2);
-		  //var curDist = pow(curX-allPars[j].x,2)+pow(curY-allPars[j].y,2);
-		 //if (curDist < (particleDiameter)) {
-		   
-		   /*
-			allPars[k].changeSpeed();
-			allPars[j].changeSpeed();
-		   
-		   xDist = allPars[k].x - allPars[j].x;
-		   yDist = allPars[k].y - allPars[j].y;
-		   curDist = pow(xDist, 2) + pow(yDist, 2);*/
-		 /* 
-        allPars[k].x = allPars[k].x + (pow(xDist,2) / (max(curDist, 5)));
-        allPars[j].x = allPars[j].x - (pow(xDist,2) / (max(curDist, 5)));
-        allPars[k].y = allPars[k].y + (pow(yDist,2) / (max(curDist, 5)));
-        allPars[j].y = allPars[j].y - (pow(yDist,2) / (max(curDist, 5))); */
-		/* 
-		var velAdd = 1;
-		allPars[k].vX = allPars[k].vX+allPars[j].vX*velAdd;
-		allPars[k].vY = allPars[k].vY+allPars[j].vY*velAdd;
-		allPars[j].vX = allPars[j].vX+allPars[k].vX*velAdd;
-		allPars[j].vY = allPars[j].vY+allPars[k].vY*velAdd;
-		 */
-		/* 
-		allPars[k].vX = -allPars[k].vX;
-		allPars[k].vY = -allPars[k].vY;
-		allPars[j].vX = -allPars[j].vX;
-		allPars[j].vY = -allPars[j].vY;
-		 */
-
-
-        /*allPars[k].x = allPars[k].x+(curDist*xDist/250);
-        allPars[j].x = allPars[j].x-(curDist*xDist/250);
-        allPars[k].y = allPars[k].y+(curDist*yDist/250);
-        allPars[j].y = allPars[j].y-(curDist*yDist/250);*/
-
-
-        /*allPars[k].x = allPars[k].x+(xDist/8);
-        allPars[j].x = allPars[j].x-(xDist/8);
-        allPars[k].y = allPars[k].y+(yDist/8);
-        allPars[j].y = allPars[j].y-(yDist/8);*/
-        /*if (xDist < 0){
-          allPars[k].x = allPars[k].x-(xDist/2);
-          allPars[j].x = allPars[j].x+(xDist/2);
-        }
-        if (yDist < 0){
-          allPars[k].y = allPars[k].y-(yDist/2);
-          allPars[j].y = allPars[j].y+(yDist/2);
-        }*/
-        //allPars[k].vX = -allPars[k].vX;
-        //allPars[k].y = allPars[k].y+(yDist/2);
-        //allPars[k].vY = -allPars[k].vY;
-       //var DivFactor = (max(min(xDist,yDist)/4, 4));
-       //var DivFactor = max(sqrt(curDist), 4);
-       //var DivFactor = particleDiameter;
-       //var xAdd = xDist/DivFactor;
-       //var yAdd = yDist/DivFactor;
-	   
-  //translate(-windowWidth/4,-windowHeight/4);
