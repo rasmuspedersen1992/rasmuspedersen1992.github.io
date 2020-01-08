@@ -6,11 +6,12 @@
 		- Use p5 built-in vectors instead
 		- Colorschemes (NigthMode and RUC, and function setAllColors('name'))
 		- Make arrowhead of vectors (Use "triangle" function) 
+		- Draw nullclines 
 	
 	TODO:
 		- Make directional field toggle-able (Partially done, function toggleDirField)
-		- Draw nullclines (Method: Using contour, evaluate function in a lot of places, should line between points where sign changes) - Almost done?
 		- Draw equilibria (Use nullclines implementation)
+		- Draw stability of equilibria
 		- Some way for user to input equations?
 */
 
@@ -19,7 +20,7 @@ let cnv;
 let fieldWidth = 300;
 let fieldHeight = 300;
 
-let scalingFactor = 0.01;
+let scalingFactor = 0.003;
 
 // Directional field
 let dirFieldVectors = [];
@@ -95,6 +96,9 @@ function setup() {
 	cnv.parent('sketch-holder');
 	cnv.style('display','block');
 
+	// Set the width to the full width
+	fieldWidth = width*0.5;
+	fieldHeight = height*0.5;
 		
 	wMargin = (width-fieldWidth)/2;
 	hMargin = (height-fieldHeight)/2;
@@ -103,7 +107,17 @@ function setup() {
 	allFlows.push(new flowFollower(createVector(-100,-100)));
 	
 	makeInitialCalculations();
-
+	/*
+	// For user input
+  textdx= createElement('h2', 'dx/dt = ');
+  textdx.position(20, height);
+  input = createInput();
+  input.position(110, height+25);
+  textdy= createElement('h2', 'dy/dt = ');
+  textdy.position(20, height+50);
+  inputy = createInput();
+  inputy.position(110, height+25+50);
+*/
 }  
 
 // Function for making the array for the directional field vectors
@@ -530,22 +544,27 @@ function diffEq(pos){
 	// Lotka-volterra test
 	dx = 2*x - 0.02*x*y;
 	dy = 0.01*x*y - 0.5*y;
+	
+	// Last years exam
+	let r = -1;
+	let c = 3;
+	let d = 6;
+	dx = c*pow(x,2) + y;
+	dy = d*pow(x,2) - y + r;
+	
+	
+	/*
+	
 	// Something else
 	dx = 2*x - 0.1*pow(y,2);
 	//dy = -2*x+0.5*y;
 	dy = -x+100;
-	
+	/*
 	// Something else
 	dx = 2*x - pow(y,2);
 	//dy = -2*x+0.5*y;
 	dy = -x+1;
 	
-	/*
-	
-	// Something different
-	let r = -1;
-	dx = x*y + r * x;
-	dy = pow(x,2) - y + r;
 	
 	
 	/*
@@ -572,8 +591,8 @@ class flowFollower {
 	
 	constructor(vec){
 		this.pos = vec; // Position vector
-		//this.dt = 0.01; // Timestep when simulating
-		this.dt = 0.05; // Timestep when simulating
+		this.dt = 0.01; // Timestep when simulating
+		//this.dt = 0.05; // Timestep when simulating
 		this.maxTime = curFlowLifetime; // Max time to simulate for 
 		this.lifeTime = 0;
 		this.size = 5;
@@ -622,14 +641,24 @@ class flowFollower {
 		// Show trace
 		stroke(this.color);
 		strokeWeight(this.size)
-		if (this.prevPos.length > 2){
+		if (this.prevPos.length >= 1){
+		
+			//stroke(this.color[0],this.color[1],this.color[2]);
+			//fill(this.color[0],this.color[1],this.color[2]);
+			let cur = thisPixelVec;
+			let Prev = coordinateToPixel(this.prevPos[this.prevPos.length-1]);
+			line(Prev.x,Prev.y,cur.x,cur.y);
+			
 			for (let k = 0; k < this.prevPos.length-1; k++){
-				// Set the color, with alpha as the trace number
-				stroke(this.color[0],this.color[1],this.color[2],255*k/this.prevPos.length);
-				fill(this.color[0],this.color[1],this.color[2],255*k/this.prevPos.length);
 				// Get the pixel positions of current and previous part of trace
-				let curPrevPix = coordinateToPixel(this.prevPos[k+1]);
-				let PrevPrevPix = coordinateToPixel(this.prevPos[k]);
+				let curPrevPix = coordinateToPixel(this.prevPos[k]);
+				let PrevPrevPix = coordinateToPixel(this.prevPos[k+1]);
+				
+				// Set the color, with alpha as the trace number
+				stroke(this.color[0],this.color[1],this.color[2],255*(k+2)/this.prevPos.length);
+				fill(this.color[0],this.color[1],this.color[2],255*(k+2)/this.prevPos.length);
+				
+				
 				// Display
 				line(PrevPrevPix.x,PrevPrevPix.y,curPrevPix.x,curPrevPix.y);
 				
