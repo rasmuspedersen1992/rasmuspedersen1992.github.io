@@ -6,21 +6,12 @@
 		- Use p5 built-in vectors instead
 		- Colorschemes (NigthMode and RUC, and function setAllColors('name'))
 		- Make arrowhead of vectors (Use "triangle" function) 
-		- Draw nullclines 
-		- Input interpretation:
-			- Linear
-			- Single variable, higher order
-			- Constant
 	
 	TODO:
 		- Make directional field toggle-able (Partially done, function toggleDirField)
-		- Make nullclines toggle-able
-		- Make buttons
+		- Draw nullclines (Method: Using contour, evaluate function in a lot of places, should line between points where sign changes) - Almost done?
 		- Draw equilibria (Use nullclines implementation)
-		- Calculate/find stability of equilibria (Could be done in a rudamentary numerical way)
-		- Draw stability of equilibria
-		- Input interpretation:
-			- Crossterms (i.e. both x and y)
+		- Some way for user to input equations?
 */
 
 let cnv;
@@ -29,14 +20,6 @@ let fieldWidth = 300;
 let fieldHeight = 300;
 
 let scalingFactor = 0.01;
-
-// String for differential equations
-let xString = "-3 * x  + 5 * y + -1";
-let yString = "1 * x ^2 + -1* y +-1";
-let xStringInter = '';
-let yStringInter = '';
-let curXfunc = [0,0,0,0,0];
-let curYfunc = [0,0,0,0,0];
 
 // Directional field
 let dirFieldVectors = [];
@@ -54,6 +37,8 @@ let spawnFlowFollowersOnMouseClick = true;
 let xSignChange = [];
 let ySignChange = [];
 let nullClinesResolution = 600;
+let nclineDX;
+let nclineDY;
 
 // Limits
 let minX = -100;
@@ -69,161 +54,6 @@ let axesColor = 100; // Grey
 
 //let colorScheme = 'RUC';
 let colorScheme = 'NightMode';
-
-
-function interpretMathString(str){
-	// Main function for interpreting a string
-	// Currently reads:
-		// Constant terms: +4
-		// Linear: 3*x (with only one coefficient)
-	// To implement:
-		// Powers
-		// Terms with both x and y
-		
-	//console.log('New string:' + str)
-	// First, remove spaces
-	let curStr = str.replace(/ /g,'');
-	
-	// Split into terms
-	let allTerms = curStr.split('+');
-	
-	let numTerms = allTerms.length;
-	
-	//let returnString = '';
-	let linX = 0;
-	let linY = 0;
-	let constTerm = [];
-	let mult = [];
-	let Xpow = [];
-	let Xmult = [];
-	let Ypow = [];
-	let Ymult = [];
-	
-	for (let k = 0; k <= allTerms.length-1; k++){
-		//returnString = returnString + '+';
-		//console.log(allTerms[k])
-		
-		let curTerm = allTerms[k];
-		
-		
-		// Split on * to get the multiplier in front
-		let splitStr = curTerm.split('*');
-		// Save the multiplier
-		mult.push(float(splitStr[0]));
-		
-		// Check if term contains x and y
-		let xPos = curTerm.search('x');
-		let yPos = curTerm.search('y');
-		// Search returns -1 if not found
-		
-		// If both x and y
-		if ((xPos > 0) && (yPos > 0)){
-			// NOT YET IMPLEMENTED!!
-			
-			/*
-			// Split on * to get the multiplier in front
-			let splitStr = curTerm.split('*');
-			// Save the multiplier
-			mult.push(float(splitStr[0]));
-			
-			// Split to get the powers
-			let powSplit = curTerm.split('^');
-			
-			console.log(powSplit)
-			*/
-			
-		}
-		
-		// Only an x, no y
-		if ((xPos > 0) && (yPos == -1)){
-			// Split to get the power of x
-			let powSplit = curTerm.split('^');
-			
-			// If there are no powers, the two array are identical
-			if (curTerm == powSplit){
-				// The power of x is one
-				Xpow.push(1);
-			} else {
-				// The second part of powSplit is the power.
-				Xpow.push(float(powSplit[1]));
-			}
-			
-			// Zeros for everything else
-			Ypow.push(0);
-			constTerm.push(0);
-			
-		}
-		// Only a y, no x
-		if ((yPos > 0) && (xPos == -1)){
-			// Split to get the power of y
-			let powSplit = curTerm.split('^');
-			
-			if (curTerm == powSplit){
-				// The power of y is one
-				Ypow.push(1);
-			} else {
-				// The second part of powSplit is the power.
-				Ypow.push(float(powSplit[1]));
-				
-			}
-			
-			// Zeros for everything else
-			Xpow.push(0);
-			constTerm.push(0);
-		}
-		// Constant term: No x and no y
-		if ((yPos == -1) && (xPos == -1)){
-			
-			Xpow.push(0);
-			Ypow.push(0);
-			constTerm.push(float(curTerm));
-		}
-	}
-	
-	//return [constTerm,linX,linY]
-	//console.log([numTerms,constTerm,Xpow,Xmult,Ypow,Ymult])
-	return [numTerms,constTerm,mult,Xpow,Ypow]
-}
-
-function evaluateDiffEq(x,y,curFunc){
-	
-	let curVal = 0;
-	
-	let numTerms = curFunc[0]
-	
-	for (let k = 0; k < numTerms; k++){
-		// Constant
-		curVal = curVal + curFunc[1][k];
-		
-		let xContri = curFunc[2][k]*pow(x,curFunc[3][k]);		
-		let yContri = curFunc[2][k]*pow(y,curFunc[4][k]);
-		
-		// If both are non zero
-		if ((curFunc[3][k] != 0) && (curFunc[4][k] != 0) ){
-			curVal = curVal + xContri*yContri;
-		} else if (curFunc[3][k] != 0) {
-			curVal = curVal + xContri
-		} else if (curFunc[4][k] != 0) {
-			curVal = curVal + yContri
-		}
-		
-		
-		
-		
-		
-		
-	}
-	
-	// Constant term
-	//curVal = curVal + curFunc[0];
-	//curVal = curVal + curFunc[1];
-	// 
-	//curVal = curVal + curFunc[1]*x;
-	// Linear y
-	//curVal = curVal + curFunc[2]*y;
-	
-	return curVal
-}
 
 function centerCanvas(){
 	let x = (windowWidth - fieldWidth)/2;
@@ -265,41 +95,15 @@ function setup() {
 	cnv.parent('sketch-holder');
 	cnv.style('display','block');
 
-	// Set the width to the full width
-	fieldWidth = width*0.5;
-	fieldHeight = height*0.5;
 		
 	wMargin = (width-fieldWidth)/2;
 	hMargin = (height-fieldHeight)/2;
 	
 	// Test flow
-	//allFlows.push(new flowFollower(createVector(-100,-100)));
-	
-	// Input interpretation
-	curXfunc = interpretMathString(xString);
-	curYfunc = interpretMathString(yString);
-	
-	
-	
-	//document.getElementById("mytext").value = yString;
-	
+	allFlows.push(new flowFollower(createVector(-100,-100)));
 	
 	makeInitialCalculations();
-	
-	// For user input
-	textdx= createElement('h2', 'dx/dt = ');
-	textdx.position(20, height);
-	input = createInput(xString);
-	input.position(110, height+25);
-	textdy= createElement('h2', 'dy/dt = ');
-	textdy.position(20, height+50);
-	inputy = createInput(yString);
-	inputy.position(110, height+25+50);
-	reCalcButton = createButton('Recalculate');
-	reCalcButton.position(20,height+100);
-	reCalcButton.mousePressed(reCalculateFunction);
-	
-	
+
 }  
 
 // Function for making the array for the directional field vectors
@@ -343,6 +147,31 @@ function makeDirField(dirFieldRes){
 			dirFieldVectors.push(newVec);
 		}
 	}
+		
+	/* // This one works-ish
+	axesWidth= fieldWidth*scalingFactor;
+	minX = -axesWidth;
+	maxX = axesWidth;
+	minY = -axesWidth;
+	maxY = axesWidth;
+	
+	let newX = minX;
+	let newY = minY;
+	
+	for (let k = 1; k < dirFieldRes; k++){
+		newX = lerp(minX,maxX,k/dirFieldRes);
+		
+		for (let j = 1; j < dirFieldRes; j++){
+			newY = lerp(minY,maxY,j/dirFieldRes);
+			
+			newVec = createVector(newX,newY);
+			
+			
+			dirFieldVectors.push(newVec);
+		}
+	}
+	*/
+	//console.log(dirFieldVectors[1])
 }
 
 
@@ -461,19 +290,6 @@ function spawnAtMousePos(){
 	}
 }
 
-function reCalculateFunction(){
-	// Re-interpret inputs
-	curXfunc = interpretMathString(input.value());
-	curYfunc = interpretMathString(inputy.value());
-	
-	console.log(evaluateDiffEq(1,1,curXfunc))
-	
-	
-	// And make calculations again
-	makeInitialCalculations();
-	
-}
-
 // DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW 
 // DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW 
 // DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW DRAW 
@@ -490,6 +306,7 @@ function draw() {
   }
 	
 	
+	
 	// Draw axes
 	strokeWeight(1);
 	stroke(axesColor);
@@ -500,18 +317,27 @@ function draw() {
 	
 	// Draw nullclines
 	for (let nullX = 1; nullX < xSignChange.length;nullX++){
+		//let prevPos = xSignChange[nullX-1];
+		//let curPos = xSignChange[nullX];
 		let curPos = coordinateToPixel(xSignChange[nullX]);
 		fill(255,0,0); 
 		noStroke();
 		//stroke(255,0,0);
 		circle(curPos.x,curPos.y,1)
+		//circle(curPos.x/scalingFactor,-curPos.y/scalingFactor,1)
+		//line(prevPos.x,-prevPos.y,prevPos.x+curPos.x,-(prevPos.y+curPos.y))
+		//line(curPos.x,-curPos.y,curPos.x+nclineDX,-curPos.y);
 	}
 	for (let nullY = 1; nullY < ySignChange.length;nullY++){
+		//let prevPos = ySignChange[nullY-1];
 		let curPos = coordinateToPixel(ySignChange[nullY]);
 		fill(255,0,255);
 		noStroke();
 		//stroke(255,0,255);
 		circle(curPos.x,curPos.y,1)
+		//circle(curPos.x/scalingFactor,-curPos.y/scalingFactor,1)
+		//line(prevPos.x,-prevPos.y,prevPos.x+curPos.x,-(prevPos.y+curPos.y))
+		//line(curPos.x,-curPos.y,curPos.x,-(curPos.y+nclineDY));
 	}
 	
 	
@@ -570,7 +396,11 @@ function calcNullclines(nullclineRes){
 	let curDiff = diffEq(createVector(minX,minY));
 	
 	let nX = minX;
-	let nY = minY;	
+	let nY = minY;
+	
+	nclineDX = (maxX-minX)/nullclineRes;
+	nclineDY = (maxY-minY)/nullclineRes;
+	
 	
 	let prevX = nX;
 	let prevY = nY;
@@ -579,35 +409,27 @@ function calcNullclines(nullclineRes){
 	// and save positions to an array 
 	
 	let thisxSignChange = [];
+	
+	
 	let thisySignChange = [];
 
-	// Go through in the x-direction
 	for (let k = 1; k < nullclineRes; k++){
-		prevX = nX; // Save previous x
-		// Get the current x
+		prevX = nX;
 		nX = lerp(minX,maxX,k/nullclineRes);
 		
-		// Go through in the y-direction
 		for (let j = 1; j < nullclineRes; j++){
-			prevY = nY; // Save previous y
-			// Get current y
+			prevY = nY;
 			nY = lerp(minY,maxY,j/nullclineRes);
 			
-			// Calculate differential equation at current ...
 			curDiff = diffEq(createVector(nX,nY));
-			// ... to the left (previous x-position) ...
 			leftDiff = diffEq(createVector(prevX,nY));
-			// ... and below (previous y-position)
-			belowDiff = diffEq(createVector(nX,prevY));
-			
-			// Skip the first
+			aboveDiff = diffEq(createVector(nX,prevY));
 			if (j != 1){
-				// If signs have changed
-				if (Math.sign(curDiff.y) != Math.sign(belowDiff.y)){
+				if (Math.sign(curDiff.y) != Math.sign(aboveDiff.y)){
 					// Add to array
 					thisySignChange.push(createVector(nX,nY));
 				}
-				if (Math.sign(curDiff.x) != Math.sign(belowDiff.x)){
+				if (Math.sign(curDiff.x) != Math.sign(aboveDiff.x)){
 					// Add to array
 					thisxSignChange.push(createVector(nX,nY));
 				}
@@ -622,30 +444,80 @@ function calcNullclines(nullclineRes){
 			}
 		}
 	}
+/*
+	for (let j = 1; j < nullclineRes; j++){
+		prevY = nY;
+		nY = lerp(minY,maxY,j/nullclineRes);
+		for (let k = 1; k < nullclineRes; k++){
+			prevX = nX;
+			nX = lerp(minX,maxX,k/nullclineRes);
+		
+			
+			curDiff = diffEq(createVector(nX,nY));
+			aboveDiff = diffEq(createVector(nX,prevY));
+			
+			if (Math.sign(curDiff.y) != Math.sign(aboveDiff.y)){
+				// Add to array
+				thisySignChange.push(createVector(nX,nY));
+			}
+			if (Math.sign(curDiff.x) != Math.sign(aboveDiff.x)){
+				// Add to array
+				thisxSignChange.push(createVector(nX,nY));
+			}
+			
+		}
+	}
+	*/
 		return [thisxSignChange,thisySignChange];
-
+	/*
+	for (let k = 0; k < nullclineRes; k++){
+		let prevX = nX;
+		nX = minX + 2*k*maxX/nullclineRes;
+		
+		for (let j = 0; j < nullclineRes; j++){
+			let prevPos 
+			let nY = minY + 2*j*maxY/nullclineRes;
+			let curPos = createVector(nX,nY);
+			let prevDiff = curDiff;
+			curDiff = diffEq(curPos);
+			fill(155);
+			strokeWeight(1);
+			stroke(155);
+			text(prevDiff.y,nX,nY);
+			if (Math.sign(curDiff.x) != Math.sign(prevDiff.x)){
+				//fill(155,0,0)
+			}
+			if (Math.sign(curDiff.y) != Math.sign(prevDiff.y)){
+			//	stroke(0,155,0);
+				//circle(nX,nY,10);
+			}
+			circle(nX,nY,10);
+			//stroke(150);
+			//console.log(curDiff)
+			
+			if (curDiff.x < 0){
+				fill(0);
+			} else {
+				fill(255);
+			}
+			if (curDiff.y < 0){
+				rect(nX,nY,nX+10,nY+10);
+			} else {
+				circle(nX,nY,10);
+			}
+			
+				fill(nX);
+				stroke(nY);
+				//circle(nX,nY,5);
+		}
+	}
+	*/
 	
 }
 
 function diffEq(pos){
 	let x = pos.x;
 	let y = pos.y;
-	
-	//let fx = new Function ('return -2');
-	
-	//dx = -1;
-	//dy = 1;
-	
-	dx = evaluateDiffEq(x,y,curXfunc);
-	dy = evaluateDiffEq(x,y,curYfunc);
-	
-	/*
-	// Apparently eval is horribly insecure and slow... 
-	// I have to somehow structure the input and make a function that uses the structure instead
-	dx = eval(xStringInter);
-	dy = eval(yStringInter);
-	
-	/*
 	
 	// While testing, just use x'=y, y' = -x/2 for rotations
 	dx = y;
@@ -658,27 +530,22 @@ function diffEq(pos){
 	// Lotka-volterra test
 	dx = 2*x - 0.02*x*y;
 	dy = 0.01*x*y - 0.5*y;
-	
-	// Last years exam
-	let r = -1;
-	let c = 3;
-	let d = 6;
-	dx = c*pow(x,2) + y;
-	dy = d*pow(x,2) - y + r;
-	
-	
-	/*
-	
 	// Something else
 	dx = 2*x - 0.1*pow(y,2);
 	//dy = -2*x+0.5*y;
 	dy = -x+100;
-	/*
+	
 	// Something else
 	dx = 2*x - pow(y,2);
 	//dy = -2*x+0.5*y;
 	dy = -x+1;
 	
+	/*
+	
+	// Something different
+	let r = -1;
+	dx = x*y + r * x;
+	dy = pow(x,2) - y + r;
 	
 	
 	/*
@@ -705,8 +572,8 @@ class flowFollower {
 	
 	constructor(vec){
 		this.pos = vec; // Position vector
-		this.dt = 0.01; // Timestep when simulating
-		//this.dt = 0.05; // Timestep when simulating
+		//this.dt = 0.01; // Timestep when simulating
+		this.dt = 0.05; // Timestep when simulating
 		this.maxTime = curFlowLifetime; // Max time to simulate for 
 		this.lifeTime = 0;
 		this.size = 5;
@@ -755,24 +622,14 @@ class flowFollower {
 		// Show trace
 		stroke(this.color);
 		strokeWeight(this.size)
-		if (this.prevPos.length >= 1){
-		
-			//stroke(this.color[0],this.color[1],this.color[2]);
-			//fill(this.color[0],this.color[1],this.color[2]);
-			let cur = thisPixelVec;
-			let Prev = coordinateToPixel(this.prevPos[this.prevPos.length-1]);
-			line(Prev.x,Prev.y,cur.x,cur.y);
-			
+		if (this.prevPos.length > 2){
 			for (let k = 0; k < this.prevPos.length-1; k++){
-				// Get the pixel positions of current and previous part of trace
-				let curPrevPix = coordinateToPixel(this.prevPos[k]);
-				let PrevPrevPix = coordinateToPixel(this.prevPos[k+1]);
-				
 				// Set the color, with alpha as the trace number
-				stroke(this.color[0],this.color[1],this.color[2],255*(k+2)/this.prevPos.length);
-				fill(this.color[0],this.color[1],this.color[2],255*(k+2)/this.prevPos.length);
-				
-				
+				stroke(this.color[0],this.color[1],this.color[2],255*k/this.prevPos.length);
+				fill(this.color[0],this.color[1],this.color[2],255*k/this.prevPos.length);
+				// Get the pixel positions of current and previous part of trace
+				let curPrevPix = coordinateToPixel(this.prevPos[k+1]);
+				let PrevPrevPix = coordinateToPixel(this.prevPos[k]);
 				// Display
 				line(PrevPrevPix.x,PrevPrevPix.y,curPrevPix.x,curPrevPix.y);
 				
