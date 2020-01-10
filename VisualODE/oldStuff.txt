@@ -1,0 +1,93 @@
+	/*
+	for (let k = 0; k < nullclineRes; k++){
+		let prevX = nX;
+		nX = minX + 2*k*maxX/nullclineRes;
+		
+		for (let j = 0; j < nullclineRes; j++){
+			let prevPos 
+			let nY = minY + 2*j*maxY/nullclineRes;
+			let curPos = createVector(nX,nY);
+			let prevDiff = curDiff;
+			curDiff = diffEq(curPos);
+			fill(155);
+			strokeWeight(1);
+			stroke(155);
+			text(prevDiff.y,nX,nY);
+			if (Math.sign(curDiff.x) != Math.sign(prevDiff.x)){
+				//fill(155,0,0)
+			}
+			if (Math.sign(curDiff.y) != Math.sign(prevDiff.y)){
+			//	stroke(0,155,0);
+				//circle(nX,nY,10);
+			}
+			circle(nX,nY,10);
+			//stroke(150);
+			//console.log(curDiff)
+			
+			if (curDiff.x < 0){
+				fill(0);
+			} else {
+				fill(255);
+			}
+			if (curDiff.y < 0){
+				rect(nX,nY,nX+10,nY+10);
+			} else {
+				circle(nX,nY,10);
+			}
+			
+				fill(nX);
+				stroke(nY);
+				//circle(nX,nY,5);
+		}
+	}
+	*/
+	
+/*
+	for (let j = 1; j < nullclineRes; j++){
+		prevY = nY;
+		nY = lerp(minY,maxY,j/nullclineRes);
+		for (let k = 1; k < nullclineRes; k++){
+			prevX = nX;
+			nX = lerp(minX,maxX,k/nullclineRes);
+		
+			
+			curDiff = diffEq(createVector(nX,nY));
+			aboveDiff = diffEq(createVector(nX,prevY));
+			
+			if (Math.sign(curDiff.y) != Math.sign(aboveDiff.y)){
+				// Add to array
+				thisySignChange.push(createVector(nX,nY));
+			}
+			if (Math.sign(curDiff.x) != Math.sign(aboveDiff.x)){
+				// Add to array
+				thisxSignChange.push(createVector(nX,nY));
+			}
+			
+		}
+	}
+	*/ 
+	
+	/* // This one works-ish
+	axesWidth= fieldWidth*scalingFactor;
+	minX = -axesWidth;
+	maxX = axesWidth;
+	minY = -axesWidth;
+	maxY = axesWidth;
+	
+	let newX = minX;
+	let newY = minY;
+	
+	for (let k = 1; k < dirFieldRes; k++){
+		newX = lerp(minX,maxX,k/dirFieldRes);
+		
+		for (let j = 1; j < dirFieldRes; j++){
+			newY = lerp(minY,maxY,j/dirFieldRes);
+			
+			newVec = createVector(newX,newY);
+			
+			
+			dirFieldVectors.push(newVec);
+		}
+	}
+	*/
+	//console.log(dirFieldVectors[1])
