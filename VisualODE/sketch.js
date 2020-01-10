@@ -69,7 +69,10 @@ function interpretMathString(str){
 	// Main function for interpreting a string
 	// Currently reads:
 		// Constant terms: +4
-		// Linear: 3*x (with only one coefficient
+		// Linear: 3*x (with only one coefficient)
+	// To implement:
+		// Powers
+		// Terms with both x and y
 		
 	//console.log('New string:' + str)
 	// First, remove spaces
@@ -78,10 +81,16 @@ function interpretMathString(str){
 	// Split into terms
 	let allTerms = curStr.split('+');
 	
+	let numTerms = allTerms.length;
+	
 	//let returnString = '';
 	let linX = 0;
 	let linY = 0;
 	let constTerm = 0;
+	let Xpow = [];
+	let Xmult = [];
+	let Ypow = [];
+	let Ymult = [];
 	
 	for (let k = 0; k <= allTerms.length-1; k++){
 		//returnString = returnString + '+';
@@ -89,16 +98,40 @@ function interpretMathString(str){
 		
 		let curTerm = allTerms[k];
 		
-		//console.log(curTerm);
-		// Check if term is linear in one variable
+		// Check if term contains x and y
 		let xPos = curTerm.search('x');
 		let yPos = curTerm.search('y');
 		// Search returns -1 if not found
+		
 		// Only an x, no y
 		if ((xPos > 0) && (yPos == -1)){
-			//returnString = returnString + curTerm;
-			let splitStr = curTerm.split('*');
-			linX = linX + float(splitStr[0]);
+			
+			// 3 * x ^ 2
+			
+			let powSplit = curTerm.split('^');
+			console.log(powSplit);
+			console.log(curTerm);
+			console.log(curTerm == powSplit);
+			
+			// If there are no powers
+			if (curTerm != powSplit){
+				let splitStr = curTerm.split('*');
+				linX = linX + float(splitStr[0]);
+				Xpow.push(1);
+				Xmult.push(float(splitStr[0]));
+			} else {
+				// Save the power
+				powXpow = powX + float(powSplit[1]);
+				// Get any multiplier in front 
+				let splitStr = powSplit[0].split('*');
+				// If there is none, 'x' is first (and only) element
+				if (splitStr[0] == 'x'){
+					powXmult = 1;
+				} else {
+					// Otherwise, save the multiplier
+					powXmult =  float(splitStr[0]);
+				}
+			}
 		}
 		// Only a y, no x
 		if ((yPos > 0) && (xPos == -1)){
