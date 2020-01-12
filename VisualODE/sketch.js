@@ -11,12 +11,12 @@
 			- Linear
 			- Single variable, higher order
 			- Constant
+		- Make directional field toggle-able
+		- Make nullclines toggle-able
+		- Make checkboxes
+		- Draw equilibria (Use nullclines implementation)
 	
 	TODO:
-		- Make directional field toggle-able (Partially done, function toggleDirField)
-		- Make nullclines toggle-able
-		- Make buttons
-		- Draw equilibria (Use nullclines implementation)
 		- Calculate/find stability of equilibria (Could be done in a rudamentary numerical way)
 		- Draw stability of equilibria
 		- Input interpretation:
@@ -27,6 +27,7 @@ let cnv;
 
 let fieldWidth = 300;
 let fieldHeight = 300;
+let maxWidth = 800;
 
 let scalingFactor = 0.01;
 
@@ -49,11 +50,19 @@ let allFlows = [];
 let curTraceLength = 10;
 let curFlowLifetime = 5;
 let spawnFlowFollowersOnMouseClick = true;
+let flowUseAllColors = true;
 
 // Nullclines
 let xSignChange = [];
 let ySignChange = [];
 let nullClinesResolution = 600;
+let showNullclines = true; 
+
+// Equilibria
+let equis =[];
+let equiSize = 10;
+let showEquis = true;
+
 
 // Limits
 let minX = -100;
@@ -66,9 +75,123 @@ let mouseCurDown = false;
 let backGroundColor = 0; // Black 
 let vectorColor = 100; // Grey
 let axesColor = 100; // Grey
+let xNullclineColor = [0,100,0];
+let yNullclineColor = [100,0,0];
+let equiColor = [0,0,150];
+let allowedColors = []; // Array of colors used for flow-followers when limiting choices
+
 
 //let colorScheme = 'RUC';
 let colorScheme = 'NightMode';
+
+
+
+function centerCanvas(){
+	let x = (windowWidth - fieldWidth)/2;
+	let y = 0;
+	//let y = (windowHeight - fieldHeight)/2;
+	cnv.position(x,y);
+}
+
+function setAllColors(colorName){
+	
+	switch (colorName) {
+		case ('RUC'):
+			backGroundColor = [57,183,140]; // Correct light green RUC  
+			vectorColor = 0; // Black
+			axesColor = 100; // Grey
+			xNullclineColor = [60,180,245];
+			yNullclineColor = [255,160,175];
+			equiColor = [255,250,130];
+			// Limit the colors of flowfollowers
+			flowUseAllColors = false;
+			allowedColors = [];
+			allowedColors.push([0,0,120]);
+			allowedColors.push([255,93,93]);
+			allowedColors.push([255,190,50]);
+			allowedColors.push([0,80,70]);
+			break;
+		case ('NightMode'):
+			backGroundColor = 0; // Black 
+			vectorColor = 100; // Grey
+			axesColor = 100; // Grey
+			xNullclineColor = [0,100,0];
+			yNullclineColor = [100,0,0];
+			equiColor = [0,0,200];
+			break;
+		default:
+			backGroundColor = 255; // Black 
+			vectorColor = 100; // Grey
+			axesColor = 100; // Grey	
+			xNullclineColor = [0,255,0];
+			yNullclineColor = [255,0,0];	
+			equiColor = [0,0,255];
+	}		
+}
+
+function setup() {
+  //cnv = createCanvas(windowWidth-20, 600); // Dynamic size
+  //cnv = createCanvas(800, 600,WEBGL); 
+  //cnv = createCanvas(800, 600); 
+  //cnv = createCanvas(800, 600); 
+	setAllColors(colorScheme)
+	let divWidth = document.getElementById('sketch-holder').offsetWidth;
+	if (divWidth > maxWidth){
+		divWidth = maxWidth;
+	}
+	let divHeight = divWidth;
+	
+		
+
+	cnv = createCanvas(divWidth, divHeight);
+	cnv.parent('sketch-holder');
+	cnv.style('display','block');
+
+	// Set the width to the full width
+	fieldWidth = width*0.5;
+	fieldHeight = height*0.5;
+		
+	wMargin = (width-fieldWidth)/2;
+	hMargin = (height-fieldHeight)/2;
+	
+	// Test flow
+	//allFlows.push(new flowFollower(createVector(-100,-100)));
+	
+	// Input interpretation
+	curXfunc = interpretMathString(xString);
+	curYfunc = interpretMathString(yString);
+	
+	
+	
+	//document.getElementById("mytext").value = yString;
+	
+	
+	makeInitialCalculations();
+	
+	// For user input
+	textdx= createElement('h2', 'dx/dt = ');
+	textdx.position(20, height);
+	input = createInput(xString);
+	input.position(110, height+25);
+	textdy= createElement('h2', 'dy/dt = ');
+	textdy.position(20, height+50);
+	inputy = createInput(yString);
+	inputy.position(110, height+25+50);
+	reCalcButton = createButton('Recalculate');
+	reCalcButton.position(20,height+100);
+	reCalcButton.mousePressed(reCalculateFunction);
+	
+	
+	dirFieldCheck = createCheckbox('Toggle directional field',showDirField);
+	dirFieldCheck.position(160,height+100);
+	dirFieldCheck.changed(toggleDirField);
+	
+	nullclineCheck = createCheckbox('Toggle nullclines and equilibria',showNullclines);
+	nullclineCheck.position(160,height+120);
+	nullclineCheck.changed(toggleNullclines);
+	
+	
+}  
 
 
 function interpretMathString(str){
@@ -225,83 +348,6 @@ function evaluateDiffEq(x,y,curFunc){
 	return curVal
 }
 
-function centerCanvas(){
-	let x = (windowWidth - fieldWidth)/2;
-	let y = 0;
-	//let y = (windowHeight - fieldHeight)/2;
-	cnv.position(x,y);
-}
-
-function setAllColors(colorName){
-	switch (colorName) {
-		case ('RUC'):
-			backGroundColor = [57,183,140]; // Correct light green RUC  
-			vectorColor = 0; // Black
-			axesColor = 100; // Grey
-			break;
-		case ('NightMode'):
-			backGroundColor = 0; // Black 
-			vectorColor = 100; // Grey
-			axesColor = 100; // Grey
-			break;
-		default:
-			backGroundColor = 255; // Black 
-			vectorColor = 100; // Grey
-			axesColor = 100; // Grey		
-	}		
-}
-
-function setup() {
-  //cnv = createCanvas(windowWidth-20, 600); // Dynamic size
-  //cnv = createCanvas(800, 600,WEBGL); 
-  //cnv = createCanvas(800, 600); 
-  //cnv = createCanvas(800, 600); 
-  setAllColors(colorScheme)
-	let divWidth = document.getElementById('sketch-holder').offsetWidth;
-	let divHeight = divWidth;
-		
-
-	cnv = createCanvas(divWidth, divHeight);
-	cnv.parent('sketch-holder');
-	cnv.style('display','block');
-
-	// Set the width to the full width
-	fieldWidth = width*0.5;
-	fieldHeight = height*0.5;
-		
-	wMargin = (width-fieldWidth)/2;
-	hMargin = (height-fieldHeight)/2;
-	
-	// Test flow
-	//allFlows.push(new flowFollower(createVector(-100,-100)));
-	
-	// Input interpretation
-	curXfunc = interpretMathString(xString);
-	curYfunc = interpretMathString(yString);
-	
-	
-	
-	//document.getElementById("mytext").value = yString;
-	
-	
-	makeInitialCalculations();
-	
-	// For user input
-	textdx= createElement('h2', 'dx/dt = ');
-	textdx.position(20, height);
-	input = createInput(xString);
-	input.position(110, height+25);
-	textdy= createElement('h2', 'dy/dt = ');
-	textdy.position(20, height+50);
-	inputy = createInput(yString);
-	inputy.position(110, height+25+50);
-	reCalcButton = createButton('Recalculate');
-	reCalcButton.position(20,height+100);
-	reCalcButton.mousePressed(reCalculateFunction);
-	
-	
-}  
-
 // Function for making the array for the directional field vectors
 function makeDirField(dirFieldRes){
 	// Empty the array
@@ -358,19 +404,37 @@ function makeDirField(dirFieldRes){
 
 function updateScale(newScale){
 	scalingFactor = newScale;
-	makeDirField(curDirFieldRes);
+	if (showDirField){
+		makeDirField(curDirFieldRes);
+	}
 	makeInitialCalculations()
 }
 
 function toggleDirField(){
 	// Change flag
-	showDirField = !showDirField;
+	//showDirField = !showDirField;
+	showDirField = dirFieldCheck.checked();
 	
 	// Either re-draw or remove, dependent on new value of flag
 	if (showDirField){
 		makeDirField(curDirFieldRes);
 	} else {
 		dirFieldVectors =[];
+	}
+}
+
+function toggleNullclines(){
+	// Change flag
+	//showNullclines = !showNullclines;
+	showNullclines = nullclineCheck.checked();
+	showEquis = nullclineCheck.checked();
+	
+	// Either re-draw or remove, dependent on new value of flag
+	if (showNullclines){
+		[xSignChange,ySignChange] =  calcNullclines(nullClinesResolution);
+	} else {
+		xSignChange =[];
+		ySignChange =[];
 	}
 }
 
@@ -466,7 +530,6 @@ function reCalculateFunction(){
 	curXfunc = interpretMathString(input.value());
 	curYfunc = interpretMathString(inputy.value());
 	
-	console.log(evaluateDiffEq(1,1,curXfunc))
 	
 	
 	// And make calculations again
@@ -499,30 +562,43 @@ function draw() {
 	
 	
 	// Draw nullclines
-	for (let nullX = 1; nullX < xSignChange.length;nullX++){
-		let curPos = coordinateToPixel(xSignChange[nullX]);
-		fill(255,0,0); 
-		noStroke();
-		//stroke(255,0,0);
-		circle(curPos.x,curPos.y,1)
-	}
-	for (let nullY = 1; nullY < ySignChange.length;nullY++){
-		let curPos = coordinateToPixel(ySignChange[nullY]);
-		fill(255,0,255);
-		noStroke();
-		//stroke(255,0,255);
-		circle(curPos.x,curPos.y,1)
+	if (showNullclines){
+		for (let nullX = 1; nullX < xSignChange.length;nullX++){
+			let curPos = coordinateToPixel(xSignChange[nullX]);
+			fill(xNullclineColor); 
+			noStroke();
+			//stroke(255,0,0);
+			circle(curPos.x,curPos.y,1)
+		}
+		for (let nullY = 1; nullY < ySignChange.length;nullY++){
+			let curPos = coordinateToPixel(ySignChange[nullY]);
+			fill(yNullclineColor);
+			noStroke();
+			//stroke(255,0,255);
+			circle(curPos.x,curPos.y,1)
+		}
 	}
 	
+	// Draw equilibria
+	if (showEquis){
+		fill(equiColor);
+		noStroke();
+		for (let curEq = 0; curEq < equis.length; curEq++){
+			let curPos = coordinateToPixel(equis[curEq]);
+			rect(curPos.x-equiSize/2,curPos.y-equiSize/2,equiSize,equiSize);
+			//circle(curPos.x,curPos.y,equiSize);
+		}
+	}
 	
 	// Draw directional field
-	for (let k = 0; k < dirFieldVectors.length;k++){
-		curVec = dirFieldVectors[k];
-		curdiffVec = diffEq(curVec);
-		//curdiffVec.displayRelative(curVec);
-		displayRelativeVector(curdiffVec,curVec);
+	if (showDirField){
+		for (let k = 0; k < dirFieldVectors.length;k++){
+			curVec = dirFieldVectors[k];
+			curdiffVec = diffEq(curVec);
+			//curdiffVec.displayRelative(curVec);
+			displayRelativeVector(curdiffVec,curVec);
+		}
 	}
-	
 	// Update and display all flowFollowers
 	if (allFlows.length > 0){
 		for (let f = allFlows.length-1; f >= 0 ;f--){
@@ -539,25 +615,29 @@ function draw() {
 function makeInitialCalculations(){
 
 	// Calculate the nullclines
-	
+	if (showNullclines){
 	[xSignChange,ySignChange] =  calcNullclines(nullClinesResolution);
+	}
 	
 	// Double loop through nullclines to find equilibria
-	equis =[];
-	for (let k = 0; k < xSignChange.length;k++){
-		for (let j = 0; j < ySignChange.length;j++){
-			if (xSignChange[k].x == ySignChange[j].x){
-				if (xSignChange[k].y == ySignChange[j].y){
-					equis.push(xSignChange[k].copy());
+	if (showEquis){ // Dont find them if showEquis is false, to save time
+		equis =[];
+		for (let k = 0; k < xSignChange.length;k++){
+			for (let j = 0; j < ySignChange.length;j++){
+				if (xSignChange[k].x == ySignChange[j].x){
+					if (xSignChange[k].y == ySignChange[j].y){
+						equis.push(xSignChange[k].copy());
+					}
 				}
-			}
-		}			
+			}			
+		}
 	}
 	
 	// Make the directional field
 	makeDirField(curDirFieldRes)
 	
 }
+
 
 function calcNullclines(nullclineRes){
 	axesWidth= fieldWidth*scalingFactor;
@@ -712,7 +792,11 @@ class flowFollower {
 		this.size = 5;
 		this.traceLength = curTraceLength;
 		this.prevPos = [];
-		this.color = [random(255),random(255),random(255)];
+		if (flowUseAllColors){
+			this.color = [random(255),random(255),random(255)];
+		} else {
+			this.color = random(allowedColors);
+		}
 	}
 	/*
 	constructor(vec,dt){

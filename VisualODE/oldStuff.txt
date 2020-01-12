@@ -91,3 +91,19 @@
 	}
 	*/
 	//console.log(dirFieldVectors[1])
+	
+	
+function checkForEquilibria(){
+	// Goes through both xSignChange and ySignChange and checks for points in both
+	let allEqui = [];
+	for (let k = 0; k < xSignChange.length;k++){
+		let curX = xSignChange[k];
+		for (let j = 0; j < ySignChange.length;j++){
+			let curY = ySignChange[j];
+			if ((curX.x == curY.x)&& (curX.y == curY.y)){
+				allEqui.push(curX);
+			}
+		}
+	}
+	return allEqui;
+}
