@@ -38,6 +38,8 @@ let xStringInter = '';
 let yStringInter = '';
 let curXfunc = [0,0,0,0,0];
 let curYfunc = [0,0,0,0,0];
+//let curXfuncStr = "1*x^2";
+//let curYfuncStr = "1*y";
 
 // Directional field
 let dirFieldVectors = [];
@@ -55,8 +57,8 @@ let flowUseAllColors = true;
 // Nullclines
 let xSignChange = [];
 let ySignChange = [];
-let nullClinesResolution = 600;
-let showNullclines = true; 
+let nullClinesResolution = 50;
+let showNullclines = false; 
 
 // Equilibria
 let equis =[];
@@ -158,9 +160,14 @@ function setup() {
 	//allFlows.push(new flowFollower(createVector(-100,-100)));
 	
 	// Input interpretation
-	curXfunc = interpretMathString(xString);
-	curYfunc = interpretMathString(yString);
-	
+	//curXfunc = interpretMathString(xString);
+	//curYfunc = interpretMathString(yString);
+	/*
+	curXfuncStr = xString;
+	curYfuncStr = yString;
+	*/
+	curXfuncStr = math.simplify(xString);
+	curYfuncStr = math.simplify(yString);
 	
 	
 	//document.getElementById("mytext").value = yString;
@@ -193,17 +200,16 @@ function setup() {
 	
 }  
 
-
+/*
 function interpretMathString(str){
 	// Main function for interpreting a string
 	// Currently reads:
 		// Constant terms: +4
 		// Linear: 3*x (with only one coefficient)
-	// To implement:
 		// Powers
+	// To implement:
 		// Terms with both x and y
 		
-	//console.log('New string:' + str)
 	// First, remove spaces
 	let curStr = str.replace(/ /g,'');
 	
@@ -223,15 +229,27 @@ function interpretMathString(str){
 	let Ymult = [];
 	
 	for (let k = 0; k <= allTerms.length-1; k++){
-		//returnString = returnString + '+';
-		//console.log(allTerms[k])
 		
 		let curTerm = allTerms[k];
 		
 		
 		// Split on * to get the multiplier in front
 		let splitStr = curTerm.split('*');
-		// Save the multiplier
+		
+		//let toMult = 1;
+		// Check the first part and save
+		//if ((splitStr[0] == 'x') || (splitStr[0] == 'y')) {
+		//} else {
+		//	toMult = float(splitStr[0]);
+		//}
+		
+		//if (splitStr[0][0] == '-'){
+		//	if (splitStr[0][1]
+		//}
+		
+		//mult.push(toMult); 
+		
+		
 		mult.push(float(splitStr[0]));
 		
 		// Check if term contains x and y
@@ -241,19 +259,16 @@ function interpretMathString(str){
 		
 		// If both x and y
 		if ((xPos > 0) && (yPos > 0)){
+			// Has to be of either of the following forms:
+			// a * x * y
+			// a * x ^ b * y 
+			// a * x * y ^ c
+			// a * x ^ b * y ^ c
+			
+			
+			
 			// NOT YET IMPLEMENTED!!
 			
-			/*
-			// Split on * to get the multiplier in front
-			let splitStr = curTerm.split('*');
-			// Save the multiplier
-			mult.push(float(splitStr[0]));
-			
-			// Split to get the powers
-			let powSplit = curTerm.split('^');
-			
-			console.log(powSplit)
-			*/
 			
 		}
 		
@@ -307,7 +322,8 @@ function interpretMathString(str){
 	//console.log([numTerms,constTerm,Xpow,Xmult,Ypow,Ymult])
 	return [numTerms,constTerm,mult,Xpow,Ypow]
 }
-
+*/
+/*
 function evaluateDiffEq(x,y,curFunc){
 	
 	let curVal = 0;
@@ -347,6 +363,7 @@ function evaluateDiffEq(x,y,curFunc){
 	
 	return curVal
 }
+*/
 
 // Function for making the array for the directional field vectors
 function makeDirField(dirFieldRes){
@@ -527,8 +544,14 @@ function spawnAtMousePos(){
 
 function reCalculateFunction(){
 	// Re-interpret inputs
+	/*
 	curXfunc = interpretMathString(input.value());
 	curYfunc = interpretMathString(inputy.value());
+	curXfuncStr = input.value();
+	curYfuncStr = inputy.value();
+	*/
+	curXfuncStr = math.simplify(input.value());
+	curYfuncStr = math.simplify(inputy.value());
 	
 	
 	
@@ -563,6 +586,16 @@ function draw() {
 	
 	// Draw nullclines
 	if (showNullclines){
+		
+		for (let nullX = 1; nullX < xSignChange.length;nullX++){
+			let curPos = coordinateToPixel(xSignChange[nullX]);
+			let curDiff = coordinateToPixel(ySignChange[nullX]);
+			fill([math.sign(curDiff.y)*255,255*math.sign(curDiff.x),150]); 
+			noStroke();
+			//stroke(255,0,0);
+			circle(curPos.x,curPos.y,1)
+		}
+		/*
 		for (let nullX = 1; nullX < xSignChange.length;nullX++){
 			let curPos = coordinateToPixel(xSignChange[nullX]);
 			fill(xNullclineColor); 
@@ -577,6 +610,8 @@ function draw() {
 			//stroke(255,0,255);
 			circle(curPos.x,curPos.y,1)
 		}
+		
+		*/
 	}
 	
 	// Draw equilibria
@@ -619,6 +654,7 @@ function makeInitialCalculations(){
 	[xSignChange,ySignChange] =  calcNullclines(nullClinesResolution);
 	}
 	
+	/*
 	// Double loop through nullclines to find equilibria
 	if (showEquis){ // Dont find them if showEquis is false, to save time
 		equis =[];
@@ -632,12 +668,11 @@ function makeInitialCalculations(){
 			}			
 		}
 	}
-	
+	*/
 	// Make the directional field
 	makeDirField(curDirFieldRes)
 	
 }
-
 
 function calcNullclines(nullclineRes){
 	axesWidth= fieldWidth*scalingFactor;
@@ -655,26 +690,44 @@ function calcNullclines(nullclineRes){
 	let prevX = nX;
 	let prevY = nY;
 	
+	let dX = (maxX-minX)/nullclineRes;
+	let dY = (maxY-minY)/nullclineRes;
+	
 	// Idea: Go through all places, check above and to the left
 	// and save positions to an array 
 	
 	let thisxSignChange = [];
 	let thisySignChange = [];
-
+	
+	let alldX = [];
+	let alldY = [];
+	
+	let allVec = [];
+	let allDiff =[];
+	
 	// Go through in the x-direction
-	for (let k = 1; k < nullclineRes; k++){
+	for (let k = 1; k < nullclineRes; k = k+1){
 		prevX = nX; // Save previous x
 		// Get the current x
-		nX = lerp(minX,maxX,k/nullclineRes);
+		//nX = lerp(minX,maxX,k/nullclineRes);
+		nX = minX+dX*k;
 		
 		// Go through in the y-direction
-		for (let j = 1; j < nullclineRes; j++){
+		for (let j = 1; j < nullclineRes; j=j+1){
 			prevY = nY; // Save previous y
 			// Get current y
-			nY = lerp(minY,maxY,j/nullclineRes);
+			//nY = lerp(minY,maxY,j/nullclineRes);
+			nY = minY+dY*j;
 			
 			// Calculate differential equation at current ...
-			curDiff = diffEq(createVector(nX,nY));
+			//curDiff = diffEq(createVector(nX,nY));
+			//alldX.push(curDiff.x);
+			//alldY.push(curDiff.y);
+			
+			let curPos = createVector(nX,nY);
+			allVec.push(curPos);
+			allDiff.push(diffEq(curPos));
+			/*
 			// ... to the left (previous x-position) ...
 			leftDiff = diffEq(createVector(prevX,nY));
 			// ... and below (previous y-position)
@@ -700,25 +753,62 @@ function calcNullclines(nullclineRes){
 				// Add to array
 				thisxSignChange.push(createVector(nX,nY));
 			}
+			*/
 		}
 	}
-		return [thisxSignChange,thisySignChange];
-
+	
+	/*
+	let prevSign = 0;
+	for (let k = 0; k < alldX.length-1; k = k+1){
+		let curX = alldX[k];
+		if (prevSign != Math.sign(curX)){
+			thisxSignChange.push(curX);
+		}
+	}
+	for (let k = 0; k < alldY.length-1; k = k+1){
+		let curY = alldY[k];
+		if (prevSign != Math.sign(curY)){
+			thisySignChange.push(curY);
+		}
+	}
+	*/
+	
+	//	return [thisxSignChange,thisySignChange];
+	//return [alldX,alldY];
+	return [allVec,allDiff];
 	
 }
 
 function diffEq(pos){
-	let x = pos.x;
-	let y = pos.y;
+	//let x = pos.x;
+	//let y = pos.y;
+	let dx = 0;
+	let dy = 0;
 	
 	//let fx = new Function ('return -2');
 	
 	//dx = -1;
 	//dy = 1;
 	
-	dx = evaluateDiffEq(x,y,curXfunc);
-	dy = evaluateDiffEq(x,y,curYfunc);
+	//dx = evaluateDiffEq(x,y,curXfunc);
+	//dy = evaluateDiffEq(x,y,curYfunc);
+	/*
+	let curXstring = "0";
+	let curYstring = "0";
+	if (isFinite(x) && isFinite(y)){
+		curXstring = curXfuncStr.replace(/x/g,str(x)).replace(/y/g,str(y));
+		curYstring = curYfuncStr.replace(/x/g,str(x)).replace(/y/g,str(y));
+	}
+	//let curYstring = curXfuncStr.replace("x",str(x));
 	
+	dx = math.evaluate(curXstring);
+	dy = math.evaluate(curYstring);
+	*/
+	if (isFinite(pos.x) && isFinite(pos.y)){
+		
+		dx = curXfuncStr.evaluate({x:pos.x,y:pos.y});
+		dy = curYfuncStr.evaluate({x:pos.x,y:pos.y});
+	}
 	/*
 	// Apparently eval is horribly insecure and slow... 
 	// I have to somehow structure the input and make a function that uses the structure instead
