@@ -43,8 +43,9 @@ var curFontSize = 18;
 // Setup function is run once, on page-load
 function setup() {
 	var divWidth = document.getElementById('sketch-holder').offsetWidth;
+	var divHeight = document.getElementById('sketch-holder').offsetHeight;
 	
-	canvas = createCanvas(divWidth, divWidth); 
+	canvas = createCanvas(divWidth, divHeight); 
 	canvas.parent('sketch-holder');
 	//createCanvas(800, 800,WEBGL); // WEBGL can be used for easier 3D 
 	
@@ -72,7 +73,7 @@ function setup() {
 	startButton.parent('sketch-holder');
 	var startButtonWidth = 150;
 // 	startButton.position(width/2-startButtonWidth/2,height/2+startButtonWidth/2);
-	startButton.position(divWidth/2-startButtonWidth/2,divWidth/2+startButtonWidth/2);
+	startButton.position(divWidth/2-startButtonWidth/2,divHeight/2+startButtonWidth/2);
 	startButton.size(startButtonWidth,startButtonWidth/2);
 	startButton.mousePressed(pauseSwitch);
 	startButton.style("font-size : 24px; font-weight: bold");
@@ -285,11 +286,11 @@ function draw() {
 		text(numDea,legendX+legendCellSize/2,legendY+legendTextYOff+4*legendCellYDiff)
 		textAlign(LEFT);
 		textSize(curFontSize);
-		text('Stem cell'     ,legendX+legendTextXOff,legendY+legendTextYOff);
-		text('Immature cell' ,legendX+legendTextXOff,legendY+legendTextYOff+legendCellYDiff);
-		text('Mature cell'   ,legendX+legendTextXOff,legendY+legendTextYOff+2*legendCellYDiff);
-		text('Quiescent cell',legendX+legendTextXOff,legendY+legendTextYOff+3*legendCellYDiff);
-		text('Dead cell'     ,legendX+legendTextXOff,legendY+legendTextYOff+4*legendCellYDiff);
+		text('Stem cells'     ,legendX+legendTextXOff,legendY+legendTextYOff);
+		text('Immature cells' ,legendX+legendTextXOff,legendY+legendTextYOff+legendCellYDiff);
+		text('Mature cells'   ,legendX+legendTextXOff,legendY+legendTextYOff+2*legendCellYDiff);
+		text('Quiescent cells',legendX+legendTextXOff,legendY+legendTextYOff+3*legendCellYDiff);
+		text('Dead cells'     ,legendX+legendTextXOff,legendY+legendTextYOff+4*legendCellYDiff);
 		// Turn off stroke again
 		noStroke()
 	}
@@ -731,10 +732,12 @@ class Cell {
 	}
 }
 	display(){
+		noStroke();
 		// Set the current fill 
 		fill(this.color);
 		// Draw a rectangle
-		rect(this.pos.x*curScale,this.pos.y*curScale,this.size*curScale,this.size*curScale);
+		//rect(this.pos.x*curScale,this.pos.y*curScale,this.size*curScale,this.size*curScale);
+		rect(this.pos.x*curScale,this.pos.y*curScale,0.5+this.size*curScale,0.5+this.size*curScale);
 		//ellipse(this.pos.x*curScale,this.pos.y*curScale,this.size*curScale*1.5);
 	}  
 }

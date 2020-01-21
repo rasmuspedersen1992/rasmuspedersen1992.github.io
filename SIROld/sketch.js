@@ -45,7 +45,7 @@ var TRebBot;
 var TRebQue;
 var TAlways;
 
-var language = 'English'
+var language = 'Danish'
 if (language == 'Danish'){
 	// Danish
 	TRes = 'Genstart';
@@ -176,25 +176,12 @@ function setup() {
   
   
   // Define colors
-  // Default colors
   colorS = color(0,255,0);
   colorI = color(255, 0, 0);
   colorE = color(255, 255, 255);
   colorR = color(0, 255, 255);
-  // RUC colors
-  /*
-  //colorS = color(113,183,140);
-  colorE = color(255,190,50);
-  colorI = color(255, 250,130);
-  //colorE = color(255,160,175);
-  //colorI = color(255, 93,93);
-  colorR = color(60,180,245);
-  colorS = color(57,183,140);
-  colorS = color(255, 250,130);
-  colorI = color(255, 93,93);
-  colorE = color(255,160,175);
-  colorR = color(60,180,245);
-  */
+  
+  
   // Calculate the square of the particle diametre, for faster collisionchecking
   sqDia = pow(particleDiameter,2);
   
@@ -206,6 +193,7 @@ function setup() {
   UIrestart.parent('sketch-holder');
   UIrestart.position(10,10);
   UIrestart.class('uiButton');
+  
   
   UItoggle =  createCheckbox(TCon,UIon)
   UItoggle.changed(toggleUI);
@@ -237,8 +225,7 @@ function setup() {
   UItimeInf = createSlider(1, 10,TimeInfected);
   UItimeInf.changed(updateVariables);
   UItimeInf.parent(UIparent);
-  //UItimeInfText = createDiv(TimeInfected+' s');
-  UItimeInfText = createDiv(TimeInfected+' sek');
+  UItimeInfText = createDiv(TimeInfected+' s');
   UItimeInfText.parent(UIparent);
   UItimeInfText.class('uiText');
   
@@ -248,8 +235,7 @@ function setup() {
   UItimeExp = createSlider(0, 10,TimeExposed);
   UItimeExp.changed(updateVariables);
   UItimeExp.parent(UIparent);
-  //UItimeExpText = createDiv(TimeExposed+' s');
-  UItimeExpText = createDiv(TimeExposed+' sek');
+  UItimeExpText = createDiv(TimeExposed+' s');
   UItimeExpText.parent(UIparent);
   UItimeExpText.class('uiText');
   
@@ -270,8 +256,7 @@ function setup() {
   //UIrebirth = createSlider(0,100,rebirthRate);
   UIrebirth.changed(updateVariables);
   UIrebirth.parent(UIparent);
-  //UIrebirthText = createDiv(rebirthRate+' s');
-  UIrebirthText = createDiv(rebirthRate+' sek');
+  UIrebirthText = createDiv(rebirthRate+' s');
   UIrebirthText.parent(UIparent);
   UIrebirthText.class('uiText');
   UIrebirthButton =  createCheckbox(TRebQue,rebirthBool)
@@ -300,30 +285,6 @@ function setup() {
   //UImodelType.class('uiText');
   UImodelType.class('uiRadio');
   
-  
-  
-  UIrestart = createButton('Preset 1'); 
-  UIrestart.mousePressed(preset1);
-  UIrestart.style("font-size : 20px;");
-  UIrestart.parent(UIparent);
-  UIrestart.position(0,450);
-  UIrestart.class('uiButton');
-  
-  
-  UIrestart = createButton('Preset 2'); 
-  UIrestart.mousePressed(preset2);
-  UIrestart.style("font-size : 20px;");
-  UIrestart.parent(UIparent);
-  UIrestart.position(0,490);
-  UIrestart.class('uiButton');
-  
-  
-  UIrestart = createButton('Denmark'); 
-  UIrestart.mousePressed(preset3);
-  UIrestart.style("font-size : 20px;");
-  UIrestart.parent(UIparent);
-  UIrestart.position(0,530);
-  UIrestart.class('uiButton');
   
   
   
@@ -433,72 +394,28 @@ function rebirthCheckedEvent(){
   }
 }
 
-// Functions for predefined settings
-function preset1(){
-	UImodelType.value('SIR');
-	UItimeInf.value(5);
-	UItimeExp.value(0);
-	UIvaccine.value(0);
-	UIrebirth.value(0);
-	rebirthBool = false;
-	updateVariables();
-	startupSim()
-}
-
-function preset2(){
-	UImodelType.value('SEIR');
-	UItimeInf.value(5);
-	UItimeExp.value(2);
-	UIvaccine.value(0);
-	UIrebirth.value(0);
-	rebirthBool = false;
-	updateVariables();
-	startupSim()
-}
-function preset3(){
-	UImodelType.value('SEIR');
-	UItimeInf.value(7);
-	UItimeExp.value(7);
-	UIvaccine.value(84);
-	//UIrebirth.value(2);
-	UIrebirth.value(0.5);
-	rebirthBool = true;
-	updateVariables();
-	startupSim()
-}
-
 // Function for updating values controled by UI
 function updateVariables(){
   
   // Update from UI stuff
   modelType = UImodelType.value();
   TimeInfected = UItimeInf.value();
-  //UItimeInfText.elt.innerHTML = TimeInfected+' s';
-  UItimeInfText.elt.innerHTML = TimeInfected+' sek';
+  UItimeInfText.elt.innerHTML = TimeInfected+' s';
   TimeExposed = UItimeExp.value();
-  //UItimeExpText.elt.innerHTML = TimeExposed+' s';
-  UItimeExpText.elt.innerHTML = TimeExposed+' sek';
+  UItimeExpText.elt.innerHTML = TimeExposed+' s';
   rebirthRate = UIrebirth.value();
-  //UIrebirthText.elt.innerHTML = TRebBot+rebirthRate+" s";
-  UIrebirthText.elt.innerHTML = TRebBot+rebirthRate+" sek";
+  UIrebirthText.elt.innerHTML = TRebBot+rebirthRate+" s";
   VaccRate = UIvaccine.value();
   UIvaccRateText.elt.innerHTML = VaccRate+" %";
 }
 
 // Draw stuff
-function draw() {	
+function draw() {
   //background(0);
   //background(100,155,100);
   //background(100,100,155);
   //background(255,100,255);
-  //background(100,80,40); 
-  //background(0,80,70);
-  background(113,183,140);
-  //background(57,183,140); // Correct light green RUC
-  //background(60,180,245);
-  background(0,30,30);
-  //background(0,0,120);
-  //background(190,190,190);
+  background(100,80,40); 
   //translate(margins,margins);
   
   // Center field in canvas
@@ -633,14 +550,13 @@ function draw() {
   
   
   // Debugging for performance
-  /*
 	let fps = frameRate();  
 	fill(255);
 	stroke(0);
 	//textFont('Arial');
 	//text("FPS: " + fps.toFixed(2), 10, height - 10);
 	text("FPS: " + fps.toFixed(2), 10, 10);
-	*/
+	
 	
 }
 
