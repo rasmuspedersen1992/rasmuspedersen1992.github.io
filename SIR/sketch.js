@@ -237,8 +237,8 @@ function setup() {
   UItimeInf = createSlider(1, 10,TimeInfected);
   UItimeInf.changed(updateVariables);
   UItimeInf.parent(UIparent);
-  //UItimeInfText = createDiv(TimeInfected+' s');
-  UItimeInfText = createDiv(TimeInfected+' sek');
+  UItimeInfText = createDiv(TimeInfected+' s');
+  //UItimeInfText = createDiv(TimeInfected+' sek');
   UItimeInfText.parent(UIparent);
   UItimeInfText.class('uiText');
   
@@ -248,8 +248,8 @@ function setup() {
   UItimeExp = createSlider(0, 10,TimeExposed);
   UItimeExp.changed(updateVariables);
   UItimeExp.parent(UIparent);
-  //UItimeExpText = createDiv(TimeExposed+' s');
-  UItimeExpText = createDiv(TimeExposed+' sek');
+  UItimeExpText = createDiv(TimeExposed+' s');
+  //UItimeExpText = createDiv(TimeExposed+' sek');
   UItimeExpText.parent(UIparent);
   UItimeExpText.class('uiText');
   
@@ -270,8 +270,8 @@ function setup() {
   //UIrebirth = createSlider(0,100,rebirthRate);
   UIrebirth.changed(updateVariables);
   UIrebirth.parent(UIparent);
-  //UIrebirthText = createDiv(rebirthRate+' s');
-  UIrebirthText = createDiv(rebirthRate+' sek');
+  UIrebirthText = createDiv(rebirthRate+' s');
+  //UIrebirthText = createDiv(rebirthRate+' sek');
   UIrebirthText.parent(UIparent);
   UIrebirthText.class('uiText');
   UIrebirthButton =  createCheckbox(TRebQue,rebirthBool)
@@ -473,14 +473,14 @@ function updateVariables(){
   // Update from UI stuff
   modelType = UImodelType.value();
   TimeInfected = UItimeInf.value();
-  //UItimeInfText.elt.innerHTML = TimeInfected+' s';
-  UItimeInfText.elt.innerHTML = TimeInfected+' sek';
+  UItimeInfText.elt.innerHTML = TimeInfected+' s';
+  //UItimeInfText.elt.innerHTML = TimeInfected+' sek';
   TimeExposed = UItimeExp.value();
-  //UItimeExpText.elt.innerHTML = TimeExposed+' s';
-  UItimeExpText.elt.innerHTML = TimeExposed+' sek';
+  UItimeExpText.elt.innerHTML = TimeExposed+' s';
+  //UItimeExpText.elt.innerHTML = TimeExposed+' sek';
   rebirthRate = UIrebirth.value();
-  //UIrebirthText.elt.innerHTML = TRebBot+rebirthRate+" s";
-  UIrebirthText.elt.innerHTML = TRebBot+rebirthRate+" sek";
+  UIrebirthText.elt.innerHTML = TRebBot+rebirthRate+" s";
+  //UIrebirthText.elt.innerHTML = TRebBot+rebirthRate+" sek";
   VaccRate = UIvaccine.value();
   UIvaccRateText.elt.innerHTML = VaccRate+" %";
 }
