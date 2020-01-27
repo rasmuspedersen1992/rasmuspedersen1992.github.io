@@ -1,0 +1,17 @@
+Kort beskrivelse til Processing Community Day 2020
+
+Science have given us an incredibly detailed understanding of the world around us. Unfortunately, the complexity of scientific descriptions can sometimes render them inaccessible and can in worst case cause distrust in the results.
+
+When communicating science, significant effort must be made to present results in an intuitive and understandable way. One methods for this is to invite people to directly interact with science involved and get a feel for the complexity themselves.
+
+In this talk I will present and discuss how I have used p5.js to make complicated mathematical models more intuitive through interactive simulations. 
+This includes a model of cancer tumor growth and a model for the spread of contagious diseases.
+
+
+OLD
+
+bridge the gap between 
+
+Communicating science in a understandable way is necessary to ...
+
+A method for mitigating some of the complexity involved when communication science is to allow people to play around with it themselves and get a feel for for the science.

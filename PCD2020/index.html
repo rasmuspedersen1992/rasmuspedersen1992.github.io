@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Rasmus Kristoffer Pedersen</title>
+	
+	<!-- 
+	
+	Lightning talk presentation for Processing Community Day 2020
+	
+	Abstract / Short description:
+	Science have given us an incredibly detailed understanding of the world around us. Unfortunately, the complexity of scientific descriptions can sometimes render them inaccessible and can in worst case cause distrust in the results.
+
+	When communicating science, significant effort must be made to present results in an intuitive and understandable way. One methods for this is to invite people to directly interact with science involved and get a feel for the complexity themselves.
+
+	In this talk I will present and discuss how I have used p5.js to make complicated mathematical models more intuitive through interactive simulations. 
+	This includes a model of cancer tumor growth and a model for the spread of contagious diseases. 
+
+	About me:
+	Rasmus Kristoffer Pedersen is currently a Ph.D.-student at Roskilde University, working on mathematical modelling of biological systems. 
+	Rasmus is passionate about teaching science and communicating to a broader audience
+	
+	NOTE:
+	Speaker notes for reveal.js is not currently set up to work here, as it requires a server to be running.
+
+	-->
+
+
+    <script src="js/reveal.js" type="text/javascript"></script>
+
+    <script src="js/p5.min.js" type="text/javascript"></script>
+    <script src="js/p5.dom.min.js" type="text/javascript"></script>
+
+		<link rel="stylesheet" href="./css/reveal.css">
+		<link rel="stylesheet" href="./css/theme/moon.css"> <!-- More reveal.js themes can be found online -->
+		
+  </head>
+  <body>
+    
+   
+   
+    <div class="reveal"><div class="slides">
+
+<section>
+	<h2> Science dissemination with p5.js</h2>
+	<h5> How interactive simulations and creative coding can make the complex relatable.</h5>
+	<p>Lightning talk for Processing Community Day 31st of January 2020 </p>
+ 	<p><small>by <a href="http://rasmuspedersen.com">Rasmus Kristoffer Pedersen</a></small></p>
+ 	<!-- <p><small>Ph.D.-student, Mathematical Modelling, Roskilde University</small></p> -->
+</section>
+
+<!-- Introduction -->
+<section>
+	<section>
+		<h3>The challenges of communicating science</h3>
+		<!-- 
+		Something about more and more science. 
+		Perhaps a graph of number of publications per year?
+		Hint at climate change deniers, flat-earthers and anti-vaxxers (But dont actually mention them, don't want to start that shitstorm)
+		Possible point: Communication is a two-way street. It must also be up to the scientist to communicate their results in an understandable way (Which paradoxically becomes more and more difficult)
+		
+		Pictures of protests?
+		-->
+		
+		<p class="fragment"> Expanding scientific knowledge </p>
+		<p class ="fragment">
+		<img src="img/numPublications.jpg" width = "300 px"> 
+		<img src="img/scienceJournals.jpg" width = "300 px"> </p>
+		
+		<p class="fragment"> Science influences decisions about the world </p>
+		<p class="fragment"> Scientists must be able to communicate their work!</p>
+		
+		
+	</section>
+	<section>
+		<h3>My perspective</h3>
+		<p class="fragment"> Mathematical modelling at Roskilde University </p>
+		<p class="fragment"> Collaborating with Roskilde Hospital </p>
+		<p> 
+		<img class="fragment" src="img/bloodtube.png" width = "200 px"> 
+		<img class="fragment" src="img/mathEquations.jpg" width = "300 px"> 
+		<img class="fragment" src="img/needle.png" width = "200 px"> 
+		</p>
+		<p class="fragment"> A big challenge: I'm not a doctor </p>
+		<p class="fragment"> A bigger challenge: The doctors are not me </p>
+		
+	</section>
+</section>
+
+
+<section>
+	<section>
+		
+		<h3>Mathematical model of cancer growth</h3>
+		
+		Growth of a cancer tumor, based on biological understanding. 
+		
+	    <p> <span class ="fragment">
+		<img src="img/flowchart.jpg" width = "500 px"> </span> 
+		<span class="fragment" >
+		<img src="img/hillenGraph.jpg" width = "350 px"> </span> </p>
+		
+		<p class ="fragment">
+		<img src="img/hillenArticle.jpg" width = "300 px"> </p>
+	  
+		<aside class="notes">
+		
+		Tumor growth
+		Flowchart
+		Graphs
+		Screenshot of article
+		
+		"And this is ofter where the things stop (Until future work or unless news-journalist use it)"
+		
+		</aside>
+		
+	  
+	  
+	  <!--<div id="CancerGrowth" align=center style="margin: 0 auto; border:1px solid; width: 500px"></div> -->
+	  <!-- <div id="CancerGrowth" align=center style="border:1px solid;"></div> -->
+	</section>
+	<section data-state="CancerInit">
+		<h3> Interactive simulation of cancer growth</h3>
+		<iframe id="CancerGrowthIframe"
+			title="Cancer Growth"
+			width="700"
+			height="550"
+			style="width:100%"
+			src="http://www.rasmuspedersen.com/CancerGrowth/">
+		</iframe>
+		<input type="button"
+               id="btn" 
+               value="Refresh simulation" /> 
+  
+        <script> 
+            function reload() { 
+                document.getElementById('CancerGrowthIframe').src += ''; 
+            } 
+            btn.onclick = reload; 
+        </script> 
+	  <!--<p> Oh wow, it's a simulation of cancergrowth!</p>-->
+	</section>
+</section>
+
+<section>
+	<section>
+		<h3>Modelling spread of contagious diseases</h3>
+		
+		
+		<p class="fragment"> Classic example: The SIR model</p>
+		<p class="fragment"> Originally, considers Susceptible, Infected and Recovered persons, but many extensions exists</p>
+		<p class="fragment"> Actively used to predict spread of e.g. Ebola, Measles and others</p>
+		
+		<p class="fragment"> Herd immunity</p>
+		
+		<p class="fragment"> How do you communicate it to someone who hasn't spend a whole career working with it </p>
+		
+		<aside class="notes">
+		
+		Something about how old the SIR model is
+		Something about how it is actually used in day-to-day life (e.g. the use of R_0)
+		Mention ebola outbreak?
+		The concept of herd immunity, and the challenges of communicating it.
+		(The researchers have an intuitive understanding of the concept, but how can that be transfered to someone who HASN'T used 30 years researching the topic?)
+		
+		</aside>
+  
+	</section>
+	<section data-state="SIRInit">
+		<h3>Interactive simulation of disease-spread</h3>
+		<!--<div id="CancerGrowth" align=center style="margin: 0 auto; border:1px solid; width: 500px"></div> -->
+		<!--<div id="SIR" align=center style="border:1px solid;"></div>-->
+		<iframe id="SIRIframe"
+			title="SIR model"
+			style="width:100%"
+			height="540"
+			src="SIR/index.html">
+		</iframe>        
+		<input type="button"
+               id="btnSIR" 
+               value="Refresh simulation" /> 
+  
+        <script> 
+            function reloadSIR() { 
+                document.getElementById('SIRIframe').src += ''; 
+            } 
+            btnSIR.onclick = reloadSIR(); 
+        </script> 
+		<!-- <p> Oh wow, it's a simulation of disease!</p>
+		
+			src="http://www.rasmuspedersen.com/SIR/">
+			src="SIR"
+		-->
+	</section>
+</section>
+
+<section>
+	<section>	
+	<h3> Conclusion </h3>
+	
+	
+		<p class="fragment"> Science communication is fundamental for society.</p>
+		<p class="fragment"> Creative coding can work as a platform for making science more relatable.</p>
+		<p class="fragment"> Tools that make visualization and interactivity easy (e.g. Processing and p5.js) has incredible importantance! </p>
+		<p class="fragment"> Even my bug-filled, hastily-written and somewhat uninviting visualizations have had a much better reception among my scientific peers than expected. </p>
+	
+	<!-- 
+	Bringing it back up to a higher level again
+	Scientists and creative coders working together
+	Scientists need training in creative coding
+	
+	Main point: The importance of accessible tools like processing and p5.js
+	
+	Minor point: I'm not particularly experienced with creative coding, but the examples shown here were relatively easy to make and the reception among scientific collaques has been much better than anticipated.
+	
+	
+	SPEND QUITE SOME TIME ON THIS SLIDE!
+	
+	
+	(Perhaps a shout-out to 3blue1brown and his manim package?)
+	-->
+	
+	</section>	
+	<section>	
+	
+		<h3> Thank you for your attention.</h3>
+		
+		
+		<!--
+		<p><a href="http://rasmuspedersen.com"> <img src="img/profile.jpg" width =  "300 px"> </a></p> -->
+		
+		<p><a href="http://rasmuspedersen.com"> Website: rasmuspedersen.com </a></p>
+		<p><a href="mailto:rasmuspedersen1992@gmail.com"> Email: rasmuspedersen1992@gmail.com </a></p>
+	</section>	
+</section>
+
+
+    <script>
+
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: false,
+				progress: false,
+				slideNumber: 'c/t',
+
+			});
+			Reveal.addEventListener( 'CancerInit', function() {
+				reload();
+			} );
+			Reveal.addEventListener( 'SIRInit', function() {
+				reloadSIR();
+			} );
+			
+    </script>
+
+
+<!--
+
+			window.addEventListener('load', function () {
+			 reload();
+			 reloadSIR();
+			})
+			document.addEventListener("DOMContentLoaded", function(event){
+				reloadSIR();
+			});
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script>
+-->
+<!--
+    <script type="text/javascript" async src="/home/urp/git/MathJax/MathJax.js?config=TeX-AMS_CHTML"></script>
+	
+	
+    <script src="../lib/js/head.min.js" type="text/javascript"></script>
+    -->    <!-- <script src="js/p5.sound.js" type="text/javascript"></script> 
+-->
+   
+	<!--
+    <script src="sketches/CancerGrowth.js" type="text/javascript"></script>
+    <script src="sketches/SIR.js" type="text/javascript"></script>
+
+    <script>
+	p5_CancerGrowth = new p5(CancerGrowth, "CancerGrowth");
+	p5_SIR = new p5(SIR, "SIR");
+    </script>
+	-->
+    <!--
+	p5_SIR = new p5(SIR, "SIR");
+	p5_VisualODE = new p5(VisualODE, "VisualODE");
+    <style> body {padding: 0; margin: 0;} canvas {vertical-align: top;} </style>
+    -->
+
+  </body>
+</html>
+
+
+
