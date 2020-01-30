@@ -9,10 +9,10 @@
 
 
 // Model parameters
-var diffDeathRate = 0.05; // Rate of random death for differentiated cells (unit: per time-step)
+var diffDeathRate = 0.03; // Rate of random death for differentiated cells (unit: per time-step)
 var diffMoveRate = 0.05; // Rate of movement for differentiated cells (unit: per time-step) 
-var stemDivRate = 0.1; // Rate of division for stem cells (unit: per time-step)
-var diffDivRate = 0.1; // Rate of division for differentiated cells (unit: per time-step)
+var stemDivRate = 0.15; // Rate of division for stem cells (unit: per time-step)
+var diffDivRate = 0.15; // Rate of division for differentiated cells (unit: per time-step)
 var rhoMax = 2; // Max number of divisions before cell dies
 var maturationAge = 10; // Number of time-steps before cell mature and start dividing
 

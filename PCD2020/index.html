@@ -43,7 +43,7 @@
 
 <section>
 	<h2> Science dissemination with p5.js</h2>
-	<h5> How interactive simulations and creative coding can make the complex relatable.</h5>
+	<h5> How interactive simulations and creative coding can make the complex relatable</h5>
 	<p>Lightning talk for Processing Community Day 31st of January 2020 </p>
  	<p><small>by <a href="http://rasmuspedersen.com">Rasmus Kristoffer Pedersen</a></small></p>
  	<!-- <p><small>Ph.D.-student, Mathematical Modelling, Roskilde University</small></p> -->
@@ -62,27 +62,27 @@
 		Pictures of protests?
 		-->
 		
-		<p class="fragment"> Expanding scientific knowledge </p>
+		<p class="fragment"> The ever-expanding scientific knowledge. </p>
 		<p class ="fragment">
 		<img src="img/numPublications.JPG" width = "300 px"> 
 		<img src="img/scienceJournals.jpg" width = "300 px"> </p>
 		
-		<p class="fragment"> Science influences decisions about the world </p>
+		<p class="fragment"> Science influences decisions about the world. </p>
 		<p class="fragment"> Scientists must be able to communicate their work!</p>
 		
 		
 	</section>
 	<section>
 		<h3>My perspective</h3>
-		<p class="fragment"> Mathematical modelling at Roskilde University </p>
-		<p class="fragment"> Collaborating with Roskilde Hospital </p>
+		<p class="fragment"> Mathematical modelling at Roskilde University. </p>
+		<p class="fragment"> Collaboration with Roskilde Hospital. </p>
 		<p> 
 		<img class="fragment" src="img/bloodtube.png" width = "200 px"> 
 		<img class="fragment" src="img/mathEquations.JPG" width = "300 px"> 
 		<img class="fragment" src="img/needle.png" width = "200 px"> 
 		</p>
-		<p class="fragment"> A big challenge: I'm not a doctor </p>
-		<p class="fragment"> A bigger challenge: The doctors are not me </p>
+		<p class="fragment"> A big challenge: I'm not a doctor. </p>
+		<p class="fragment"> A bigger challenge: The doctors are not me. </p>
 		
 	</section>
 </section>
@@ -93,7 +93,7 @@
 		
 		<h3>Mathematical model of cancer growth</h3>
 		
-		Growth of a cancer tumor, based on biological understanding. 
+		Growth of a cancer tumor, based on biological understanding.
 		
 	    <p> <span class ="fragment">
 		<img src="img/flowchart.JPG" width = "500 px"> </span> 
@@ -147,13 +147,13 @@
 		<h3>Modelling spread of contagious diseases</h3>
 		
 		
-		<p class="fragment"> Classic example: The SIR model</p>
-		<p class="fragment"> Originally, considers Susceptible, Infected and Recovered persons, but many extensions exists</p>
-		<p class="fragment"> Actively used to predict spread of e.g. Ebola, Measles and others</p>
+		<p class="fragment"> Classic example: The SIR model.</p>
+		<p class="fragment"> Originally, considers Susceptible, Infected and Recovered persons, but many extensions exists.</p>
+		<p class="fragment"> Actively used to predict spread of e.g. Ebola, Measles and others.</p>
 		
-		<p class="fragment"> Herd immunity</p>
+		<p class="fragment"> Herd immunity.</p>
 		
-		<p class="fragment"> How do you communicate it to someone who hasn't spend a whole career working with it </p>
+		<p class="fragment"> How do you communicate it to someone who hasn't spent a whole career working with it. </p>
 		
 		<aside class="notes">
 		
@@ -193,9 +193,8 @@
 		-->
 	</section>
 </section>
-
 <section>
-	<section>	
+	<section data-state="Conclusion">	
 	<h3> Conclusion </h3>
 	
 	
@@ -248,8 +247,16 @@
 				reload();
 			} );
 			Reveal.addEventListener( 'SIRInit', function() {
+				// Restart cancer model so it doesn't use a lot of memory in background
+				reload();
+				// Restart SIR-simulation
 				reloadSIR();
 			} );
+			Reveal.addEventListener( 'Conclusion', function() {
+				// Restart cancer model so it doesn't use a lot of memory in background
+				reload();
+			} );
+			
 			
     </script>
 
