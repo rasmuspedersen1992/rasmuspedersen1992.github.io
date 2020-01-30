@@ -6,11 +6,9 @@
 		- Use p5 built-in vectors instead
 		- Colorschemes (NigthMode and RUC, and function setAllColors('name'))
 		- Make arrowhead of vectors (Use "triangle" function) 
-		- Draw nullclines 
+		- Simple nullclines 
 		- Input interpretation:
-			- Linear
-			- Single variable, higher order
-			- Constant
+			- Now uses math.js, so everything should work
 		- Make directional field toggle-able
 		- Make nullclines toggle-able
 		- Make checkboxes
@@ -19,8 +17,34 @@
 	TODO:
 		- Calculate/find stability of equilibria (Could be done in a rudamentary numerical way)
 		- Draw stability of equilibria
-		- Input interpretation:
-			- Crossterms (i.e. both x and y)
+		- Improved nullclines 
+		- Marching squares for drawing nullclines
+*/
+
+
+/* 
+
+Ny metode til nullkliner:
+
++---+
+|   | 
+|   | 
+|   |
+%---+
+
+Tjek i et grid, hvis værdien skifter til højre eller oven over, marker som uafklaret
+Næste iteration:
+
++---+
+|   |
+% + | 
+|   |
+%-%-+ 
+
+Igen, de steder hvor værdien skifter, marker som uafklaret
+
+Tegn en firkant eller en prik i alle uafklarede positioner
+
 */
 
 let cnv;
@@ -43,6 +67,7 @@ let curYfunc = [0,0,0,0,0];
 
 // Directional field
 let dirFieldVectors = [];
+let dirFieldDiffs = [];
 let curDirFieldRes = 20; // Resolution of directional vectorfield
 let showDirField = true;
 let minVecLen = 0.1; // Smallest allowed vector: 1 pixel
@@ -54,11 +79,30 @@ let curFlowLifetime = 5;
 let spawnFlowFollowersOnMouseClick = true;
 let flowUseAllColors = true;
 
-// Nullclines
+// Older Nullclines
 let xSignChange = [];
 let ySignChange = [];
-let nullClinesResolution = 50;
-let showNullclines = false; 
+let nullClinesResolution = 20;
+let showNullclines = true; 
+let nullPos = [];
+let dyPosi = [];
+let dxPosi = []; 
+let gridPos =[];
+
+// Old nullclines
+let nClineInitRes = nullClinesResolution;
+let nClineVecs = [];
+let nClineDifs = [];
+
+let nClineTest1 = [];
+let nClineTest2 = [];
+
+// Grid-structured nullclines
+let xNullclinePosis = [];
+let yNullclinePosis = [];
+let xNullclineShow = [];
+let yNullclineShow = [];
+let maxNullclineArraySize = 300000;
 
 // Equilibria
 let equis =[];
@@ -143,7 +187,33 @@ function setup() {
 	}
 	let divHeight = divWidth;
 	
+	/*
+	axesWidth= fieldWidth*scalingFactor;
+	minX = -axesWidth;
+	maxX = axesWidth;
+	minY = -axesWidth;
+	maxY = axesWidth;
+	
+	let newX = minX;
+	let newY = minY;
+	
+	let nclinetestres = 10;
+	for (let k = 1; k < nclinetestres; k++){
+		newX = lerp(minX,maxX,k/nclinetestres);
+		newX2 = newX + 1;
 		
+		for (let j = 1; j < nclinetestres; j++){
+			newY = lerp(minY,maxY,j/nclinetestres);
+			newY2 = newY + 1;
+			
+			
+			nClineTest1.push(createVector(newX,newY));
+			nClineTest2.push(createVector(newX2,newY2));
+			
+		}
+	}
+	*/
+
 
 	cnv = createCanvas(divWidth, divHeight);
 	cnv.parent('sketch-holder');
@@ -156,23 +226,12 @@ function setup() {
 	wMargin = (width-fieldWidth)/2;
 	hMargin = (height-fieldHeight)/2;
 	
-	// Test flow
-	//allFlows.push(new flowFollower(createVector(-100,-100)));
 	
 	// Input interpretation
-	//curXfunc = interpretMathString(xString);
-	//curYfunc = interpretMathString(yString);
-	/*
-	curXfuncStr = xString;
-	curYfuncStr = yString;
-	*/
 	curXfuncStr = math.simplify(xString);
 	curYfuncStr = math.simplify(yString);
 	
-	
-	//document.getElementById("mytext").value = yString;
-	
-	
+	// Calculate dirfield and nullclines	
 	makeInitialCalculations();
 	
 	// For user input
@@ -200,191 +259,14 @@ function setup() {
 	
 }  
 
-/*
-function interpretMathString(str){
-	// Main function for interpreting a string
-	// Currently reads:
-		// Constant terms: +4
-		// Linear: 3*x (with only one coefficient)
-		// Powers
-	// To implement:
-		// Terms with both x and y
-		
-	// First, remove spaces
-	let curStr = str.replace(/ /g,'');
-	
-	// Split into terms
-	let allTerms = curStr.split('+');
-	
-	let numTerms = allTerms.length;
-	
-	//let returnString = '';
-	let linX = 0;
-	let linY = 0;
-	let constTerm = [];
-	let mult = [];
-	let Xpow = [];
-	let Xmult = [];
-	let Ypow = [];
-	let Ymult = [];
-	
-	for (let k = 0; k <= allTerms.length-1; k++){
-		
-		let curTerm = allTerms[k];
-		
-		
-		// Split on * to get the multiplier in front
-		let splitStr = curTerm.split('*');
-		
-		//let toMult = 1;
-		// Check the first part and save
-		//if ((splitStr[0] == 'x') || (splitStr[0] == 'y')) {
-		//} else {
-		//	toMult = float(splitStr[0]);
-		//}
-		
-		//if (splitStr[0][0] == '-'){
-		//	if (splitStr[0][1]
-		//}
-		
-		//mult.push(toMult); 
-		
-		
-		mult.push(float(splitStr[0]));
-		
-		// Check if term contains x and y
-		let xPos = curTerm.search('x');
-		let yPos = curTerm.search('y');
-		// Search returns -1 if not found
-		
-		// If both x and y
-		if ((xPos > 0) && (yPos > 0)){
-			// Has to be of either of the following forms:
-			// a * x * y
-			// a * x ^ b * y 
-			// a * x * y ^ c
-			// a * x ^ b * y ^ c
-			
-			
-			
-			// NOT YET IMPLEMENTED!!
-			
-			
-		}
-		
-		// Only an x, no y
-		if ((xPos > 0) && (yPos == -1)){
-			// Split to get the power of x
-			let powSplit = curTerm.split('^');
-			
-			// If there are no powers, the two array are identical
-			if (curTerm == powSplit){
-				// The power of x is one
-				Xpow.push(1);
-			} else {
-				// The second part of powSplit is the power.
-				Xpow.push(float(powSplit[1]));
-			}
-			
-			// Zeros for everything else
-			Ypow.push(0);
-			constTerm.push(0);
-			
-		}
-		// Only a y, no x
-		if ((yPos > 0) && (xPos == -1)){
-			// Split to get the power of y
-			let powSplit = curTerm.split('^');
-			
-			if (curTerm == powSplit){
-				// The power of y is one
-				Ypow.push(1);
-			} else {
-				// The second part of powSplit is the power.
-				Ypow.push(float(powSplit[1]));
-				
-			}
-			
-			// Zeros for everything else
-			Xpow.push(0);
-			constTerm.push(0);
-		}
-		// Constant term: No x and no y
-		if ((yPos == -1) && (xPos == -1)){
-			
-			Xpow.push(0);
-			Ypow.push(0);
-			constTerm.push(float(curTerm));
-		}
-	}
-	
-	//return [constTerm,linX,linY]
-	//console.log([numTerms,constTerm,Xpow,Xmult,Ypow,Ymult])
-	return [numTerms,constTerm,mult,Xpow,Ypow]
-}
-*/
-/*
-function evaluateDiffEq(x,y,curFunc){
-	
-	let curVal = 0;
-	
-	let numTerms = curFunc[0]
-	
-	for (let k = 0; k < numTerms; k++){
-		// Constant
-		curVal = curVal + curFunc[1][k];
-		
-		let xContri = curFunc[2][k]*pow(x,curFunc[3][k]);		
-		let yContri = curFunc[2][k]*pow(y,curFunc[4][k]);
-		
-		// If both are non zero
-		if ((curFunc[3][k] != 0) && (curFunc[4][k] != 0) ){
-			curVal = curVal + xContri*yContri;
-		} else if (curFunc[3][k] != 0) {
-			curVal = curVal + xContri
-		} else if (curFunc[4][k] != 0) {
-			curVal = curVal + yContri
-		}
-		
-		
-		
-		
-		
-		
-	}
-	
-	// Constant term
-	//curVal = curVal + curFunc[0];
-	//curVal = curVal + curFunc[1];
-	// 
-	//curVal = curVal + curFunc[1]*x;
-	// Linear y
-	//curVal = curVal + curFunc[2]*y;
-	
-	return curVal
-}
-*/
-
 // Function for making the array for the directional field vectors
 function makeDirField(dirFieldRes){
 	// Empty the array
 	dirFieldVectors = []; 
-	/*
-	// Go through in both x and y direction
-	for (let k = -dirFieldRes; k <= dirFieldRes ;k++){
-		for (let j = -dirFieldRes; j <= dirFieldRes ;j++){
-			// Positions split in dirFieldRes positions 
-			newX = k*int(fieldWidth/dirFieldRes)/scalingFactor;
-			newY = j*int(fieldHeight/dirFieldRes)/scalingFactor; 
-			//newVec = new Vector(newX,newY);
-			newVec = createVector(newX,newY);
-			dirFieldVectors.push(newVec);
-		} 
-	}
-	*/
+	dirFieldDiffs = [];
 		
 	// Calculate the coordinates to start dirField vectors from
-	axesWidth= fieldWidth;
+	axesWidth= fieldWidth*scalingFactor;
 	minX = -axesWidth;
 	maxX = axesWidth;
 	minY = -axesWidth;
@@ -393,31 +275,31 @@ function makeDirField(dirFieldRes){
 	let newX = minX;
 	let newY = minY;
 	
+	let dX = (maxX-minX)/dirFieldRes;
+	let dY = (maxY-minY)/dirFieldRes;
+	
+	
+	// Go through in the x-direction
 	for (let k = 1; k < dirFieldRes; k++){
-		newX = lerp(minX,maxX,k/dirFieldRes);
+		//newX = lerp(minX,maxX,k/dirFieldRes);
+		newX = minX+dX*k;
+		
 		
 		for (let j = 1; j < dirFieldRes; j++){
-			newY = lerp(minY,maxY,j/dirFieldRes);
+			//newY = lerp(minY,maxY,j/dirFieldRes);
+			newY = minY+dY*j;
 			
 			newVec = createVector(newX,newY);
 			
-			newVec = pixelToCoordinate(newVec);
+			//newVec = pixelToCoordinate(newVec);
 			
 			dirFieldVectors.push(newVec);
+			dirFieldDiffs.push(diffEq(newVec));
+			//dirFieldDiffs.push(newVec);
 		}
 	}
 }
 
-
-
-/*			
-	for (let k = 0; k <= dirFieldRes ;k++){
-		for (let j = 0; j <= dirFieldRes ;j++){
-			// Positions split in dirFieldRes positions 
-			newX = lerp(minX,maxX,k/dirFieldRes);
-			newY = lerp(minY,maxY,j/dirFieldRes);
-*/
-			
 
 function updateScale(newScale){
 	scalingFactor = newScale;
@@ -448,7 +330,8 @@ function toggleNullclines(){
 	
 	// Either re-draw or remove, dependent on new value of flag
 	if (showNullclines){
-		[xSignChange,ySignChange] =  calcNullclines(nullClinesResolution);
+		// [xSignChange,ySignChange] =  calcNullclines(nullClinesResolution);
+		//calcNullclinesThread();
 	} else {
 		xSignChange =[];
 		ySignChange =[];
@@ -463,16 +346,6 @@ function toggleMouseFlowFollowers(){
 function mousePressed() {
 	mouseCurDown = true;
 	
-	/*
-	// Get the current mouse-position
-	[curX,curY] = transMousePos();
-	
-	console.log(curX);
-	console.log(curY);
-	*/
-	
-	//spawnAtMousePos()
- // return false;
 }
 
 function mouseReleased(){
@@ -583,53 +456,188 @@ function draw() {
 	line(-fieldWidth,0,fieldWidth,0);
 	line(0,-fieldHeight,0,fieldHeight);
 	
-	
 	// Draw nullclines
 	if (showNullclines){
 		
-		for (let nullX = 1; nullX < xSignChange.length;nullX++){
-			let curPos = coordinateToPixel(xSignChange[nullX]);
-			let curDiff = coordinateToPixel(ySignChange[nullX]);
-			fill([math.sign(curDiff.y)*255,255*math.sign(curDiff.x),150]); 
+		improveNullclineResolution();
+		
+		// X-nullclines
+		for (let k = 0;k < xNullclineShow.length;k++){ 
 			noStroke();
-			//stroke(255,0,0);
-			circle(curPos.x,curPos.y,1)
+			let posVec = coordinateToPixel(xNullclineShow[k].pos);
+			let curSize = xNullclineShow[k].boxSize;
+			
+			fill(xNullclineColor)
+			rect(posVec.x,posVec.y,curSize/scalingFactor+1,-curSize/scalingFactor-1);
+			
+			//if (xNullclineShow[k].status == false){
+				//circle(posVec.x,posVec.y,xNullclinePosis[k].boxSize*10);
+			//}
 		}
-		/*
-		for (let nullX = 1; nullX < xSignChange.length;nullX++){
-			let curPos = coordinateToPixel(xSignChange[nullX]);
-			fill(xNullclineColor); 
+		// Y-nullclines
+		for (let k = 0;k < yNullclineShow.length;k++){ 
 			noStroke();
-			//stroke(255,0,0);
-			circle(curPos.x,curPos.y,1)
-		}
-		for (let nullY = 1; nullY < ySignChange.length;nullY++){
-			let curPos = coordinateToPixel(ySignChange[nullY]);
-			fill(yNullclineColor);
-			noStroke();
-			//stroke(255,0,255);
-			circle(curPos.x,curPos.y,1)
+			let posVec = coordinateToPixel(yNullclineShow[k].pos);
+			let curSize = yNullclineShow[k].boxSize;
+			
+			fill(yNullclineColor)
+			rect(posVec.x,posVec.y,curSize/scalingFactor+1,-curSize/scalingFactor-1);
+			
+			//if (yNullclineShow[k].statusY == false){
+				//circle(posVec.x,posVec.y,curSize/scalingFactor);
+			//}
 		}
 		
+			/*
+			} else {
+				fill(yNullclineColor)
+				circle(posVec.x,posVec.y,0.1*xNullclinePosis[k].boxSize/scalingFactor);
+				rect(posVec.x,posVec.y,xNullclinePosis[k].boxSize/scalingFactor,-xNullclinePosis[k].boxSize/scalingFactor);
+			*/
+			/*
+			fill(yNullclineColor)
+			circle(yNullclinePosis[k].x,yNullclinePosis[k].y,5);
+			*/
+		/*
+		for (let k=0; k < xNullclinePosis.length;k++){
+			
+			noStroke();
+			let posVec = coordinateToPixel(xNullclinePosis[k].pos);
+			let curSize = xNullclinePosis[k].boxSize;
+			if (xNullclinePosis[k].status == false){
+				fill(xNullclineColor)
+				circle(posVec.x,posVec.y,0.2*xNullclinePosis[k].boxSize/scalingFactor);
+			} else {
+				fill(yNullclineColor)
+			}
+				
+			
+		}
 		*/
+		/*
+		let nClineRes = nullClinesResolution;
+		let maxIndex = nClineRes*nClineRes;
+		let prevXsign = 0;
+		//curIndex = 
+		for (let nX = 0;nX < nClineRes;nX++){ 
+			//let curX = nClineDifs;
+			for (let nX = 0;nX < nClineRes;nX++){ 
+			
+			}			
+		}
+		*/
+		
+		/*
+		// Increase resolution
+		if (xSignChange.length < 4000){
+			let axesWidth= fieldWidth*scalingFactor;
+			let minX = -axesWidth;
+			let maxX = axesWidth;
+			let minY = -axesWidth;
+			let maxY = axesWidth;
+			
+			let numRandom = 10;
+			for (let k = 0; k < numRandom;k++){
+				newRandPos = createVector(random(minX,maxX),random(minY,maxY));
+				curPosDiff = getDiffAt([newRandPos]);
+				
+				xSignChange.push(newRandPos);
+				ySignChange.push(curPosDiff[0]);
+			}
+		}
+		*/
+		/*
+		if (xSignChange.length < nClineTest1.length){
+			for (let nullX = 1; nullX < nClineTest1.length;nullX++){
+				let curPos = nClineTest1[nullX]
+				let curDiffs = getDiffAt(nClineTest1)
+				let curDiff = curDiffs[nullX];
+				
+				xSignChange.push(curPos)
+				ySignChange.push(curDiff)
+			}
+		}
+		
+		if (xSignChange.length - nClineTest1.length < nClineTest2.length){
+			for (let nullX = 1; nullX < nClineTest2.length;nullX++){
+				let curPos = nClineTest2[nullX]
+				let curDiffs = getDiffAt(nClineTest2)
+				let curDiff = curDiffs[nullX];
+				xSignChange.push(curPos)
+				ySignChange.push(curDiff)
+			}
+		}
+		*/
+		
+		/*
+		for (let nullX = 1; nullX < nClineTest1.length;nullX++){
+			let curPos = coordinateToPixel(nClineTest1[nullX]);
+			let curDiff = coordinateToPixel(nClineTest1[nullX]);
+			*/
+		
+		/*
+		gridPos =[];
+		gridPosY =[];
+		
+		let nClineRes = nullClinesResolution;
+		let maxIndex = nClineRes*nClineRes;
+		//let curID = 0;
+		
+		for (let k = 0;k < maxIndex;k++){
+			
+			curGrid = 0;
+			curGridY = 0;
+			
+			// Add south-west
+			curGrid = dxPosi[k];
+			curGridY = dyPosi[k];
+			
+			if (k+1 < maxIndex){
+				// Add northwest
+				curGrid = curGrid + 8 * dxPosi[k+1];
+				curGridY = curGridY + 8 * dyPosi[k+1];
+				if (k+nClineRes < maxIndex){
+					// Add southeast
+					curGrid = curGrid + 2 * dxPosi[k+nClineRes-1];
+					curGridY = curGridY + 2 * dyPosi[k+nClineRes-1];
+					if (k+nClineRes+1 < maxIndex){
+						// Add northeast
+						curGrid = curGrid + 4 * dxPosi[k+nClineRes];
+						curGridY = curGridY + 4 * dyPosi[k+nClineRes];
+					}
+				}
+			}
+			
+			gridPos.push(curGrid);
+			gridPosY.push(curGridY);
+		}
+		*/
+		
 	}
+	
 	
 	// Draw equilibria
 	if (showEquis){
+		// Check for equilibria every 200 frames
+		if ((frameCount % 200) == 1){
+			checkForEquilibria()
+		}
 		fill(equiColor);
 		noStroke();
 		for (let curEq = 0; curEq < equis.length; curEq++){
 			let curPos = coordinateToPixel(equis[curEq]);
-			rect(curPos.x-equiSize/2,curPos.y-equiSize/2,equiSize,equiSize);
+			circle(curPos.x,curPos.y,equiSize,equiSize);
 			//circle(curPos.x,curPos.y,equiSize);
 		}
 	}
+	
 	
 	// Draw directional field
 	if (showDirField){
 		for (let k = 0; k < dirFieldVectors.length;k++){
 			curVec = dirFieldVectors[k];
-			curdiffVec = diffEq(curVec);
+			curdiffVec = dirFieldDiffs[k];
+			//curdiffVec = diffEq(curVec);
 			//curdiffVec.displayRelative(curVec);
 			displayRelativeVector(curdiffVec,curVec);
 		}
@@ -647,11 +655,318 @@ function draw() {
 	}
 }
 
-function makeInitialCalculations(){
+/*
+let promiseTest = new Promise((resolve,reject) => {
+	//resolve('asdf')
+	//resolve(nClineTest1);
+			console.log('starting')
+	let curDiffs = getDiffAt(nClineTest1);
+	console.log(nClineTest1)
+	console.log(curDiffs)
+	let  asdf = [nClineTest1,curDiffs];
+	resolve(asdf)
+})
+*/
+class nullclinePoint {
+	// Object used to determine the position of the nullclines
+	constructor(x,y,status,boxSize){
+		this.pos = createVector(x,y);
+		//this.x = x;
+		//this.y = y;
+		this.status = status;
+		this.boxSize = boxSize;
+	}
+	
+	// Function for making the next three points
+	makeSubPoints(){
+		let curWidth = this.boxSize/2;
+		let toReturn = [];
+		toReturn.push(new nullclinePoint(this.pos.x+curWidth,this.pos.y+curWidth,false,curWidth));
+		toReturn.push(new nullclinePoint(this.pos.x,		 this.pos.y+curWidth,false,curWidth));
+		toReturn.push(new nullclinePoint(this.pos.x+curWidth,this.pos.y,		 false,curWidth));
+		toReturn.push(new nullclinePoint(this.pos.x,this.pos.y,		 false,curWidth));
+		
+		return toReturn;
+	}
+	
+	determine(){
+		let curDiff = diffEq(this.pos);
+		// Determine x
+		let xSign = math.sign(curDiff.x);
+		let ySign = math.sign(curDiff.y);
+		// Above and right
+		let aboveDiff = diffEq(createVector(this.pos.x+this.boxSize,this.pos.y));
+		let rightDiff = diffEq(createVector(this.pos.x,this.pos.y+this.boxSize)); 
+		let aboveXSign = math.sign(aboveDiff.x);
+		let rightXSign = math.sign(rightDiff.x);
+		let aboveYSign = math.sign(aboveDiff.y);
+		let rightYSign = math.sign(rightDiff.y);
+		
+		
+		if ((aboveXSign == xSign) && (rightXSign == xSign)){
+			this.status = true;
+		}
+		if ((aboveYSign == ySign) && (rightYSign == ySign)){
+			this.statusY = true;
+		}
+		
+	}
+	
+	
+}
+function improveNullclineResolution(){
+	let numToAdd = 10;
+	
+	if (xNullclinePosis.length < maxNullclineArraySize){
+		for (let k = 0; k < numToAdd; k++){
+				/*
+			xNullclinePosis[k].determine();
+			if (!xNullclinePosis[k].status){
+				xNullclineShow.push(xNullclinePosis[k]);
+			}*/
+				let newPoints = xNullclinePosis[k].makeSubPoints();
+				for (let nP = 0;nP < newPoints.length;nP++){
+					newPoints[nP].determine();
+					xNullclinePosis.push(newPoints[nP]);
+				}
+				// Remove the current point, since a higher resolution one has been added
+				xNullclinePosis.splice(k,1);	
+			
+		}
+	}
+	if (yNullclinePosis.length < maxNullclineArraySize){
+		for (let k = 0; k < numToAdd; k++){
+				/*
+			yNullclinePosis[k].determine();
+			if (!yNullclinePosis[k].status){
+				yNullclineShow.push(yNullclinePosis[k]);
+			}
+			*/
+				let newPoints = yNullclinePosis[k].makeSubPoints();
+				for (let nP = 0;nP < newPoints.length;nP++){
+					newPoints[nP].determine();
+					yNullclinePosis.push(newPoints[nP]);
+				}
+				// Remove the current point, since a higher resolution one has been added
+				yNullclinePosis.splice(k,1);	
+			
+		}
+	}
 
+/*
+					if (!newPoints[nP].statusY){
+						yNullclineShow.push(newPoints[nP]);
+					}
+*/
+
+	xNullclineShow = [];
+	yNullclineShow = [];
+	for (let k = 0; k < xNullclinePosis.length; k++){
+		
+		if (!xNullclinePosis[k].status){
+			xNullclineShow.push(xNullclinePosis[k]);
+		}
+	}
+	for (let k = 0; k < yNullclinePosis.length; k++){
+		
+		if (!yNullclinePosis[k].statusY){
+			yNullclineShow.push(yNullclinePosis[k]);
+		}
+	}
+	
+}
+
+function checkForEquilibria(){
+	equis = [];
+	for (let k = 0; k < xNullclineShow.length; k++){ 
+		let curX = xNullclineShow[k].pos;
+		for (let j = 0; j < yNullclineShow.length; j++){ 
+			let curY = yNullclineShow[j].pos;
+			if ((curX.x == curY.x) && (curX.y == curY.y) ){
+				equis.push(createVector(curX.x,curY.y));
+			}
+		}
+	}
+}
+
+function makeInitialCalculations(){
+	
 	// Calculate the nullclines
 	if (showNullclines){
-	[xSignChange,ySignChange] =  calcNullclines(nullClinesResolution);
+		
+		// -------- New grid-based nullcline implementation --------
+		xNullclinePosis = [];
+		yNullclinePosis = [];
+		
+		// First construct the first four points
+		let axesWidth= fieldWidth*scalingFactor;
+		let minX = -axesWidth;
+		let maxX = axesWidth;
+		let minY = -axesWidth;
+		let maxY = axesWidth;
+		
+		// I SHOULD MAKE AN OBJECT! THAT WOULD MAKE THINGS SMARTER
+		// Has to include x pos, y pos, determined boolean 
+		
+		// First, just make the four corners
+		//let newN = new nullclinePoint(minX,minY,0);
+		let curWidth = maxX-minX;
+		xNullclinePosis.push(new nullclinePoint(minX,minY,false,curWidth))
+		xNullclinePosis.push(new nullclinePoint(minX,maxY,false,curWidth))
+		xNullclinePosis.push(new nullclinePoint(maxX,minY,false,curWidth))
+		xNullclinePosis.push(new nullclinePoint(maxX,maxY,false,curWidth))
+		
+		yNullclinePosis.push(new nullclinePoint(minX,minY,false,curWidth))
+		yNullclinePosis.push(new nullclinePoint(minX,maxY,false,curWidth))
+		yNullclinePosis.push(new nullclinePoint(maxX,minY,false,curWidth))
+		yNullclinePosis.push(new nullclinePoint(maxX,maxY,false,curWidth))
+		
+		let curLength  = xNullclinePosis.length;
+		let curLengthY = yNullclinePosis.length;
+		 
+		/*
+		//for (let k = 0; k < curLength;k++){
+		for (let k = curLength-1; k >= 0; k--){
+			// Determine the current points
+			//xNullclinePosis[k].determine();
+			
+			let newPoints = xNullclinePosis[k].makeSubPoints();
+			
+			for (let nP = 0;nP < newPoints.length;nP++){
+				xNullclinePosis.push(newPoints[nP]);
+			}	
+			// Remove the current point, since a higher resolution one has been added
+			xNullclinePosis.splice(k,1);
+		}
+		*/
+		
+		
+		// Do a couple of iterations
+		for (let numIter = 0; numIter < 4; numIter++){
+			// Get the length of the array
+			curLength = xNullclinePosis.length;
+			for (let k = curLength-1; k >= 0; k--){
+				let newPoints = xNullclinePosis[k].makeSubPoints();
+				for (let nP = 0;nP < newPoints.length;nP++){
+					xNullclinePosis.push(newPoints[nP]);
+				}
+				// Remove the current point, since a higher resolution one has been added
+				xNullclinePosis.splice(k,1);	
+			}
+		}
+		for (let numIter = 0; numIter < 3; numIter++){
+			// Get the length of the array
+			curLengthY = yNullclinePosis.length;
+			for (let k = curLengthY-1; k >= 0; k--){
+				let newPoints = yNullclinePosis[k].makeSubPoints();
+				for (let nP = 0;nP < newPoints.length;nP++){
+					yNullclinePosis.push(newPoints[nP]);
+				}
+				// Remove the current point, since a higher resolution one has been added
+				yNullclinePosis.splice(k,1);	
+			}
+		}
+		/*
+		// Remove if the points are outside the screen
+		curLength = xNullclinePosis.length;
+		for (let k = curLength-1; k >= 0; k--){
+			if (xNullclinePosis[k].x < minX){
+				console.log('asdf')
+				xNullclinePosis.splice(k,1);
+			}
+		} 
+		*/
+			//curLength = xNullclinePosis.length;
+			//for (let k = 0; k < curLength;k++){
+				/*
+			for (let k = curLength-1; k >= 0; k--){
+				// Determine the current points
+				xNullclinePosis[k].determine();
+			}*/
+			
+		// Make an initial check for equilibria
+		checkForEquilibria()
+		xNullclineShow = [];
+		yNullclineShow = [];
+		
+		for (let k = 0; k < xNullclinePosis.length; k++){
+			
+			xNullclinePosis[k].determine();
+			if (!xNullclinePosis[k].status){
+				xNullclineShow.push(xNullclinePosis[k]);
+			}
+		}
+		for (let k = 0; k < yNullclinePosis.length; k++){
+			
+			yNullclinePosis[k].determine();
+			if (!yNullclinePosis[k].status){
+				yNullclineShow.push(yNullclinePosis[k]);
+			}
+		}
+		
+
+		
+				/*
+				// Remove the determined ones
+				if (xNullclinePosis[k].status == true){
+					xNullclinePosis.splice(k,1);
+				}
+				*/
+		/*
+		curLength = xNullclinePosis.length;
+		//for (let k = 0; k < curLength;k++){
+		for (let k = curLength-1; k >= 0; k--){
+			// Determine the current points
+			xNullclinePosis[k].determine();
+			
+			// Remove the determined ones
+			if (xNullclinePosis[k].status == true){
+				xNullclinePosis.splice(k,1);
+			}
+			
+		}
+		*/
+		
+		// --------
+		
+		/*
+		xSignChange =[];
+		ySignChange =[];
+		dxPosi =[];
+		dyPosi =[];
+		
+		[xSignChange,ySignChange] = calcNullclines(nullClinesResolution);
+		nullPos = xSignChange;
+		for (let k = 0; k < ySignChange.length;k++){
+			dxPosi.push(1*(ySignChange[k].x>0));
+			dyPosi.push(1*(ySignChange[k].y>0));
+			//dxPosi.push(math.sign(ySignChange[k].x));
+			//dyPosi.push(math.sign(ySignChange[k].y));
+		}
+		*/
+	//[xSignChange,ySignChange] =  calcNullclines(nullClinesResolution);
+		/*
+		calcNullclinesThread().then(function(response){
+			console.log('Done')
+			[xSignChange,ySignChange] = response;
+		});
+		*/
+		/*
+		promiseTest.then(value=> {
+			console.log('success')
+			console.log(value);
+			[outPos,outDiff] = value;
+			xSignChange.push(outPos);
+			ySignChange.push(outDiff);
+		}).catch(err => {
+			console.log(err);
+		})
+		*/
+		
+		
+		//calcNullAll()
+		//.then(calcNullMedium())
+		
 	}
 	
 	/*
@@ -674,15 +989,102 @@ function makeInitialCalculations(){
 	
 }
 
+
+/*
+function worker(){
+	self.addEventListener('message', function(e){
+		[xSignChange,ySignChange] = calcNullclines(e);
+	}
+}
+*/
+
+/*
+async function calcNullAll(){
+	await calcNullLow();
+//	await sleep(500);
+	await new Promise(r => setTimeout(r, 2000));
+	await calcNullMedium();
+	await new Promise(r => setTimeout(r, 2000));
+	//await sleep(500);
+	await calcNullHigh();
+	await new Promise(r => setTimeout(r, 2000));
+	//await sleep(500);
+	await calcNullUltraHigh();
+
+}
+
+function addNull(resStep){
+	
+	toAddX = [];
+	toAddY = [];
+	
+	if (resStep == 1){
+		axesWidth= fieldWidth*scalingFactor;
+		minX = -axesWidth;
+		maxX = axesWidth;
+		minY = -axesWidth;
+		maxY = axesWidth;
+		
+		toAddX = [minX,minX,maxX,maxX];
+		toAddY = [minY,maxY,minY,maxY];
+		
+		for (let k = 0; k < array.length; k = k+1){
+			
+		}
+	}
+	
+	
+}
+
+function calcNullLow(){
+	[xSignChange,ySignChange] = calcNullclines(10);
+}
+function calcNullMedium(){
+	[xSignChange,ySignChange] = calcNullclines(25);
+}
+function calcNullHigh(){
+	[xSignChange,ySignChange] = calcNullclines(50);
+}
+function calcNullUltraHigh(){
+	[xSignChange,ySignChange] = calcNullclines(100);
+}
+
+*/
+
+/*
+function calcNullclinesThread(){
+	
+//	for (let k =10; k < 50 ; k = k+10){
+//		[xSignChange,ySignChange] =  calcNullclines(k);
+//	}
+	
+	//[xSignChange,ySignChange] =  calcNullclines(10);
+	[asdf,qwer] =  calcNullclines(50);
+	//.then(calcNullclines(20));
+	return [asdf,qwer];
+}
+*/
+function getDiffAt(array){
+	
+	toReturn = [];
+	for (let k = 0; k < array.length; k = k+1){
+		curPos = array[k];
+		toReturn.push(diffEq(curPos));
+	}
+	return toReturn
+}
+
 function calcNullclines(nullclineRes){
 	axesWidth= fieldWidth*scalingFactor;
-	minX = -axesWidth+0.001;
+	//minX = -axesWidth+0.001;
+	minX = -axesWidth;
 	maxX = axesWidth;
-	minY = -axesWidth+0.001;
+	//minY = -axesWidth+0.001;
+	minY = -axesWidth;
 	maxY = axesWidth;
 	
 	//let curPos = createVector(minX,minY);
-	let curDiff = diffEq(createVector(minX,minY));
+	//let curDiff = diffEq(createVector(minX,minY));
 	
 	let nX = minX;
 	let nY = minY;	
@@ -693,8 +1095,6 @@ function calcNullclines(nullclineRes){
 	let dX = (maxX-minX)/nullclineRes;
 	let dY = (maxY-minY)/nullclineRes;
 	
-	// Idea: Go through all places, check above and to the left
-	// and save positions to an array 
 	
 	let thisxSignChange = [];
 	let thisySignChange = [];

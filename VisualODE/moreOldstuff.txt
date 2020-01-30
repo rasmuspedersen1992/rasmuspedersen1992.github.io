@@ -1,0 +1,204 @@
+
+	
+	/*
+	// Empty nClineVecs and nClineDifs
+	nClineVecs = [];
+	nClineDifs = [];
+	
+	// Generate positions for to use for nullclines
+	axesWidth= fieldWidth*scalingFactor;
+	minX = -axesWidth;
+	maxX = axesWidth;
+	minY = -axesWidth;
+	maxY = axesWidth;
+	
+	let dX = (maxX-minX)/nClineInitRes;
+	let dY = (maxY-minY)/nClineInitRes;
+	let nX = 0;
+	let nY = 0;
+	
+	// Go through in the x-direction
+	for (let k = 1; k < nClineInitRes; k = k+1){
+		// Get the current x
+		nX = minX+dX*k;
+		
+		// Go through in the y-direction
+		for (let j = 1; j < nClineInitRes; j=j+1){
+			prevY = nY; // Save previous y
+			// Get current y
+			nY = minY+dY*j;
+			
+			
+			let curPos = createVector(nX,nY);
+			nClineVecs.push(curPos);
+			nClineDifs.push(diffEq(curPos));
+			
+		}
+	}
+	*/
+	
+
+/*
+function interpretMathString(str){
+	// Main function for interpreting a string
+	// Currently reads:
+		// Constant terms: +4
+		// Linear: 3*x (with only one coefficient)
+		// Powers
+	// To implement:
+		// Terms with both x and y
+		
+	// First, remove spaces
+	let curStr = str.replace(/ /g,'');
+	
+	// Split into terms
+	let allTerms = curStr.split('+');
+	
+	let numTerms = allTerms.length;
+	
+	//let returnString = '';
+	let linX = 0;
+	let linY = 0;
+	let constTerm = [];
+	let mult = [];
+	let Xpow = [];
+	let Xmult = [];
+	let Ypow = [];
+	let Ymult = [];
+	
+	for (let k = 0; k <= allTerms.length-1; k++){
+		
+		let curTerm = allTerms[k];
+		
+		
+		// Split on * to get the multiplier in front
+		let splitStr = curTerm.split('*');
+		
+		//let toMult = 1;
+		// Check the first part and save
+		//if ((splitStr[0] == 'x') || (splitStr[0] == 'y')) {
+		//} else {
+		//	toMult = float(splitStr[0]);
+		//}
+		
+		//if (splitStr[0][0] == '-'){
+		//	if (splitStr[0][1]
+		//}
+		
+		//mult.push(toMult); 
+		
+		
+		mult.push(float(splitStr[0]));
+		
+		// Check if term contains x and y
+		let xPos = curTerm.search('x');
+		let yPos = curTerm.search('y');
+		// Search returns -1 if not found
+		
+		// If both x and y
+		if ((xPos > 0) && (yPos > 0)){
+			// Has to be of either of the following forms:
+			// a * x * y
+			// a * x ^ b * y 
+			// a * x * y ^ c
+			// a * x ^ b * y ^ c
+			
+			
+			
+			// NOT YET IMPLEMENTED!!
+			
+			
+		}
+		
+		// Only an x, no y
+		if ((xPos > 0) && (yPos == -1)){
+			// Split to get the power of x
+			let powSplit = curTerm.split('^');
+			
+			// If there are no powers, the two array are identical
+			if (curTerm == powSplit){
+				// The power of x is one
+				Xpow.push(1);
+			} else {
+				// The second part of powSplit is the power.
+				Xpow.push(float(powSplit[1]));
+			}
+			
+			// Zeros for everything else
+			Ypow.push(0);
+			constTerm.push(0);
+			
+		}
+		// Only a y, no x
+		if ((yPos > 0) && (xPos == -1)){
+			// Split to get the power of y
+			let powSplit = curTerm.split('^');
+			
+			if (curTerm == powSplit){
+				// The power of y is one
+				Ypow.push(1);
+			} else {
+				// The second part of powSplit is the power.
+				Ypow.push(float(powSplit[1]));
+				
+			}
+			
+			// Zeros for everything else
+			Xpow.push(0);
+			constTerm.push(0);
+		}
+		// Constant term: No x and no y
+		if ((yPos == -1) && (xPos == -1)){
+			
+			Xpow.push(0);
+			Ypow.push(0);
+			constTerm.push(float(curTerm));
+		}
+	}
+	
+	//return [constTerm,linX,linY]
+	//console.log([numTerms,constTerm,Xpow,Xmult,Ypow,Ymult])
+	return [numTerms,constTerm,mult,Xpow,Ypow]
+}
+*/
+/*
+function evaluateDiffEq(x,y,curFunc){
+	
+	let curVal = 0;
+	
+	let numTerms = curFunc[0]
+	
+	for (let k = 0; k < numTerms; k++){
+		// Constant
+		curVal = curVal + curFunc[1][k];
+		
+		let xContri = curFunc[2][k]*pow(x,curFunc[3][k]);		
+		let yContri = curFunc[2][k]*pow(y,curFunc[4][k]);
+		
+		// If both are non zero
+		if ((curFunc[3][k] != 0) && (curFunc[4][k] != 0) ){
+			curVal = curVal + xContri*yContri;
+		} else if (curFunc[3][k] != 0) {
+			curVal = curVal + xContri
+		} else if (curFunc[4][k] != 0) {
+			curVal = curVal + yContri
+		}
+		
+		
+		
+		
+		
+		
+	}
+	
+	// Constant term
+	//curVal = curVal + curFunc[0];
+	//curVal = curVal + curFunc[1];
+	// 
+	//curVal = curVal + curFunc[1]*x;
+	// Linear y
+	//curVal = curVal + curFunc[2]*y;
+	
+	return curVal
+}
+*/

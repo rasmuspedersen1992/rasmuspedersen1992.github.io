@@ -107,3 +107,28 @@ function checkForEquilibria(){
 	}
 	return allEqui;
 }
+
+
+	/*
+	// Go through in both x and y direction
+	for (let k = -dirFieldRes; k <= dirFieldRes ;k++){
+		for (let j = -dirFieldRes; j <= dirFieldRes ;j++){
+			// Positions split in dirFieldRes positions 
+			newX = k*int(fieldWidth/dirFieldRes)/scalingFactor;
+			newY = j*int(fieldHeight/dirFieldRes)/scalingFactor; 
+			//newVec = new Vector(newX,newY);
+			newVec = createVector(newX,newY);
+			dirFieldVectors.push(newVec);
+		} 
+	}
+	*/
+
+
+
+/*			
+	for (let k = 0; k <= dirFieldRes ;k++){
+		for (let j = 0; j <= dirFieldRes ;j++){
+			// Positions split in dirFieldRes positions 
+			newX = lerp(minX,maxX,k/dirFieldRes);
+			newY = lerp(minY,maxY,j/dirFieldRes);
+*/
