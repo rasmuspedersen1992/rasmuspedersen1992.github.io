@@ -178,9 +178,9 @@ function setup() {
   // Define colors
   // Default colors
   colorS = color(0,255,0);
-  colorI = color(255, 0, 0);
   colorE = color(255, 255, 255);
-  colorR = color(0, 255, 255);
+  colorI = color(255, 0, 0);
+  colorR = color(255, 0, 255);
   // RUC colors
   /*
   //colorS = color(113,183,140);
