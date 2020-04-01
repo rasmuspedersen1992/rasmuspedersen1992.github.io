@@ -10,32 +10,24 @@ var fieldWidth = 200;
 var fieldHeight = fieldWidth;
 var particleDiameter = 4;
 
-var numPerson = 750;
+var numPerson = 500;
 var allPersons =[];
 
-//var maxVel = 0.75;
-//var maxAcc = .25;
-var maxVel = 1;
-var maxAcc = .5;
+var maxVel = 0.5;
+var maxAcc = .25;
 var maxVelSq = maxVel*maxVel;
 var maxAccSq = maxAcc*maxAcc;
 
-var infDist = 8; // Infection distance (Radius)
+var infDist = 10; // Infection distance (Radius)
 var infDistSq = infDist*infDist;
 
-// Variables to change
 var infProb = 0.2; // Probability of infection
-var infSlider;
-var infRadiusSlider;
 
-// Buttons
-var restartButton;
 
-var timeIsRunning = true;
 var timeStep = 0.5;
 var fullTime = 0;
 
-var maxInfTime = 100;
+var maxInfTime = 50;
 
 var colorS;
 var colorI;
@@ -45,17 +37,6 @@ var colorR;
 var numS = 0;
 var numI = 0;
 var numR = 0;
-
-// Constants for graph
-var graphHeight = 200;
-var graphWidth = 100;
-var graphTop = 10;
-var graphLeft = 20;
-
-var sliderHeight = 50;
-var sliderWidth = 200;
-var sliderTop = graphTop + graphHeight + sliderHeight + 100;
-var sliderLeft = graphLeft + 25;
 
 // Objects for the graph
 var graphLines =[];
@@ -72,8 +53,6 @@ function setup(){
 	} else {
 		divHeight = fieldHeight + 200;
 	}
-	
-	divHeight = 800;
 		
 	//fieldTop = floor(0 * divHeight);
 	//fieldTop = 0;
@@ -83,48 +62,16 @@ function setup(){
 	fieldWidth = floor(0.33 * divWidth);
 	fieldHeight = fieldWidth;
 
-	// Create canvas
 	cnv = createCanvas(divWidth, divHeight);
 	cnv.parent('sketch-holder');
 	cnv.style('display','block');
 	
-	// Define the colors
 	colorS = color(121,188,201);
 	//colorS = color(107,191,235);
 	//colorS = color(49,96,110);
 	colorI = color(245,102,84);
 	colorR = color(27,27,27);
 	
-	// Infection time slider
-	infSlider = createSlider(0.1,1,infProb,0.05);
-	infSlider.size(sliderWidth);
-	infSlider.position(sliderLeft, sliderTop+sliderHeight);
-	infRadiusSlider = createSlider(2,20,infDist,1);
-	infRadiusSlider.size(sliderWidth);
-	infRadiusSlider.position(sliderLeft, sliderTop+sliderHeight*2);
-		
-	// Pause and restart button
-	restartButton = createButton('Restart');
-	restartButton.position(sliderLeft-20,sliderTop);
-	restartButton.mousePressed(startupSim);
-	pauseButton = createButton('Pause/Start');
-	pauseButton.position(sliderLeft+50,sliderTop);
-	pauseButton.mousePressed(pauseSim);
-	
-	// Start the simulation
-	startupSim();
-}
-
-function startupSim(){
-	// Reset arrays
-	allPersons = [];
-	graphLines =[];
-	// Reset counters
-	numS = 0;
-	numI = 0;
-	numR = 0;
-	fullTime = 0;
-	// Initialize people
 	for (var p = 0; p < numPerson; p++){
 		/*
 		if (random()>0.5){
@@ -141,27 +88,17 @@ function startupSim(){
 	// Infect one
 	allPersons[0].infect();
 	
-	
+	// Start the simulation
+	startupSim();
 }
 
-function pauseSim(){
-	// Change the state of "timeIsRunning"
-	timeIsRunning = !timeIsRunning;		
+function startupSim(){
+	
 }
 
 function draw(){
 	
 	background(0);
-	
-	// Load variables from sliders
-	infProb = infSlider.value();
-	infDist = infRadiusSlider.value();
-	infDistSq = infDist*infDist;
-	
-	fill(255);
-	text('Infection probability',sliderLeft, sliderTop+sliderHeight-10)
-	fill(255);
-	text('Infection radius',sliderLeft, sliderTop+sliderHeight*2-10)
 	
 	push();
 	translate(fieldLeft,fieldTop);
@@ -174,9 +111,9 @@ function draw(){
 	rect(-bOffset,-bOffset,fieldWidth+bOffset*2,fieldHeight+bOffset*2);
 	
 	for (var p = 0; p < numPerson; p++){
-		if (timeIsRunning){
-		allPersons[p].move();
 		allPersons[p].updateState();
+		allPersons[p].move();
+		allPersons[p].display();
 		// Try to spread disease
 		if (allPersons[p].stage == 'I'){
 			// Go through all
@@ -199,16 +136,11 @@ function draw(){
 				}
 			}
 		}
-		}
-		// Finally, display the person
-		allPersons[p].display();
 	}
 	pop();
 	
 	// Update time
-	if (timeIsRunning){
-		fullTime += timeStep;
-	}
+	fullTime += timeStep;
 	
 	// ------------ PLOT GRAPH ------------
 	// Get the current state
@@ -216,6 +148,10 @@ function draw(){
 	var percI = numI/numPerson;
 	var percR = numR/numPerson;
 	
+	var graphHeight = 200;
+	var graphWidth = 100;
+	var graphTop = 10;
+	var graphLeft = 20;
 	
 	translate(graphTop,graphLeft)
 	
@@ -241,8 +177,8 @@ class graphLine{
 		this.percS = numS/numPerson;
 		this.percI = numI/numPerson;
 		this.percR = numR/numPerson;
-		this.totalHeight = 300;
-		this.totalWidth = 500;
+		this.totalHeight = 200;
+		this.totalWidth = 300;
 		this.color = color(random(255),random(255),random(255));
 	}
 	
