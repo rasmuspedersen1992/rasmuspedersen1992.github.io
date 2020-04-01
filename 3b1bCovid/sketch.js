@@ -106,11 +106,14 @@ function setup(){
 	infRadiusSlider.position(sliderLeft, sliderTop+sliderHeight*2);
 		
 	// Pause and restart button
+	var buttonWidth = 100;
 	restartButton = createButton('Restart');
-	restartButton.position(sliderLeft-20,sliderTop);
+	restartButton.position(sliderLeft,sliderTop);
+	restartButton.size(buttonWidth);
 	restartButton.mousePressed(startupSim);
 	pauseButton = createButton('Pause/Start');
-	pauseButton.position(sliderLeft+50,sliderTop);
+	pauseButton.position(sliderLeft+buttonWidth,sliderTop);
+	pauseButton.size(buttonWidth);
 	pauseButton.mousePressed(pauseSim);
 	
 	// Start the simulation
@@ -170,6 +173,10 @@ function draw(){
 	translate(fieldLeft,fieldTop);
 	var scaleFactor = divWidth/fieldWidth;
 	scale(scaleFactor*0.33);
+	fill(colorI);
+	textSize(24);
+	textAlign(CENTER, CENTER);
+	text('# Active cases = '+numI,fieldWidth/2,-fieldWidth/15)
 	var bWidth = 2;
 	var bOffset = 10;
 	fill(255,255,255) 
@@ -347,7 +354,7 @@ class Person {
 	
 	move(){
 		// Add some random acceleration
-		var accToAdd = 0.1;
+		var accToAdd = 0.05;
 		this.acc.add(createVector(random(-accToAdd,accToAdd),random(-accToAdd,accToAdd)));
 		
 		// Limit acceleration
@@ -380,7 +387,7 @@ class Person {
 		
 		
 		// Update velocity
-		this.vel.add(p5.Vector.mult(this.acc,timeStep));
+		this.vel.add(p5.Vector.mult(this.acc,0.5*timeStep));
 		
 		// Limit velocity
 		if (this.vel.magSq() > maxVelSq){
