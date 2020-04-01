@@ -2,6 +2,8 @@
 	
 	
 */
+var divWidth; 
+var divHeight;
 
 var fieldTop = 0;
 var fieldLeft = 400;
@@ -52,7 +54,7 @@ var graphWidth = 100;
 var graphTop = 10;
 var graphLeft = 20;
 
-var sliderHeight = 50;
+var sliderHeight = 70;
 var sliderWidth = 200;
 var sliderTop = graphTop + graphHeight + sliderHeight + 100;
 var sliderLeft = graphLeft + 25;
@@ -62,11 +64,10 @@ var graphLines =[];
 
 function setup(){
 	
-	var divWidth = document.getElementById('sketch-holder').offsetWidth;
+	divWidth = document.getElementById('sketch-holder').offsetWidth;
 	/*if (divWidth > 1.75*fieldWidth){
 		divWidth = 1.75*fieldWidth;
 	}*/
-	var divHeight;
 	if (divWidth < fieldHeight){
 		divHeight = fieldHeight;
 	} else {
@@ -80,7 +81,8 @@ function setup(){
 	//fieldLeft = floor(0.5 * divWidth);
 	fieldTop = floor(0.18 * divHeight);
 	fieldLeft = floor(0.63 * divWidth);
-	fieldWidth = floor(0.33 * divWidth);
+	fieldWidth = 400;
+	//fieldWidth = floor(0.33 * divWidth);
 	fieldHeight = fieldWidth;
 
 	// Create canvas
@@ -160,12 +162,14 @@ function draw(){
 	
 	fill(255);
 	text('Infection probability',sliderLeft, sliderTop+sliderHeight-10)
-	fill(255);
+	text(infProb,sliderLeft, sliderTop+sliderHeight*2-40)
 	text('Infection radius',sliderLeft, sliderTop+sliderHeight*2-10)
+	text(infDist,sliderLeft, sliderTop+sliderHeight*3-40)
 	
 	push();
 	translate(fieldLeft,fieldTop);
-	
+	var scaleFactor = divWidth/fieldWidth;
+	scale(scaleFactor*0.33);
 	var bWidth = 2;
 	var bOffset = 10;
 	fill(255,255,255) 
@@ -241,8 +245,10 @@ class graphLine{
 		this.percS = numS/numPerson;
 		this.percI = numI/numPerson;
 		this.percR = numR/numPerson;
-		this.totalHeight = 300;
-		this.totalWidth = 500;
+		this.totalHeight = divHeight*0.4;
+		this.totalWidth = divWidth*0.55;
+		//this.totalHeight = 300;
+		//this.totalWidth = 500;
 		this.color = color(random(255),random(255),random(255));
 	}
 	
