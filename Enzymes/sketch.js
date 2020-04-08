@@ -39,7 +39,7 @@ function setup(){
 		divHeight = fieldHeight + 200;
 	}
 	
-	divHeight = 800;
+	divHeight = divWidth;
 		
 	//fieldTop = floor(0 * divHeight);
 	//fieldTop = 0;
