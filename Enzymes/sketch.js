@@ -137,13 +137,8 @@ function draw(){
 	push();
 	translate(fieldLeft,fieldTop);
 	scale(curScale);
-	var borderWidth = 10;
-	var extraWidth = 3;
-	fill(50)
-	rect(-borderWidth,-borderWidth,fieldWidth+borderWidth*2,fieldHeight+borderWidth*2);
-	fill(0);
-	rect(-extraWidth,-extraWidth,fieldWidth+extraWidth*2,fieldHeight+extraWidth*2);
-	//rect(0,0,fieldWidth,fieldHeight);
+	
+	
 	
 	for (var p = numMols-1; p >= 0; p--){
 		allMols[p].move();
@@ -195,6 +190,21 @@ function draw(){
 	}
 	numMols = allMols.length;
 	
+	//rect(0,0,fieldWidth,fieldHeight);
+	
+	// Draw border
+	var borderWidth = 30;
+	var extraWidth = 20;
+	fill(50)
+	noStroke();
+	//rect(-borderWidth,-borderWidth,fieldWidth+borderWidth*2,fieldHeight+borderWidth*2);
+	//fill(0);
+	//rect(-extraWidth,-extraWidth,fieldWidth+extraWidth*2,fieldHeight+extraWidth*2);
+	
+	rect(-borderWidth/2,-borderWidth/2,borderWidth,fieldHeight);
+	rect(-borderWidth/2+fieldWidth,-borderWidth/2,borderWidth,fieldHeight);
+	rect(-borderWidth/2,-borderWidth/2,fieldWidth,borderWidth);
+	rect(-borderWidth/2,-borderWidth/2+fieldHeight,fieldWidth+borderWidth,borderWidth);
 	pop();
 }
 
