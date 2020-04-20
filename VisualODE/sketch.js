@@ -56,8 +56,12 @@ let maxWidth = 800;
 let scalingFactor = 0.01;
 
 // String for differential equations
-let xString = "-3 * x  + 5 * y + -1";
-let yString = "1 * x ^2 + -1* y +-1";
+//let xString = "3 * x^3  + 5 * y^2 - 15";
+//let yString = "1 * x ^2 - 1* y ";
+let xString = "3 * x^2  + 5 * y^2 - 15";
+let yString = "1 * x ^2 - 1* y -3";
+//let xString = "-3 * x  + 5 * y + -1";
+//let yString = "1 * x ^2 + -1* y +-1";
 let xStringInter = '';
 let yStringInter = '';
 let curXfunc = [0,0,0,0,0];
@@ -103,11 +107,30 @@ let yNullclinePosis = [];
 let xNullclineShow = [];
 let yNullclineShow = [];
 let maxNullclineArraySize = 300000;
+//let maxNullclineArraySize = 0;
 
 // Equilibria
 let equis =[];
 let equiSize = 10;
-let showEquis = true;
+let showEquis = false;
+
+// Newton walkers
+let showNewtonWalkers = true;
+let numNewtonWalkers = 100;
+let newtownWalkerOpacity = 150; // Out of 255
+let AllNewtonWalkers = [];
+let permWalkerX = [];
+let permWalkerY = [];
+//let maxPermWalkLength = 1000;
+let maxPermWalkLength = 0;
+
+// Newton walker looking for equilibria
+let newtonEquiTest;
+let newtonEquiFinders = [];
+let numNewtonEquis = 50;
+
+// New equilibrium finder
+let equilibriumFinderTest;
 
 
 // Limits
@@ -231,6 +254,11 @@ function setup() {
 	curXfuncStr = math.simplify(xString);
 	curYfuncStr = math.simplify(yString);
 	
+	curXfuncStrXDiff = math.derivative(curXfuncStr,'x');
+	curXfuncStrYDiff = math.derivative(curXfuncStr,'y');
+	curYfuncStrXDiff = math.derivative(curYfuncStr,'x');
+	curYfuncStrYDiff = math.derivative(curYfuncStr,'y');
+	
 	// Calculate dirfield and nullclines	
 	makeInitialCalculations();
 	
@@ -257,10 +285,42 @@ function setup() {
 	nullclineCheck.changed(toggleNullclines);
 	
 	
+	
+	// Newton walker test
+	let axesWidth= fieldWidth*scalingFactor;
+	let minX = -axesWidth;
+	let maxX = axesWidth;
+	let minY = -axesWidth;
+	let maxY = axesWidth;
+	for (let k = 0; k < numNewtonWalkers;k++){
+		let varToUse = 'x';
+		if (random() < 0.5){
+			varToUse = 'y';
+		}
+		let newWalker = new newtonWalker(createVector(random(minX,maxX),random(minY,maxY)),varToUse);
+		AllNewtonWalkers.push(newWalker);
+	}
+	
+	for (let k = 0; k < numNewtonEquis;k++){
+		let newWalker = new newtonWalker(createVector(random(minX,maxX),random(minY,maxY)),'x');
+		newWalker.color = equiColor;
+		newWalker.type = 'equi';
+		newtonEquiFinders.push(newWalker)
+	}
+	
+	/*
+	// Equilibria newton walker
+	newtonEquiTest = new newtonWalker(createVector(random(minX,maxX),random(minY,maxY)),'x');
+	newtonEquiTest.color = equiColor;
+	newtonEquiTest.size = 10;
+	*/
+	
+	
+	equilibriumFinderTest = new equilibriumFinder(createVector(random(minX,maxX),random(minY,maxY)));
 }  
 
-// Function for making the array for the directional field vectors
-function makeDirField(dirFieldRes){
+function makeDirFieldInits(dirFieldRes){
+	
 	// Empty the array
 	dirFieldVectors = []; 
 	dirFieldDiffs = [];
@@ -280,12 +340,12 @@ function makeDirField(dirFieldRes){
 	
 	
 	// Go through in the x-direction
-	for (let k = 1; k < dirFieldRes; k++){
+	for (let k = 0; k < dirFieldRes; k++){
 		//newX = lerp(minX,maxX,k/dirFieldRes);
 		newX = minX+dX*k;
 		
 		
-		for (let j = 1; j < dirFieldRes; j++){
+		for (let j = 0; j < dirFieldRes; j++){
 			//newY = lerp(minY,maxY,j/dirFieldRes);
 			newY = minY+dY*j;
 			
@@ -298,6 +358,20 @@ function makeDirField(dirFieldRes){
 			//dirFieldDiffs.push(newVec);
 		}
 	}
+}
+
+// Function for making the array for the directional field vectors
+function makeDirField(dirFieldRes){
+	
+		makeDirFieldInits(dirFieldRes);
+		/*
+	// Check if "dirFieldVectors" needs to be remade
+	if (dirFieldVectors.length == 0){
+		makeDirFieldInits(dirFieldRes);
+	} else if ((dirFieldVectors[0].x == -fieldWidth*scalingFactor) && (dirFieldVectors[dirFieldVectors.length-1].x == fieldWidth*scalingFactor) == false){
+		makeDirFieldInits(dirFieldRes);
+	}*/
+	
 }
 
 
@@ -427,6 +501,12 @@ function reCalculateFunction(){
 	curYfuncStr = math.simplify(inputy.value());
 	
 	
+	curXfuncStrXDiff = math.derivative(curXfuncStr,'x');
+	curXfuncStrYDiff = math.derivative(curXfuncStr,'y');
+	curYfuncStrXDiff = math.derivative(curYfuncStr,'x');
+	curYfuncStrYDiff = math.derivative(curYfuncStr,'y');
+	
+	
 	
 	// And make calculations again
 	makeInitialCalculations();
@@ -467,7 +547,9 @@ function draw() {
 			let posVec = coordinateToPixel(xNullclineShow[k].pos);
 			let curSize = xNullclineShow[k].boxSize;
 			
-			fill(xNullclineColor)
+			//fill(xNullclineColor)
+			let curAlpha = 100;
+			fill([xNullclineColor[0],xNullclineColor[1],xNullclineColor[2],curAlpha]);
 			rect(posVec.x,posVec.y,curSize/scalingFactor+1,-curSize/scalingFactor-1);
 			
 			//if (xNullclineShow[k].status == false){
@@ -480,7 +562,9 @@ function draw() {
 			let posVec = coordinateToPixel(yNullclineShow[k].pos);
 			let curSize = yNullclineShow[k].boxSize;
 			
-			fill(yNullclineColor)
+			//fill(yNullclineColor)
+			let curAlpha = 100;
+			fill([yNullclineColor[0],yNullclineColor[1],yNullclineColor[2],curAlpha]);
 			rect(posVec.x,posVec.y,curSize/scalingFactor+1,-curSize/scalingFactor-1);
 			
 			//if (yNullclineShow[k].statusY == false){
@@ -653,6 +737,62 @@ function draw() {
 			}
 		}
 	}
+	
+	
+  
+	
+	// Newton walkers
+	for (let k = 0; k < numNewtonWalkers;k++){
+		if (random() < 0.25){
+			AllNewtonWalkers[k].update();
+		}
+		AllNewtonWalkers[k].display();
+	}
+	/*
+	newtonEquiTest.update();
+	newtonEquiTest.display();
+	if (newtonEquiTest.varToUse == 'x'){
+		newtonEquiTest.varToUse = 'y';
+	} else {
+		newtonEquiTest.varToUse = 'x';	
+	}
+	*/
+	
+	for (let k = 0; k < numNewtonEquis;k++){
+		newtonEquiFinders[k].update();
+		
+		newtonEquiFinders[k].display();
+		
+		if (newtonEquiFinders[k].varToUse == 'x'){
+			newtonEquiFinders[k].varToUse = 'y';
+		} else {
+			newtonEquiFinders[k].varToUse = 'x';	
+		}
+	}
+
+/*	
+	equilibriumFinderTest.update();
+	equilibriumFinderTest.display();
+  
+  */
+	/*
+	// Permanent newton walker array
+	for (let k = 0; k < permWalkerX.length;k++){
+		let thisPixelVec = coordinateToPixel(permWalkerX[k]);
+		fill(155,155)
+		stroke(155,155)
+		
+		circle(thisPixelVec.x,thisPixelVec.y,10);
+	}
+	for (let k = 0; k < permWalkerY.length;k++){
+		let thisPixelVec = coordinateToPixel(permWalkerY[k]);
+		fill(155,155)
+		stroke(155,155)
+		
+		circle(thisPixelVec.x,thisPixelVec.y,10);
+	}
+	*/
+	
 }
 
 /*
@@ -674,17 +814,21 @@ class nullclinePoint {
 		//this.x = x;
 		//this.y = y;
 		this.status = status;
+		this.statusY = status;
 		this.boxSize = boxSize;
+		//this.children = [];
 	}
 	
 	// Function for making the next three points
 	makeSubPoints(){
 		let curWidth = this.boxSize/2;
 		let toReturn = [];
+		toReturn.push(new nullclinePoint(this.pos.x,this.pos.y,		 false,curWidth));
 		toReturn.push(new nullclinePoint(this.pos.x+curWidth,this.pos.y+curWidth,false,curWidth));
 		toReturn.push(new nullclinePoint(this.pos.x,		 this.pos.y+curWidth,false,curWidth));
 		toReturn.push(new nullclinePoint(this.pos.x+curWidth,this.pos.y,		 false,curWidth));
-		toReturn.push(new nullclinePoint(this.pos.x,this.pos.y,		 false,curWidth));
+		
+		//this.children = toReturn;
 		
 		return toReturn;
 	}
@@ -718,7 +862,7 @@ function improveNullclineResolution(){
 	let numToAdd = 10;
 	
 	if (xNullclinePosis.length < maxNullclineArraySize){
-		for (let k = 0; k < numToAdd; k++){
+		for (let k = numToAdd; k >= 0; k--){
 				/*
 			xNullclinePosis[k].determine();
 			if (!xNullclinePosis[k].status){
@@ -729,13 +873,29 @@ function improveNullclineResolution(){
 					newPoints[nP].determine();
 					xNullclinePosis.push(newPoints[nP]);
 				}
+				
+				// Check if the current position is in "Show"-array and remove it if it is
+				for (let j = xNullclineShow.length-1; j >= 0; j--){
+					if (xNullclineShow[j].pos.x == xNullclinePosis[k].pos.x){
+						if (xNullclineShow[j].pos.y == xNullclinePosis[k].pos.y){
+							xNullclineShow.splice(j,1);
+						}						
+					}
+				}
+				
+				// Add to show array
+				if (!xNullclinePosis[k].status){
+					xNullclineShow.push(xNullclinePosis[k]);
+				}
+				
 				// Remove the current point, since a higher resolution one has been added
 				xNullclinePosis.splice(k,1);	
 			
 		}
 	}
 	if (yNullclinePosis.length < maxNullclineArraySize){
-		for (let k = 0; k < numToAdd; k++){
+		//for (let k = 0; k < numToAdd; k++){
+		for (let k = numToAdd; k >= 0; k--){
 				/*
 			yNullclinePosis[k].determine();
 			if (!yNullclinePosis[k].status){
@@ -747,6 +907,21 @@ function improveNullclineResolution(){
 					newPoints[nP].determine();
 					yNullclinePosis.push(newPoints[nP]);
 				}
+				
+				// Check if the current position is in "Show"-array and remove it if it is
+				for (let j = yNullclineShow.length-1; j >= 0; j--){
+					if (yNullclineShow[j].pos.x == yNullclinePosis[k].pos.x){
+						if (yNullclineShow[j].pos.y == yNullclinePosis[k].pos.y){
+							yNullclineShow.splice(j,1);
+						}						
+					}
+				}
+				
+				// Add to show array
+				if (!yNullclinePosis[k].statusY){
+					yNullclineShow.push(yNullclinePosis[k]);
+				}
+				
 				// Remove the current point, since a higher resolution one has been added
 				yNullclinePosis.splice(k,1);	
 			
@@ -759,14 +934,18 @@ function improveNullclineResolution(){
 					}
 */
 
+/*
 	xNullclineShow = [];
-	yNullclineShow = [];
+	
 	for (let k = 0; k < xNullclinePosis.length; k++){
 		
 		if (!xNullclinePosis[k].status){
 			xNullclineShow.push(xNullclinePosis[k]);
 		}
 	}
+	*/
+	/*
+	yNullclineShow = [];
 	for (let k = 0; k < yNullclinePosis.length; k++){
 		
 		if (!yNullclinePosis[k].statusY){
@@ -774,6 +953,7 @@ function improveNullclineResolution(){
 		}
 	}
 	
+	*/
 }
 
 function checkForEquilibria(){
@@ -866,6 +1046,7 @@ function makeInitialCalculations(){
 				yNullclinePosis.splice(k,1);	
 			}
 		}
+		
 		/*
 		// Remove if the points are outside the screen
 		curLength = xNullclinePosis.length;
@@ -885,7 +1066,6 @@ function makeInitialCalculations(){
 			}*/
 			
 		// Make an initial check for equilibria
-		checkForEquilibria()
 		xNullclineShow = [];
 		yNullclineShow = [];
 		
@@ -899,10 +1079,13 @@ function makeInitialCalculations(){
 		for (let k = 0; k < yNullclinePosis.length; k++){
 			
 			yNullclinePosis[k].determine();
-			if (!yNullclinePosis[k].status){
+			if (!yNullclinePosis[k].statusY){
 				yNullclineShow.push(yNullclinePosis[k]);
 			}
 		}
+		
+		equis =[];
+		//checkForEquilibria()
 		
 
 		
@@ -984,9 +1167,10 @@ function makeInitialCalculations(){
 		}
 	}
 	*/
-	// Make the directional field
-	makeDirField(curDirFieldRes)
-	
+	//if (showDirField){
+		// Make the directional field
+		makeDirField(curDirFieldRes)
+	//}
 }
 
 
@@ -1271,6 +1455,214 @@ function diffEq(pos){
 	return dv
 } 
 
+class equilibriumFinder {
+	constructor(vec){
+		this.pos = vec;
+		this.jumpSize = 0.1;
+	}
+	restartPos(){
+		let axesWidth= fieldWidth*scalingFactor;
+		let minX = -axesWidth;
+		let maxX = axesWidth;
+		let minY = -axesWidth;
+		let maxY = axesWidth;
+		this.pos = createVector(random(minX,maxX),random(minY,maxY));
+	}
+	updateEquations(){
+		if (this.varToUse == 'x'){
+			this.equation = curXfuncStr;
+			this.equationXDiff = curXfuncStrXDiff;
+			this.equationYDiff = curXfuncStrYDiff;
+		} else {
+			this.equation = curYfuncStr;
+			this.equationXDiff = curYfuncStrXDiff;
+			this.equationYDiff = curYfuncStrYDiff;				
+		}
+	}
+	stepInXdir(){
+		// Make one Newton-Raphson step toward x-nullcline
+		let curX = this.pos.x;
+		let curY = this.pos.y;
+		let diffX = curXfuncStr.evaluate({x:this.pos.x,y:this.pos.y});
+		let diffXdiffX = curXfuncStrXDiff.evaluate({x:this.pos.x,y:this.pos.y});
+		let diffXdiffY = curXfuncStrYDiff.evaluate({x:this.pos.x,y:this.pos.y}); 
+		
+		
+		this.pos.x = curX - this.jumpSize*((diffX)/(diffXdiffX));
+		this.pos.y = curY - this.jumpSize*((diffX)/(diffXdiffY));
+	}
+	stepInYdir(){
+		// Make one Newton-Raphson step toward y-nullcline
+		let curX = this.pos.x;
+		let curY = this.pos.y;
+		let diffX = curYfuncStr.evaluate({x:this.pos.x,y:this.pos.y});
+		let diffXdiffX = curYfuncStrXDiff.evaluate({x:this.pos.x,y:this.pos.y});
+		let diffXdiffY = curYfuncStrYDiff.evaluate({x:this.pos.x,y:this.pos.y}); 
+		
+		
+		this.pos.x = curX - this.jumpSize*((diffX)/(diffXdiffX));
+		this.pos.y = curY - this.jumpSize*((diffX)/(diffXdiffY));
+	}
+	
+	update(){
+		this.stepInXdir();
+		this.stepInXdir();
+		this.stepInXdir();
+		this.stepInXdir();
+		
+		this.stepInYdir();
+		this.stepInYdir();
+		this.stepInYdir();
+		this.stepInYdir();
+		
+		this.numIter = this.numIter+1;
+	}
+	
+	display(){
+		let thisPixelVec = coordinateToPixel(this.pos);
+		
+		fill(150)
+		//stroke(150,10)
+		noStroke();
+		 
+			circle(thisPixelVec.x,thisPixelVec.y,10);
+			//rect(thisPixelVec.x,thisPixelVec.y,this.size,this.size);
+	}
+	
+}
+
+class newtonWalker {
+	constructor(vec,varToUse){
+		this.pos = vec;
+		this.numIter = 0;
+		this.varToUse = varToUse;
+		this.color = color(155);
+		this.alpha = newtownWalkerOpacity;
+		this.size = 5;
+		this.type = 'normal';
+		
+	}
+	updateEquations(){
+		if (this.varToUse == 'x'){
+			this.equation = curXfuncStr;
+			this.equationXDiff = curXfuncStrXDiff;
+			this.equationYDiff = curXfuncStrYDiff;
+			if (this.type == 'normal'){
+				this.color = xNullclineColor;
+			}
+		} else {
+			this.equation = curYfuncStr;
+			this.equationXDiff = curYfuncStrXDiff;
+			this.equationYDiff = curYfuncStrYDiff;	
+			if (this.type == 'normal'){
+				this.color = yNullclineColor;
+			}
+			
+		}
+	}
+	
+	restart(){
+		let axesWidth= fieldWidth*scalingFactor;
+		let minX = -axesWidth;
+		let maxX = axesWidth;
+		let minY = -axesWidth;
+		let maxY = axesWidth;
+		this.pos = createVector(random(minX,maxX),random(minY,maxY));
+		this.numIter = 0;
+
+		// Change the nullcline to show
+		if (random() < 0.5){
+			this.varToUse = 'x';
+		} else {
+			this.varToUse = 'y';
+		}		
+	}
+	
+	update(){
+		
+		if (isNaN(this.pos.x)) {
+			this.restart();
+		}
+		
+		this.updateEquations();
+		// Make one newton-raphson step
+		let curX = this.pos.x;
+		let curY = this.pos.y;
+		let diff = this.equation.evaluate({x:this.pos.x,y:this.pos.y});
+		let diffXdiff = this.equationXDiff.evaluate({x:this.pos.x,y:this.pos.y});
+		let diffYdiff = this.equationYDiff.evaluate({x:this.pos.x,y:this.pos.y});
+		//let newX = curX - ((diff)/(diffXdiff));
+		//let newY = curY - ((diff)/(diffYdiff));
+		
+		let jumpSize = 0.05;		
+		if (this.type == 'equi'){
+			//jumpSize = 0.01;
+			jumpSize = 0.75*random();
+		}
+		
+		let newX = curX - jumpSize*((diff)/(diffXdiff));
+		let newY = curY - jumpSize*((diff)/(diffYdiff));
+		
+		
+		/*
+		if (this.type == 'equi'){
+			if (newX-curX < 0.000000001){
+				if (newY-curY < 0.000000001){
+					let equiPos = createVector(newX,newY);
+					equis.push(equiPos);
+				}
+			}
+		}
+		*/
+		
+		this.pos.x = newX+ 0.01*(random()-0.5);
+		
+		
+		//this.pos.y = this.pos.y + 0.01*(random()-0.5);
+		this.pos.y = newY+ 0.01	*(random()-0.5);
+		this.numIter = this.numIter+1;
+		
+		
+		// Restart with a random rate
+		if (random() < 0.01){	
+			this.restart();
+		}
+		
+		// If there has been enough iterations, add the position to permanent list
+		if (this.numIter > 30){
+			if (this.varToUse == 'x'){
+				if (permWalkerX.length < maxPermWalkLength){
+					permWalkerX.push(this.pos.copy());
+				}
+			} else {
+				if (permWalkerY.length < maxPermWalkLength){
+				permWalkerY.push(this.pos.copy());
+				}
+			}
+		}
+	}
+	
+	display(){
+		let curAlpha = 0.1*(this.alpha * this.numIter)/20;
+		
+		let thisPixelVec = coordinateToPixel(this.pos);
+		
+		//fill(150,150)
+		//stroke(150,10)
+		fill([this.color[0],this.color[1],this.color[2],curAlpha]);
+		noStroke();
+		//stroke([this.color[0],this.color[1],this.color[2],this.alpha]);
+		//stroke(this.color,this.alpha);
+		 
+		// Only show if more than 3 iterations of newton-raphson has been made
+		if (this.numIter > 20){
+			//circle(thisPixelVec.x,thisPixelVec.y,2);
+			rect(thisPixelVec.x,thisPixelVec.y,this.size,this.size);
+		}
+		
+	}
+}
+
 class flowFollower {
 	
 	constructor(vec){
@@ -1413,6 +1805,7 @@ function  displayRelativeVector(vec1,vec2){
 		pop();	
 	}
 }
+
 
 /*
 
