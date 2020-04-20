@@ -45,7 +45,11 @@ var allEffects = [];
 
 // Window for settings
 var settingsRatio = 0.4;
-var showSettings = true;
+var showSettings = false;
+
+// Buttons
+var mouseOverClose = false;
+var mouseOverSettings = false;
 
 
 function setup(){
@@ -178,25 +182,16 @@ function draw(){
 	frameRate(curFrameRate);
 	
 	
-	// Settings windows
+	/*
+	// To make field smaller when settings are shown
 	if (showSettings == true){
 		// Change the field ratio, so show a smaller field
-		curFieldScreenRatio = 1-settingsRatio;
-		
-		//var SettingsLeft = 500;
-		var SettingsLeft = (1-settingsRatio)*sketchW;
-		var SettingsTop = 0;
-		var SettingsBorder = 10;
-		fill(155,155,155);
-		rect(SettingsLeft,SettingsTop,sketchW,sketchH);
-		fill(100,100,100);
-		rect(SettingsLeft+SettingsBorder,SettingsTop+SettingsBorder,sketchW,sketchH-SettingsBorder*2);
-		
-		
+		//curFieldScreenRatio = 1-settingsRatio;
 	} else {
 		// Set the field to full screen
 		curFieldScreenRatio = 1;
 	}
+	*/
 	
 	
 	
@@ -311,6 +306,112 @@ function draw(){
 	rect(-borderWidth/2,-borderWidth/2,fieldWidth,borderWidth);
 	rect(-borderWidth/2,-borderWidth/2+fieldHeight,fieldWidth+borderWidth,borderWidth);
 	pop();
+	
+	var buttonSize = 60;
+	var buttonPadding = 20;
+	var SettingsLeft = (1-settingsRatio)*sketchW;
+	var SettingsTop = 0;
+	var SettingsBorder = 10;
+	
+	var closeButtonLeft = divW-buttonSize-buttonPadding;
+	var closeButtonTop = buttonPadding+SettingsBorder;
+	// Draw settings windows
+	if (showSettings == true){
+		
+		//var SettingsLeft = 500;
+		noStroke();
+		strokeWeight(3);
+		stroke(0);
+		fill(155,155,155);
+		rect(SettingsLeft,SettingsTop,sketchW,sketchH);
+		fill(100,100,100);
+		rect(SettingsLeft+SettingsBorder,SettingsTop+SettingsBorder,sketchW,sketchH-SettingsBorder*2);
+		
+		// Draw a close button
+		push();
+		translate(closeButtonLeft,closeButtonTop);
+		fill(155,155,155);
+		rect(0,0,buttonSize,buttonSize)
+		if (overRect(closeButtonLeft, closeButtonTop, buttonSize,buttonSize)) {
+			stroke(155,0,0);
+		} else {
+			stroke(100,100,100);
+		}
+		strokeWeight(8);
+		var ratioCross = 4;
+		line(buttonSize/ratioCross,buttonSize/ratioCross,buttonSize*(ratioCross-1)/ratioCross,buttonSize*(ratioCross-1)/ratioCross);
+		line(buttonSize/ratioCross,buttonSize - buttonSize/ratioCross,buttonSize*(ratioCross-1)/ratioCross,buttonSize - buttonSize*(ratioCross-1)/ratioCross);
+				
+		pop();
+		
+		//if (overRect(closeButtonLeft, cloesButtonTop, buttonSize,buttonSize)) {
+		//	fill(255,155,155,155);
+		//	//rect(closeButtonLeft,cloesButtonTop,buttonSize,buttonSize);
+		//} 
+	} else {
+		// Draw a settings button
+		push();
+		translate(closeButtonLeft,closeButtonTop);
+		fill(155,155,155);
+		rect(0,0,buttonSize,buttonSize)
+		if (overRect(closeButtonLeft, closeButtonTop, buttonSize,buttonSize)) {
+			stroke(0,155,0);
+			fill(0,155,0);
+		} else {
+			stroke(100,100,100);
+			fill(100,100,100);
+		}
+		strokeWeight(8);
+		translate(buttonSize/2,buttonSize/2);
+		for(var tand = 0; tand < 9; tand ++){
+			rotate(2*PI/8)
+			line(0,0,buttonSize/4,buttonSize/4);
+		}
+		ellipse(0,0,buttonSize/2,buttonSize/2);
+		fill(155,155,155);
+		ellipse(0,0,buttonSize/3,buttonSize/3);
+				
+		pop();
+	}
+	
+	// ----- Button clicking -----
+	if (showSettings){
+		mouseOverSettings = false;
+		// Close button
+		if (overRect(closeButtonLeft, closeButtonTop, buttonSize,buttonSize)) {
+			mouseOverClose = true;
+		} else {
+			mouseOverClose = false;
+		}
+	} else {
+		mouseOverClose = false;
+		// Settings button
+		if (overRect(closeButtonLeft, closeButtonTop, buttonSize,buttonSize)) {
+			mouseOverSettings = true;
+		} else {
+			mouseOverSettings = false;
+		}
+	}
+		
+} // End draw
+
+function mousePressed(){
+	if (mouseOverClose){
+		showSettings = false;
+	}
+	if (mouseOverSettings){
+		showSettings = true;
+	}
+}
+
+function overRect(x, y, width, height)  {
+  if (mouseX >= x && mouseX <= x+width && 
+      mouseY >= y && mouseY <= y+height) {
+    return true;
+  } else {
+    return false;
+  }
+  
 }
 
 // Molecule class that all other classes should extend
