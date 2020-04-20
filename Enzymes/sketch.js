@@ -14,6 +14,15 @@ var fieldWidth = 1000;
 var fieldHeight = 1000;
 var fieldLeft = 50;
 var fieldTop = 50;
+var curFieldScreenRatio = 1;
+
+var divW;
+var divH;
+var maxW = 800;
+var maxH = 800;
+var sketchW;
+var sketchH;
+var sketchBorder = 50;
 
 var curScale = 1;
 
@@ -34,34 +43,65 @@ var unbindAsProductProb = 0.002;
 var showParticleEffects = true;
 var allEffects = [];
 
+// Window for settings
+var settingsRatio = 0.4;
+var showSettings = true;
+
 
 function setup(){
 	
-	var divWidth = document.getElementById('sketch-holder').offsetWidth;
-	/*if (divWidth > 1.75*fieldWidth){
-		divWidth = 1.75*fieldWidth;
-	}*/
-	var divHeight;
-	if (divWidth < fieldHeight){
-		divHeight = fieldHeight;
+	divW = document.getElementById('sketch-holder').offsetWidth;
+	divH = document.getElementById('sketch-holder').offsetHeight;
+	
+	/*
+	if (divW > divH){
+		sketchH = divH;
+		sketchW = divW;
 	} else {
-		divHeight = fieldHeight + 200;
+		if (divW < maxW){
+			sketchW = maxW;
+		} else {
+			sketchW = divW;
+		}
+		if (divW < maxW){
+			sketchW = maxW;
+		} else {
+			sketchW = divW;
+		}
+		
 	}
 	
-	divHeight = divWidth;
+	divH = divW;
+	*/
+	if (divH > divW){
+		sketchW = divW;
+		sketchH = divW;
+	} else {
+		sketchW = divW;
+		sketchH = divH;
+	}
+	
+	if ((sketchW > maxW) || (sketchH > maxH)){
+		sketchH = maxH;
+		sketchW = maxW;
+	}
 		
-	//fieldTop = floor(0 * divHeight);
+	//fieldTop = floor(0 * divH);
 	//fieldTop = 0;
-	//fieldLeft = floor(0.5 * divWidth);
-	//fieldTop = floor(0.18 * divHeight);
-	//fieldLeft = floor(0.63 * divWidth);
-	//fieldWidth = floor(0.33 * divWidth);
+	//fieldLeft = floor(0.5 * divW);
+	//fieldTop = floor(0.18 * divH);
+	//fieldLeft = floor(0.63 * divW);
+	//fieldWidth = floor(0.33 * divW);
 	//fieldHeight = fieldWidth;
 	
-	curScale = (divWidth-fieldLeft*2)/fieldWidth;
+	curScale = (sketchW-sketchBorder*2)/fieldWidth;
+	
+	//fieldLeft = fieldDisplayPart*(sketchW-sketchBorder*2);
+	//curScale = (sketchW-fieldLeft*2)/fieldWidth;
+	//curScale = (divW-fieldLeft*2)/fieldWidth;
 
 	// Create canvas
-	cnv = createCanvas(divWidth, divHeight);
+	cnv = createCanvas(divW, divH);
 	cnv.parent('sketch-holder');
 	cnv.style('display','block');
 	
@@ -137,6 +177,29 @@ function draw(){
 	
 	frameRate(curFrameRate);
 	
+	
+	// Settings windows
+	if (showSettings == true){
+		// Change the field ratio, so show a smaller field
+		curFieldScreenRatio = 1-settingsRatio;
+		
+		//var SettingsLeft = 500;
+		var SettingsLeft = (1-settingsRatio)*sketchW;
+		var SettingsTop = 0;
+		var SettingsBorder = 10;
+		fill(155,155,155);
+		rect(SettingsLeft,SettingsTop,sketchW,sketchH);
+		fill(100,100,100);
+		rect(SettingsLeft+SettingsBorder,SettingsTop+SettingsBorder,sketchW,sketchH-SettingsBorder*2);
+		
+		
+	} else {
+		// Set the field to full screen
+		curFieldScreenRatio = 1;
+	}
+	
+	
+	
 	/*	
 	// Load variables from sliders
 	infProb = infSlider.value();
@@ -150,8 +213,15 @@ function draw(){
 	*/
 	
 	push();
+	// Scale and translate to full screen field
 	translate(fieldLeft,fieldTop);
-	scale(curScale);
+	scale(curScale); // Scales to full width field
+	
+	// Scale to a smaller field, if necessary
+	scale(curFieldScreenRatio); // Scales to take up the correct ratio of the screen
+	var smallFieldLeft = 0;//sketchW * curFieldScreenRatio;
+	var smallFieldTop = fieldHeight *0.5* (1-curFieldScreenRatio);
+	translate(smallFieldLeft,smallFieldTop);
 	
 	
 	
