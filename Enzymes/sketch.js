@@ -50,6 +50,7 @@ var showSettings = false;
 // Buttons
 var mouseOverClose = false;
 var mouseOverSettings = false;
+var mouseOverRestart = false;
 
 
 function setup(){
@@ -315,6 +316,8 @@ function draw(){
 	
 	var closeButtonLeft = divW-buttonSize-buttonPadding;
 	var closeButtonTop = buttonPadding+SettingsBorder;
+	var restartButtonLeft = divW-buttonSize*2-buttonPadding*2;
+	var restartButtonTop = buttonPadding+SettingsBorder;
 	// Draw settings windows
 	if (showSettings == true){
 		
@@ -374,6 +377,59 @@ function draw(){
 		pop();
 	}
 	
+	// Draw a restart button
+	push();
+	translate(restartButtonLeft,restartButtonTop);
+	fill(155,155,155);
+	rect(0,0,buttonSize,buttonSize)
+	var curColor = color(100,100,100);
+	if (overRect(restartButtonLeft, restartButtonTop, buttonSize,buttonSize)) {
+		//stroke(0,0,155);
+		//fill(0,0,155);
+		curColor = color(0,0,155);
+	//} else {
+		//stroke(100,100,100);
+		//fill(100,100,100);
+	}
+	fill(curColor);
+	stroke(curColor);
+	strokeWeight(5);
+	translate(buttonSize/2,buttonSize/2);
+	noFill();
+	rotate(1.6*PI)
+	arc(0, 0, buttonSize/2, buttonSize/2, 0, 1.6*PI);
+	translate(buttonSize/4,0)
+	rotate(-PI/8);
+	strokeWeight(4)
+	fill(curColor);
+	var triangleSize = buttonSize/8;
+	triangle(-triangleSize/2,0,triangleSize/2,0,0,-triangleSize);
+	
+	
+	/*
+	//ellipse(0,0,buttonSize/2.2,buttonSize/2.2);
+	//arc(0,0,buttonSize/2,buttonSize/2,0,2*PI);
+	//rotate(1.75*PI)
+	
+	strokeWeight(8);
+	translate(buttonSize/2,buttonSize/2);
+	ellipse(0,0,buttonSize/2.2,buttonSize/2.2);
+	fill(155,155,155);
+	ellipse(0,0,buttonSize/2,buttonSize/2);
+	noStroke();//stroke(155,155,155);
+	rect(-buttonSize/3,0,buttonSize/6,-buttonSize/3);
+	var triangleSize = buttonSize/8;
+	strokeWeight(3);
+	fill(curColor);
+	stroke(curColor);
+	translate(-buttonSize/10,-buttonSize/5)
+	rotate(-PI/4);
+	//triangle(0,0,0,-triangleSize,-triangleSize/2,-triangleSize/2);
+	triangle(0,-triangleSize,0,triangleSize,-triangleSize,0);
+	*/
+			
+	pop();
+	
 	// ----- Button clicking -----
 	if (showSettings){
 		mouseOverSettings = false;
@@ -392,6 +448,13 @@ function draw(){
 			mouseOverSettings = false;
 		}
 	}
+	// Restart button
+	if (overRect(restartButtonLeft, restartButtonTop, buttonSize,buttonSize)) {
+		mouseOverRestart = true;
+	} else {
+		mouseOverRestart = false;
+	}
+		
 		
 } // End draw
 
@@ -401,6 +464,9 @@ function mousePressed(){
 	}
 	if (mouseOverSettings){
 		showSettings = true;
+	}
+	if (mouseOverRestart){
+		startupSim();
 	}
 }
 
