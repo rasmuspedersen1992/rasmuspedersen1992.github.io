@@ -334,6 +334,7 @@ function draw(){
 		push();
 		translate(closeButtonLeft,closeButtonTop);
 		fill(155,155,155);
+		strokeWeight(3);
 		rect(0,0,buttonSize,buttonSize)
 		if (overRect(closeButtonLeft, closeButtonTop, buttonSize,buttonSize)) {
 			stroke(155,0,0);
@@ -345,6 +346,7 @@ function draw(){
 		line(buttonSize/ratioCross,buttonSize/ratioCross,buttonSize*(ratioCross-1)/ratioCross,buttonSize*(ratioCross-1)/ratioCross);
 		line(buttonSize/ratioCross,buttonSize - buttonSize/ratioCross,buttonSize*(ratioCross-1)/ratioCross,buttonSize - buttonSize*(ratioCross-1)/ratioCross);
 				
+		strokeWeight(3);
 		pop();
 		
 		//if (overRect(closeButtonLeft, cloesButtonTop, buttonSize,buttonSize)) {
@@ -356,6 +358,7 @@ function draw(){
 		push();
 		translate(closeButtonLeft,closeButtonTop);
 		fill(155,155,155);
+		strokeWeight(3);
 		rect(0,0,buttonSize,buttonSize)
 		if (overRect(closeButtonLeft, closeButtonTop, buttonSize,buttonSize)) {
 			stroke(0,155,0);
@@ -381,6 +384,7 @@ function draw(){
 	push();
 	translate(restartButtonLeft,restartButtonTop);
 	fill(155,155,155);
+	strokeWeight(3);
 	rect(0,0,buttonSize,buttonSize)
 	var curColor = color(100,100,100);
 	if (overRect(restartButtonLeft, restartButtonTop, buttonSize,buttonSize)) {
@@ -454,6 +458,21 @@ function draw(){
 	} else {
 		mouseOverRestart = false;
 	}
+	
+	strokeWeight(1);
+	
+	// Test drawings
+	push();
+	translate(restartButtonLeft,150)
+	noStroke();
+	drawA("Enzyme");
+	translate(0,50)
+	drawA("EnzymeComplex");
+	translate(0,50)
+	drawA("Substrate");
+	translate(0,50)
+	drawA("Product");
+	pop();
 		
 		
 } // End draw
@@ -579,22 +598,22 @@ class Molecule {
 class Substrate extends Molecule{
 	constructor() {	
 		super('Substrate'); 
-		this.size = 20;
-		this.color = colorSubstrate;
+		//this.size = 20;
+		//this.color = colorSubstrate;
 	}
 	
 	
 	display(){
-		if (this.type == 'Substrate'){
-			this.color = colorSubstrate;
-		} else {
-			this.color = colorProduct;
-		}
-		fill(this.color);
 		push();
 		noStroke();
 		translate(this.pos.x,this.pos.y);
-		ellipse(0,0,this.size);
+		if (this.type == 'Substrate'){
+			//this.color = colorSubstrate;
+			drawA("Substrate");
+		} else {
+			//this.color = colorProduct;
+			drawA("Product");
+		}
 		pop(); 
 	}	
 }
@@ -603,7 +622,7 @@ class Enzyme extends Molecule{
 	constructor() {	
 		super('Enzyme'); 
 		this.color = colorEnzyme;
-		this.size = 30;
+		//this.size = 30;
 		this.angle = random(0,2*PI);
 		this.angleVel = 0;
 	}
@@ -647,16 +666,18 @@ class Enzyme extends Molecule{
 		noStroke();
 		translate(this.pos.x,this.pos.y);
 		rotate(this.angle);
-		fill(this.color);
-		rect(-this.size/2,-this.size/4,this.size,this.size/2);
+		//fill(this.color);
+		//rect(-this.size/2,-this.size/4,this.size,this.size/2);
 		if (this.type == 'Enzyme'){
-			fill(0);
+			//fill(0);
+			drawA("Enzyme");
 		} else {
-			fill(colorComplex);
+			//fill(colorComplex);
+			drawA("EnzymeComplex");
 		}
-		ellipse(0,0,20);
-		fill(50,155,50,50)
-		rect(-this.size/2,-this.size/4,this.size,this.size/2);
+		//ellipse(0,0,20);
+		//fill(50,155,50,50)
+		//rect(-this.size/2,-this.size/4,this.size,this.size/2);
 		pop(); 
 		this.changeRotation();
 		//ellipse(this.x,this.y,this.diameter);
@@ -752,4 +773,33 @@ class particleEffect{
 		//rect(this.pos.x,this.pos.y,20,20);
 		
 	}	
+}
+
+// Function for all drawings
+function drawA(Thing){
+	if (Thing == "Enzyme"){
+		var size = 30;
+		fill(colorEnzyme); 
+		rect(-size/2,-size/4,size,size/2);
+		fill(0);
+		ellipse(0,0,20);
+		fill(50,155,50,50)
+		rect(-size/2,-size/4,size,size/2);
+	} else if (Thing == "EnzymeComplex"){
+		var size = 30;
+		fill(colorEnzyme);
+		rect(-size/2,-size/4,size,size/2);
+		fill(colorComplex);
+		ellipse(0,0,20);
+		fill(50,155,50,50)
+		rect(-size/2,-size/4,size,size/2);
+	} else if (Thing == "Substrate"){
+		var size = 20;
+		fill(colorSubstrate);
+		ellipse(0,0,size);
+	} else if (Thing == "Product"){
+		var size = 20;
+		fill(colorProduct);
+		ellipse(0,0,size);
+	}
 }
