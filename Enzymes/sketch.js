@@ -36,8 +36,11 @@ var maxVelSq = maxVel*maxVel;
 
 var bindDist = 20;
 var bindProb = 0.06;
+var maxBindProb = 0.1;
 var unbindProb = 0.005;
+var maxUnbindProb = 0.1;
 var unbindAsProductProb = 0.002;
+var maxUnbindAsProductProb = 0.1;
 
 // Particle effects
 var showParticleEffects = true;
@@ -52,6 +55,17 @@ var mouseOverClose = false;
 var mouseOverSettings = false;
 var mouseOverRestart = false;
 
+// Sliders
+var sliderLength = 200;
+var sliderBind;
+var sliderBindLeft = 600;
+var sliderBindTop = 150;
+var sliderUnbind;
+var sliderUnbindLeft = 600;
+var sliderUnbindTop = 250;
+var sliderUnbindAsProd;
+var sliderUnbindAsProdLeft = 600;
+var sliderUnbindAsProdTop = 350;
 
 function setup(){
 	
@@ -139,6 +153,16 @@ function setup(){
 	
 	*/
 	
+	// Make sliders
+	sliderBind = createSlider(0,maxBindProb,bindProb,maxBindProb/100);
+	sliderBind.position(sliderBindLeft,sliderBindTop)
+	sliderBind.size(sliderLength);
+	sliderUnbind = createSlider(0,maxUnbindProb,unbindProb,maxUnbindProb/100);
+	sliderUnbind.position(sliderUnbindLeft,sliderUnbindTop)
+	sliderUnbind.size(sliderLength);
+	sliderUnbindAsProd = createSlider(0,maxUnbindAsProductProb,unbindAsProductProb,maxUnbindAsProductProb/100);
+	sliderUnbindAsProd.position(sliderUnbindAsProdLeft,sliderUnbindAsProdTop)
+	sliderUnbindAsProd.size(sliderLength);
 	// Start the simulation
 	startupSim();
 }
@@ -183,6 +207,10 @@ function draw(){
 	frameRate(curFrameRate);
 	
 	
+	// Get slider values
+	bindProb = sliderBind.value();
+	unbindProb = sliderUnbind.value();
+	unbindAsProductProb = sliderUnbindAsProd.value();
 	/*
 	// To make field smaller when settings are shown
 	if (showSettings == true){
@@ -318,8 +346,10 @@ function draw(){
 	var closeButtonTop = buttonPadding+SettingsBorder;
 	var restartButtonLeft = divW-buttonSize*2-buttonPadding*2;
 	var restartButtonTop = buttonPadding+SettingsBorder;
+	
 	// Draw settings windows
 	if (showSettings == true){
+		
 		
 		//var SettingsLeft = 500;
 		noStroke();
@@ -348,6 +378,92 @@ function draw(){
 				
 		strokeWeight(3);
 		pop();
+		
+		
+		// Show sliders
+		sliderBind.show();
+		sliderUnbind.show();
+		sliderUnbindAsProd.show();
+		
+		
+		// Draw illustrations below sliders
+		var sliderPadding = 20;
+		
+			// Bind slider
+			push();
+				translate(sliderBindLeft,sliderBindTop+sliderPadding*2);
+				push();
+					translate(sliderPadding,0);
+					scale(0.75)
+					drawA("Enzyme");
+					translate(sliderLength/6,0);
+					drawA("Substrate");
+				pop();
+				push();
+					translate(sliderLength*0.5,0);
+					strokeWeight(6);
+					noFill();
+					stroke(0);
+					triangle(0,0,-5,3,-5,-3);
+					line(0,0,-15,0)
+				pop();
+				push();
+					translate(sliderLength-sliderPadding,0);
+					scale(0.75)
+					drawA("EnzymeComplex");
+				pop();
+			pop();
+			
+			// Unbind slider
+			push();
+				translate(sliderUnbindLeft,sliderUnbindTop+sliderPadding*2);
+				push();
+					translate(sliderPadding,0);
+					scale(0.75)
+					drawA("EnzymeComplex");
+				pop();
+				push();
+					translate(sliderLength*0.5,0);
+					strokeWeight(6);
+					noFill();
+					stroke(0);
+					triangle(0,0,-5,3,-5,-3);
+					line(0,0,-15,0)
+				pop();
+				push();
+					translate(sliderLength*(5/6)-sliderPadding,0);
+					scale(0.75)
+					drawA("Enzyme");
+					translate(sliderLength/6,0);
+					drawA("Substrate");
+				pop();
+			pop();
+		
+			// Unbind as product slider
+			push();
+				translate(sliderUnbindAsProdLeft,sliderUnbindAsProdTop+sliderPadding*2);
+				push();
+					translate(sliderPadding,0);
+					scale(0.75)
+					drawA("EnzymeComplex");
+				pop();
+				push();
+					translate(sliderLength*0.5,0);
+					strokeWeight(6);
+					noFill();
+					stroke(0);
+					triangle(0,0,-5,3,-5,-3);
+					line(0,0,-15,0)
+				pop();
+				push();
+					translate(sliderLength*(5/6)-sliderPadding,0);
+					scale(0.75)
+					drawA("Enzyme");
+					translate(sliderLength/6,0);
+					drawA("Product");
+				pop();
+			pop();
+		
 		
 		//if (overRect(closeButtonLeft, cloesButtonTop, buttonSize,buttonSize)) {
 		//	fill(255,155,155,155);
@@ -378,7 +494,13 @@ function draw(){
 		ellipse(0,0,buttonSize/3,buttonSize/3);
 				
 		pop();
+		
+		// Hide sliders
+		sliderBind.hide();
+		sliderUnbind.hide();
+		sliderUnbindAsProd.hide();
 	}
+	
 	
 	// Draw a restart button
 	push();
@@ -434,6 +556,7 @@ function draw(){
 			
 	pop();
 	
+	
 	// ----- Button clicking -----
 	if (showSettings){
 		mouseOverSettings = false;
@@ -462,6 +585,7 @@ function draw(){
 	strokeWeight(1);
 	
 	// Test drawings
+	/*
 	push();
 	translate(restartButtonLeft,150)
 	noStroke();
@@ -473,6 +597,7 @@ function draw(){
 	translate(0,50)
 	drawA("Product");
 	pop();
+	*/
 		
 		
 } // End draw
@@ -777,6 +902,7 @@ class particleEffect{
 
 // Function for all drawings
 function drawA(Thing){
+	noStroke();
 	if (Thing == "Enzyme"){
 		var size = 30;
 		fill(colorEnzyme); 
