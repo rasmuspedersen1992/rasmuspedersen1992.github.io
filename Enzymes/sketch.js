@@ -56,16 +56,16 @@ var mouseOverSettings = false;
 var mouseOverRestart = false;
 
 // Sliders
-var sliderLength = 200;
+var sliderLength = 350;
 var sliderBind;
-var sliderBindLeft = 600;
+var sliderBindLeft = 550;
 var sliderBindTop = 150;
 var sliderUnbind;
-var sliderUnbindLeft = 600;
-var sliderUnbindTop = 250;
+var sliderUnbindLeft = 550;
+var sliderUnbindTop = 300;
 var sliderUnbindAsProd;
-var sliderUnbindAsProdLeft = 600;
-var sliderUnbindAsProdTop = 350;
+var sliderUnbindAsProdLeft = 550;
+var sliderUnbindAsProdTop = 450;
 
 function setup(){
 	
@@ -385,7 +385,9 @@ function draw(){
 		sliderUnbind.show();
 		sliderUnbindAsProd.show();
 		
-		
+		var arrowScale;
+		var minArrowScale = 0.2;
+
 		// Draw illustrations below sliders
 		var sliderPadding = 20;
 		
@@ -401,11 +403,25 @@ function draw(){
 				pop();
 				push();
 					translate(sliderLength*0.5,0);
+					arrowScale = bindProb/maxBindProb;
+					if (arrowScale < minArrowScale){
+						scale(minArrowScale*1.5);
+					} else {
+						scale(arrowScale*1.5);
+					}
 					strokeWeight(6);
 					noFill();
 					stroke(0);
 					triangle(0,0,-5,3,-5,-3);
 					line(0,0,-15,0)
+					if (arrowScale  == 0){
+						// Draw an X over arrow
+						scale(2);
+						strokeWeight(3);
+						stroke(255,0,0);
+						line(-20,-5,10,5);
+						line(-20,5,10,-5);
+					}
 				pop();
 				push();
 					translate(sliderLength-sliderPadding,0);
@@ -424,11 +440,25 @@ function draw(){
 				pop();
 				push();
 					translate(sliderLength*0.5,0);
+					arrowScale = unbindProb/maxUnbindProb;
+					if (arrowScale < minArrowScale){
+						scale(minArrowScale*1.5);
+					} else {
+						scale(arrowScale*1.5);
+					}
 					strokeWeight(6);
 					noFill();
 					stroke(0);
 					triangle(0,0,-5,3,-5,-3);
 					line(0,0,-15,0)
+					if (arrowScale  == 0){
+						// Draw an X over arrow
+						scale(2);
+						strokeWeight(3);
+						stroke(255,0,0);
+						line(-20,-5,10,5);
+						line(-20,5,10,-5);
+					}
 				pop();
 				push();
 					translate(sliderLength*(5/6)-sliderPadding,0);
@@ -449,11 +479,27 @@ function draw(){
 				pop();
 				push();
 					translate(sliderLength*0.5,0);
+					arrowScale = unbindAsProductProb/maxUnbindAsProductProb;
+					if (arrowScale < minArrowScale){
+						scale(minArrowScale*1.5);
+					} else {
+						scale(arrowScale*1.5);
+					}
+						
 					strokeWeight(6);
 					noFill();
 					stroke(0);
 					triangle(0,0,-5,3,-5,-3);
 					line(0,0,-15,0)
+					if (arrowScale  == 0){
+						// Draw an X over arrow
+						scale(2);
+						strokeWeight(3);
+						stroke(255,0,0);
+						line(-20,-5,10,5);
+						line(-20,5,10,-5);
+					}
+					
 				pop();
 				push();
 					translate(sliderLength*(5/6)-sliderPadding,0);
