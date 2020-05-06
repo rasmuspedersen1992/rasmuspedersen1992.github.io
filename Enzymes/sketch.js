@@ -10,6 +10,7 @@ var curFrameRate = 30;
 // Counters
 var allE = 0;
 
+// Scaling and sizing of things
 var fieldWidth = 1000;
 var fieldHeight = 1000;
 var fieldLeft = 50;
@@ -114,6 +115,9 @@ function setup(){
 	//fieldHeight = fieldWidth;
 	
 	curScale = (sketchW-sketchBorder*2)/fieldWidth;
+	
+	fieldLeft = (divW/2) - (fieldWidth/2)*curScale;
+	fieldTop = (divH/2) - (fieldHeight/2)*curScale;
 	
 	//fieldLeft = fieldDisplayPart*(sketchW-sketchBorder*2);
 	//curScale = (sketchW-fieldLeft*2)/fieldWidth;
@@ -329,17 +333,28 @@ function draw(){
 	//rect(-borderWidth,-borderWidth,fieldWidth+borderWidth*2,fieldHeight+borderWidth*2);
 	//fill(0);
 	//rect(-extraWidth,-extraWidth,fieldWidth+extraWidth*2,fieldHeight+extraWidth*2);
-	
-	rect(-borderWidth/2,-borderWidth/2,borderWidth,fieldHeight);
-	rect(-borderWidth/2+fieldWidth,-borderWidth/2,borderWidth,fieldHeight);
-	rect(-borderWidth/2,-borderWidth/2,fieldWidth,borderWidth);
-	rect(-borderWidth/2,-borderWidth/2+fieldHeight,fieldWidth+borderWidth,borderWidth);
+	/*
+	rect(-borderWidth/2,-borderWidth/2,borderWidth+1,fieldHeight+1);
+	rect(-borderWidth/2+fieldWidth,-borderWidth/2,borderWidth+1,fieldHeight+1);
+	rect(-borderWidth/2,-borderWidth/2,fieldWidth+1,borderWidth+1);
+	rect(-borderWidth/2,-borderWidth/2+fieldHeight,fieldWidth+borderWidth+1,borderWidth+1);
+	*/
+	push()
+	//translate(-borderWidth/2,-borderWidth/2);
+	stroke(50);
+	strokeWeight(35);	
+	line(0,0,0,fieldHeight);
+	line(0,0,fieldWidth,0);
+	line(0,fieldHeight,fieldWidth,fieldHeight);
+	line(fieldWidth,0,fieldWidth,fieldHeight);
+	pop();
 	pop();
 	
 	var buttonSize = 60;
 	var buttonPadding = 20;
-	var SettingsLeft = (1-settingsRatio)*sketchW;
-	var SettingsTop = 0;
+	//var SettingsLeft = (1-settingsRatio)*sketchW;
+	var SettingsLeft = (1-settingsRatio)*divW;
+	var SettingsTop = 20;
 	var SettingsBorder = 10;
 	
 	var closeButtonLeft = divW-buttonSize-buttonPadding;
@@ -350,18 +365,22 @@ function draw(){
 	// Draw settings windows
 	if (showSettings == true){
 		
-		
-		//var SettingsLeft = 500;
+		// Draw settings window background
+		push();
+		translate(SettingsLeft,SettingsTop);
 		noStroke();
 		strokeWeight(3);
 		stroke(0);
 		fill(155,155,155);
-		rect(SettingsLeft,SettingsTop,sketchW,sketchH);
+		rect(0,0,sketchW,sketchH);
 		fill(100,100,100);
-		rect(SettingsLeft+SettingsBorder,SettingsTop+SettingsBorder,sketchW,sketchH-SettingsBorder*2);
+		rect(SettingsBorder,SettingsBorder,sketchW,sketchH-SettingsBorder*2);
+		//rect(SettingsLeft,SettingsTop,sketchW,sketchH);
+		//rect(SettingsLeft+SettingsBorder,SettingsTop+SettingsBorder,sketchW,sketchH-SettingsBorder*2);
 		
 		// Draw a close button
 		push();
+		translate(-SettingsLeft,-SettingsTop);
 		translate(closeButtonLeft,closeButtonTop);
 		fill(155,155,155);
 		strokeWeight(3);
@@ -511,6 +530,7 @@ function draw(){
 			pop();
 		
 		
+		pop();
 		//if (overRect(closeButtonLeft, cloesButtonTop, buttonSize,buttonSize)) {
 		//	fill(255,155,155,155);
 		//	//rect(closeButtonLeft,cloesButtonTop,buttonSize,buttonSize);
