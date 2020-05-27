@@ -106,7 +106,8 @@ let xNullclinePosis = [];
 let yNullclinePosis = [];
 let xNullclineShow = [];
 let yNullclineShow = [];
-let maxNullclineArraySize = 300000;
+let maxNullclineArraySize = 1000;
+//let maxNullclineArraySize = 300000;
 //let maxNullclineArraySize = 0;
 
 // Equilibria
@@ -116,7 +117,7 @@ let showEquis = false;
 
 // Newton walkers
 let showNewtonWalkers = true;
-let numNewtonWalkers = 100;
+let numNewtonWalkers = 0;
 let newtownWalkerOpacity = 150; // Out of 255
 let AllNewtonWalkers = [];
 let permWalkerX = [];
@@ -127,7 +128,7 @@ let maxPermWalkLength = 0;
 // Newton walker looking for equilibria
 let newtonEquiTest;
 let newtonEquiFinders = [];
-let numNewtonEquis = 50;
+let numNewtonEquis = 0;
 
 // New equilibrium finder
 let equilibriumFinderTest;

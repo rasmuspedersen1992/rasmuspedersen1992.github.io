@@ -1,0 +1,9 @@
+IDA IT: Interaktive visualiseringer til videnskabelig formidling
+
+Hør om hvordan matematiske modeller af eksempelvis sygdomsspredning kan blive gjort nemmere at forstå ved hjælp af interaktive simuleringer
+
+Beskrivelse
+
+I sit forskningsarbejde med matematisk modellering af kræftsygdomme har Ph.D.-studerende Rasmus Kristoffer Pedersen ofte udfordringer med hvordan man bedst kan formidle videnskabelige resultater på en forståelig måde. Ved at udvikle interaktive visualiseringer har han fundet en simpel måde at gøre kompliceret matematik nemmere at forholde sig til.
+
+På webinaret gennemgår Rasmus visualiseringer af blandt andet væksten af en kræfttumor og sygdomsspredning i en befolkning, aktualiseret af Corona-virussen. Rasmus fortæller desuden om sin egen forskning og tankerne bag hans visualiseringer. Der vil være mulighed for at stille spørgsmål og selv interagere med visualiseringerne.

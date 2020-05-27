@@ -50,6 +50,7 @@ var allEffects = [];
 // Window for settings
 var settingsRatio = 0.4;
 var showSettings = false;
+var settingsWidth;
 
 // Buttons
 var mouseOverClose = false;
@@ -57,16 +58,31 @@ var mouseOverSettings = false;
 var mouseOverRestart = false;
 
 // Sliders
-var sliderLength = 350;
+var sliderLength = 400;
 var sliderBind;
-var sliderBindLeft = 550;
-var sliderBindTop = 150;
+var sliderBindLeft = 50;
+var sliderBindTop = 175;
 var sliderUnbind;
-var sliderUnbindLeft = 550;
+var sliderUnbindLeft = 50;
 var sliderUnbindTop = 300;
 var sliderUnbindAsProd;
-var sliderUnbindAsProdLeft = 550;
-var sliderUnbindAsProdTop = 450;
+var sliderUnbindAsProdLeft = 50;
+var sliderUnbindAsProdTop = 425;
+
+// Graph 
+var allGraphs = [];
+var graphLeft = sliderBindLeft;
+var graphTop = 550;
+var graphWidth = sliderLength;
+var graphHeight = 250;
+var curWidth = graphWidth;
+var maxGraphNum = 500;
+
+var numE;
+var numS;
+var numC;
+var numP;
+
 
 function setup(){
 	
@@ -175,8 +191,12 @@ function startupSim(){
 	// Reset arrays
 	allMols = [];
 	allEffects = [];
+	allGraphs = [];
 	// Reset counters
 	numE = 0;
+	numC = 0;
+	numS = 0;
+	numP = 0;
 	
 	// Initialize molecules
 	for (var p = 0; p < numMols; p++){
@@ -184,17 +204,18 @@ function startupSim(){
 		// Fifty-fifty
 		if (random(1) < 0.5){
 			var newMolecule = new Enzyme();
+			numE++;
 		} else {
 			var newMolecule = new Substrate();
+			numS++;
 		}
 		
-		/*
+		/*	
 		// Only complex
 		var newMolecule = new Enzyme();
 		newMolecule.type = 'Complex';
 		*/
 		
-		numE++;
 		allMols.push(newMolecule);
 	}	
 }
@@ -227,19 +248,6 @@ function draw(){
 	*/
 	
 	
-	
-	/*	
-	// Load variables from sliders
-	infProb = infSlider.value();
-	infDist = infRadiusSlider.value();
-	infDistSq = infDist*infDist;
-	
-	fill(255);
-	text('Infection probability',sliderLeft, sliderTop+sliderHeight-10)
-	fill(255);
-	text('Infection radius',sliderLeft, sliderTop+sliderHeight*2-10)
-	*/
-	
 	push();
 	// Scale and translate to full screen field
 	translate(fieldLeft,fieldTop);
@@ -268,6 +276,9 @@ function draw(){
 								if (random(1) < bindProb) {
 									allMols[p].tryConnect(allMols[p2]);
 									allMols[p2].toRemove = 1;
+									numE--;
+									numS--;
+									numC++;
 								}
 							}
 						}
@@ -284,6 +295,9 @@ function draw(){
 				newMolecule.pos.x = allMols[p].pos.x;
 				newMolecule.pos.y = allMols[p].pos.y;
 				allMols.push(newMolecule);
+				numC--;
+				numS++;
+				numE++;
 				
 				// Make a particle effect
 				var newEffect = new particleEffect('unbind',allMols[p].pos);
@@ -297,6 +311,9 @@ function draw(){
 				newMolecule.pos.x = allMols[p].pos.x;
 				newMolecule.pos.y = allMols[p].pos.y;
 				allMols.push(newMolecule);
+				numC--;
+				numE++;
+				numP++;
 				
 				// Make a particle effect
 				var newEffect = new particleEffect('unbindProduct',allMols[p].pos);
@@ -353,14 +370,24 @@ function draw(){
 	var buttonSize = 60;
 	var buttonPadding = 20;
 	//var SettingsLeft = (1-settingsRatio)*sketchW;
-	var SettingsLeft = (1-settingsRatio)*divW;
+	//var SettingsLeft = (1-settingsRatio)*divW;
+	//var SettingsLeft = settingsRatio*divW;
+	var SettingsLeft = 0;
+	//var SettingsWidth = settingsRatio*divW;
+	var SettingsWidth = 500;
 	var SettingsTop = 20;
 	var SettingsBorder = 10;
 	
+	var closeButtonLeft = buttonPadding;
+	var closeButtonTop = buttonPadding+SettingsBorder*2;
+	var restartButtonLeft = buttonSize+buttonPadding*2;
+	var restartButtonTop = closeButtonTop;
+	/*
 	var closeButtonLeft = divW-buttonSize-buttonPadding;
 	var closeButtonTop = buttonPadding+SettingsBorder;
 	var restartButtonLeft = divW-buttonSize*2-buttonPadding*2;
-	var restartButtonTop = buttonPadding+SettingsBorder;
+	var restartButtonTop = buttonPadding+SettingsBorder; 
+	*/
 	
 	// Draw settings windows
 	if (showSettings == true){
@@ -371,10 +398,11 @@ function draw(){
 		noStroke();
 		strokeWeight(3);
 		stroke(0);
-		fill(155,155,155);
-		rect(0,0,sketchW,sketchH);
-		fill(100,100,100);
-		rect(SettingsBorder,SettingsBorder,sketchW,sketchH-SettingsBorder*2);
+		fill(155,155,155,200);
+		rect(-SettingsBorder,0,SettingsWidth,sketchH);
+		fill(100,100,100,200);
+		rect(-SettingsBorder*2,SettingsBorder,SettingsWidth,sketchH-SettingsBorder*2);
+		//rect(SettingsBorder,SettingsBorder,sketchW,sketchH-SettingsBorder*2);
 		//rect(SettingsLeft,SettingsTop,sketchW,sketchH);
 		//rect(SettingsLeft+SettingsBorder,SettingsTop+SettingsBorder,sketchW,sketchH-SettingsBorder*2);
 		
@@ -664,6 +692,56 @@ function draw(){
 	drawA("Product");
 	pop();
 	*/
+	
+	
+	// Stuff for making graphs, as in SIR simulation
+	var numGraph = allGraphs.length;
+	//var graphBorder = 10;
+	
+	push()
+	translate(graphLeft,graphTop)
+	
+	
+	// Every XX frames
+	if ((frameCount%5)==0){
+		
+		if ( allGraphs.length > maxGraphNum ){
+			allGraphs.splice(0,1);
+		}
+		
+		// Add current status to graph
+		var newPoint = new graphPoint(numE,numC,numS,numP,0,graphHeight);
+		newPoint.w = curWidth;
+		allGraphs.push(newPoint);
+		numGraph = allGraphs.length;
+		curWidth = graphWidth/numGraph;
+		if (curWidth >= graphWidth){
+			curWidth = graphWidth;
+		}
+		
+		for (var k = 0; k < numGraph; k++) {
+			allGraphs[k].x = k*curWidth;
+			allGraphs[k].w = curWidth;
+		}
+	}
+	
+	// Only draw the graph when settings are shown 
+	if (showSettings){
+		/*
+		// Draw the graph background / Border
+		fill(50,50,50,200)
+		//strokeWeight(10);
+		noStroke();
+		rect(-graphBorder,-graphBorder,graphWidth+graphBorder*2,graphHeight+graphBorder*2)
+		*/
+		
+		// Go through the graph parts and show them
+		for (var k = 0; k < allGraphs.length; k++) {
+			allGraphs[k].display();
+		}
+		
+	}
+	pop()
 		
 		
 } // End draw
@@ -993,5 +1071,42 @@ function drawA(Thing){
 		var size = 20;
 		fill(colorProduct);
 		ellipse(0,0,size);
+	}
+}
+
+
+class graphPoint{
+	
+	constructor(E,C,S,P,x,h){
+		this.E = E;
+		this.C = C;
+		this.S = S;
+		this.P = P; 
+		this.x = x;
+		this.h = h;
+		this.w = 10;
+	}
+	
+	display() {
+		var sum = this.E+this.C+this.S+this.P;
+		var EH = this.h*this.E/sum;
+		var CH = this.h*this.C/sum;
+		var SH = this.h*this.S/sum;
+		var PH = this.h*this.P/sum;
+		var W = ceil(this.w)+1;
+		
+		noStroke();
+		push();
+		translate(this.x,0);
+		fill(colorEnzyme);
+		rect(0,0,W,EH);
+		fill(colorComplex);
+		rect(0,EH,W,CH);
+		fill(colorSubstrate);
+		rect(0,EH+CH,W,SH);
+		fill(colorProduct);
+		rect(0,EH+CH+SH,W,PH);
+		pop();
+		
 	}
 }

@@ -10,9 +10,9 @@ Pre-saved settings as in old "epidemi"-simulation
 // Initialize a bunch of stuff
 var allPars = []; 
 var numPar;
-var density = 4; // Density of particles
+//var density = 4; // Density of particles
+var density = 8; // Density of particles
 var totArea;
-
 
 var fieldWidth = 700;
 var fieldHeight = 500;
@@ -20,8 +20,22 @@ var fieldHeight = 500;
 var dt = 0.01; // Timescale
 
 // Counters for current number of infected and exposed
-var numInf = 0;
+var numSus = 0;
 var numExp = 0;
+var numInf = 0;
+var numRec = 0;
+
+
+var allGraphs = [];
+var graphLeft = fieldWidth/3;
+var graphTop = 10;
+var graphWidth = fieldWidth*2/3;
+var graphHeight = fieldHeight-graphTop*2;
+var curWidth = graphWidth;
+var maxGraphNum = 500;
+
+
+//let gearImg;
 
 // // Table of UI texts
 // var UItexts = new p5.Table([1]);
@@ -70,6 +84,7 @@ if (language == 'Danish'){
 	TRebBot = 'Every ';
 	TRebQue = 'Rebirth?';
 	TAlways = 'Auto-start disease?';
+	TGra = 'Show graph';
 }
 
 //p5.disableFriendlyErrors = true;
@@ -90,6 +105,7 @@ var UIvaccine;
 var UIvaccRateText;
 var UIrebirthText;
 var UIrebirthButton;
+var UIGraphToggle;
 
 var maxSpeed = 80; // Max speed (in any direction)
 var addSpeed = 20; // Maximal speed added per frame
@@ -105,6 +121,8 @@ var modelType = 'SIR';
 var contDisease = false; // Whether disease should restart when no there are not more infected.
 var rebirthBool = false; // Whether or not rebirthing should happen
 var UIon = false;
+var GraphOn = false;
+//var GraphOn = true;
 
 // Define colors
 var colorS;
@@ -151,7 +169,11 @@ function setup() {
 		divHeight = fieldHeight +200;
 	}
 		
-
+	
+	// Load settings sympeol
+	//gearImg = loadImage('./gear.png'); // Load the image
+	// Icon made by Freepik from www.flaticon.com
+	
 	cnv = createCanvas(divWidth, divHeight);
 	cnv.parent('sketch-holder');
 	cnv.style('display','block');
@@ -214,6 +236,7 @@ function setup() {
   UItoggle.parent('sketch-holder');
   UItoggle.position(10,50);
   //UItoggle.position(width-50,height-20);
+  //image(gearImg, 10,50);
   
   UIparent = createDiv();
   UIparent.parent('sketch-holder');
@@ -221,7 +244,8 @@ function setup() {
   
   var UIdensityTitle = createDiv(TDen);
   UIdensityTitle.parent(UIparent);
-  UIdensity = createSlider(1, 8,density);
+  //UIdensity = createSlider(1, 8,density);
+  UIdensity = createSlider(1, 16,density);
   //UIdensity = createSlider(1, 10,density);
   UIdensity.changed(updateVariables);
   //UIdensity.position(10, 10);
@@ -302,29 +326,35 @@ function setup() {
   
   
   
-  UIrestart = createButton('Preset 1'); 
-  UIrestart.mousePressed(preset1);
-  UIrestart.style("font-size : 20px;");
-  UIrestart.parent(UIparent);
-  UIrestart.position(0,450);
-  UIrestart.class('uiButton');
+  UIpreset1 = createButton('Preset 1'); 
+  UIpreset1.mousePressed(preset1);
+  UIpreset1.style("font-size : 20px;");
+  UIpreset1.parent(UIparent);
+  UIpreset1.position(0,450);
+  UIpreset1.class('uiButton');
   
   
-  UIrestart = createButton('Preset 2'); 
-  UIrestart.mousePressed(preset2);
-  UIrestart.style("font-size : 20px;");
-  UIrestart.parent(UIparent);
-  UIrestart.position(0,490);
-  UIrestart.class('uiButton');
+  UIpreset2 = createButton('Preset 2'); 
+  UIpreset2.mousePressed(preset2);
+  UIpreset2.style("font-size : 20px;");
+  UIpreset2.parent(UIparent);
+  UIpreset2.position(0,490);
+  UIpreset2.class('uiButton');
   
   
-  UIrestart = createButton('Denmark'); 
-  UIrestart.mousePressed(preset3);
-  UIrestart.style("font-size : 20px;");
-  UIrestart.parent(UIparent);
-  UIrestart.position(0,530);
-  UIrestart.class('uiButton');
+  UIpreset3 = createButton('Denmark'); 
+  UIpreset3.mousePressed(preset3);
+  UIpreset3.style("font-size : 20px;");
+  UIpreset3.parent(UIparent);
+  UIpreset3.position(0,530); 
+  UIpreset3.class('uiButton');
   
+  
+  UIGraphToggle =  createCheckbox(TGra,GraphOn)
+  UIGraphToggle.changed(toggleGraph);
+  UIGraphToggle.class('uiText');
+  UIGraphToggle.parent(UIparent);
+  UIGraphToggle.position(0,560);
   
   
   // Make sure the default variables are read, in case any are undefined
@@ -346,11 +376,16 @@ function startupSim(){
 	// Make sure the array of particles is empty
 	allPars = []; 
 	// And that the counters are zero
-	numInf = 0;
+	numSus = 0;
 	numExp = 0;
+	numInf = 0;
+	numRec = 0;
+	// Clear graph as well
+	allGraphs = []; 
   
 	// Scale the density from the slider, and calculate the number of particles
-	density = UIdensity.value()/2000;
+	//density = UIdensity.value()/2000;
+	density = UIdensity.value()/4000;
 	numPar = round(density*totArea);
 
 	// Initialize particles
@@ -360,8 +395,10 @@ function startupSim(){
 		// Try to vaccinate 
 		if (random(1) < (VaccRate/100)){
 			newPar = new Particle(disStage.R);
+			numRec++;
 		} else { 
 			newPar = new Particle(disStage.S);
+			numSus++;
 		}
     
 		// Add to the array
@@ -405,11 +442,21 @@ function toggleUI(){
   updateUI();
 }
 
+
 function updateUI(){
 	if (UIon){
 		UIparent.show(); 
 	} else {
 		UIparent.hide();
+	}
+}
+
+function toggleGraph(){
+	if (this.checked()){
+		GraphOn = true;
+	} else 
+	{
+		GraphOn = false;
 	}
 }
 	
@@ -432,6 +479,7 @@ function rebirthCheckedEvent(){
     rebirthBool = false;
   }
 }
+
 
 // Functions for predefined settings
 function preset1(){
@@ -488,17 +536,9 @@ function updateVariables(){
 // Draw stuff
 function draw() {	
   //background(0);
-  //background(100,155,100);
-  //background(100,100,155);
-  //background(255,100,255);
-  //background(100,80,40); 
-  //background(0,80,70);
   background(113,183,140);
   //background(57,183,140); // Correct light green RUC
-  //background(60,180,245);
   background(0,30,30);
-  //background(0,0,120);
-  //background(190,190,190);
   //translate(margins,margins);
   
   // Center field in canvas
@@ -539,14 +579,31 @@ function draw() {
 		// Rebirth once every "rebirthRate"
 		if ((millis()-rebirthTimer ) > rebirthRate*1000){
 			
-			// Remove one
-			allPars.splice(int(random(numPar)),1);
+			// Choose a random particle
+			var IdToRemove = int(random(numPar));
+			
+			// Check its stages and subtract one of that kind
+			if (allPars[IdToRemove].Stage == disStage.S){
+				numSus--;
+			} else if (allPars[IdToRemove].Stage == disStage.E){
+				numExp--;
+			} else if (allPars[IdToRemove].Stage == disStage.I){
+				numInf--;
+			//} else if (allPars[IdToRemove].Stage == disStage.R){
+			} else {
+				numRec--;
+			}
+			
+			// Remove it
+			allPars.splice(IdToRemove,1);
 		  
 			// Try to vaccinate 
 			if (random(1) < (VaccRate/100)){
 				newPar = new Particle(disStage.R);
+				numRec++;
 			} else { 
 				newPar = new Particle(disStage.S);
+				numSus++;
 			}
 
 			// Add to the array of all
@@ -642,6 +699,55 @@ function draw() {
 	text("FPS: " + fps.toFixed(2), 10, 10);
 	*/
 	
+	
+	// Stuff for making graphs		 
+	var numGraph = allGraphs.length;
+	var graphBorder = 10;
+	
+	push()
+	translate(graphLeft,graphTop)
+	
+	
+	// Every XX frames
+	if ((frameCount%5)==0){
+		
+		if ( allGraphs.length > maxGraphNum ){
+			allGraphs.splice(0,1);
+		}
+		
+		// Add current status to graph
+		var newPoint = new graphPoint(numSus,numExp,numInf,numRec,0,graphHeight);
+		newPoint.w = curWidth;
+		allGraphs.push(newPoint);
+		numGraph = allGraphs.length;
+		curWidth = graphWidth/numGraph;
+		if (curWidth >= graphWidth){
+			curWidth = graphWidth;
+		}
+		
+		for (var k = 0; k < numGraph; k++) {
+			allGraphs[k].x = k*curWidth;
+			allGraphs[k].w = curWidth;
+		}
+	}
+	
+	// Only draw the graph when it is turned on
+	if (GraphOn){
+		// Draw the graph background / Border
+		fill(50,50,50,200)
+		//strokeWeight(10);
+		noStroke();
+		rect(-graphBorder,-graphBorder,graphWidth+graphBorder*2,graphHeight+graphBorder*2)
+		
+		// Go through the graph parts and show them
+		for (var k = 0; k < allGraphs.length; k++) {
+			allGraphs[k].display();
+		}
+		
+	}
+	pop()
+	
+	
 }
 
 class Particle {
@@ -713,10 +819,12 @@ class Particle {
 			this.Stage = disStage.S;
 			// Update the color
 			this.getColor(this.Stage);
+			numSus++;
         } else{
 			this.Stage = disStage.R;
 			// Update the color
 			this.getColor(this.Stage);
+			numRec++;
         }
       //} else {
         //this.infectTime = this.infectTime+1;
@@ -815,22 +923,27 @@ class Particle {
   
   infect(curMillis){
     
-    numInf++;
 	  if (modelType == 'SIR') {
 			//this.infectTime = 0;
 			//this.infectTime = millis();
 			this.infectTime = curMillis;
 			this.Stage = disStage.I;
+			numInf++;
+			numSus--;
 	  } else if(modelType == 'SIS'){
 			//this.infectTime = 0;
 			//this.infectTime = millis();
 			this.infectTime = curMillis;
 			this.Stage = disStage.I;
+			numInf++;
+			numSus--;
 	  } else if(modelType == 'SEIR'){
 			//this.exposedTime = 0;
 			//this.exposedTime = millis();
 			this.exposedTime = curMillis;
 			this.Stage = disStage.E;
+			numExp++;
+			numSus--;
 	  }
 	  
 	// Update the color
@@ -846,3 +959,38 @@ class Particle {
 
 }
 
+class graphPoint{
+	
+	constructor(S,E,I,R,x,h){
+		this.S = S;
+		this.E = E;
+		this.I = I;
+		this.R = R; 
+		this.x = x;
+		this.h = h;
+		this.w = 10;
+	}
+	
+	display() {
+		var sum = this.S+this.E+this.I+this.R;
+		var RH = this.h*this.R/sum;
+		var SH = this.h*this.S/sum;
+		var IH = this.h*this.I/sum;
+		var EH = this.h*this.E/sum;
+		var W = ceil(this.w)+1;
+		
+		noStroke();
+		push();
+		translate(this.x,0);
+		fill(colorR);
+		rect(0,0,W,RH);
+		fill(colorS);
+		rect(0,RH,W,SH);
+		fill(colorE);
+		rect(0,RH+SH,W,EH);
+		fill(colorI);
+		rect(0,RH+SH+EH,W,IH);
+		pop();
+		
+	}
+}

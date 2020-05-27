@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Rasmus Kristoffer Pedersen</title>
+	
+	<!-- 
+	
+	IDA IT webinar: Interaktive visualiseringer til videnskabelig formidling
+
+	Hør om hvordan matematiske modeller af eksempelvis sygdomsspredning kan blive gjort nemmere at forstå ved hjælp af interaktive simuleringer
+
+	Beskrivelse:
+	I sit forskningsarbejde med matematisk modellering af kræftsygdomme har Ph.D.-studerende Rasmus Kristoffer Pedersen ofte udfordringer med hvordan man bedst kan formidle videnskabelige resultater på en forståelig måde. Ved at udvikle interaktive visualiseringer har han fundet en simpel måde at gøre kompliceret matematik nemmere at forholde sig til.
+
+	På webinaret gennemgår Rasmus visualiseringer af blandt andet væksten af en kræfttumor og sygdomsspredning i en befolkning, aktualiseret af Corona-virussen. Rasmus fortæller desuden om sin egen forskning og tankerne bag hans visualiseringer. Der vil være mulighed for at stille spørgsmål og selv interagere med visualiseringerne.
+
+
+	NOTE:
+	Speaker notes for reveal.js is not currently set up to work here, as it requires a server to be running.
+
+	-->
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-84095938-1"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-84095938-1');
+	</script>
+
+    <script src="js/reveal.js" type="text/javascript"></script>
+
+    <script src="js/p5.min.js" type="text/javascript"></script>
+    <script src="js/p5.dom.min.js" type="text/javascript"></script>
+
+		<link rel="stylesheet" href="./css/reveal.css">
+		<link rel="stylesheet" href="./css/theme/moon.css"> <!-- More reveal.js themes can be found online -->
+		
+  </head>
+  <body>
+    
+   
+   
+    <div class="reveal"><div class="slides">
+
+<section>
+	<!-- <h2> Science dissemination with p5.js</h2> -->
+	<h2> Interaktive Visualiseringer til Videnskabelig Formidling</h2> 
+	<h5> Hvordan matematiske modeller gøres forståelige ved hjælp af interaktive simuleringer</h5>
+	<p>IDA webinar, 28. maj 2020</p>
+ 	<p><small>af <a href="http://rasmuspedersen.com">Rasmus Kristoffer Pedersen</a></small></p>
+ 	<p><small><a href="http://rasmuspedersen.com/IDA/">Slides tilgængelige på rasmuspedersen.com/IDA/ </a></small></p>
+ 	<!-- <p><small>Ph.D.-student, Mathematical Modelling, Roskilde University</small></p> -->
+</section>
+
+<!-- Introduction -->
+<section>
+	<section>
+		<h3>Udfordringer med videnskabelig formidling</h3>
+		
+		<img class ="fragment" src="img/scienceJournals.jpg" width = "300 px"> 
+		<img class ="fragment"  src="img/numPublications.JPG" width = "300 px"> 
+		
+		<p class="fragment"> Videnskabelige resultater har betydning for verden omkring os.</p>
+		<p class="fragment"> Det er op til forskerne selv at kunne formidle deres forskning på en forståelig måde!</p>
+		
+		<!--
+		<p class="fragment"> Science influences decisions about the world. </p>
+		<p class="fragment"> Scientists must be able to communicate their work!</p> -->
+		
+		
+	</section>
+	<section>
+		<h3>Min vinkel</h3>
+		<p class="fragment"> Ph.D.-studerende i matematik på RUC. </p>
+		<p class="fragment"> Samarbejde med læger fra Roskilde Hospital. </p>
+		<p> 
+		<img class="fragment" src="img/bloodtube.png" width = "200 px"> 
+		<img class="fragment" src="img/mathEquations.JPG" width = "300 px"> 
+		<img class="fragment" src="img/needle.png" width = "200 px"> 
+		</p>
+		<p class="fragment"> En stor udfordring: Jeg er ikke læge. </p>
+		<p class="fragment"> En større udfordring: Lægerne er ikke mig. </p>
+		<!-- <p class="fragment"> A big challenge: I'm not a doctor. </p>
+		<p class="fragment"> A bigger challenge: The doctors are not me. </p>-->
+		
+	</section>
+	
+	<section>
+		<h3>Interaktive simuleringer</h3>
+		<p class="fragment"> To konkrete eksempler.</p>
+		<p class="fragment"> Baseret på / inspireret af matematiske modeller.</p>
+		
+					<ol>
+						<li class="fragment">Væksten af en cancertumor.</li>
+						<p class="fragment"> Formål: Post på "Matematisk cancer-forskning" blog. </p>
+						<li class="fragment">Sygdomsspredning.</li>
+						<p class="fragment"> Formål: Undervisning og rekruttering af gymnasieelever.</p>
+					</ol>
+					
+		<!--<p class="fragment"> Two examples of interactive simulations.</p>
+		<p class="fragment"> Based on complicated mathematical models.</p>
+		
+					<ol>
+						<li class="fragment">Growth of a cancer tumor.</li>
+						<p class="fragment"> Purpose: Post on mathematical blog. </p>
+						<li class="fragment">The spread of diseases.</li>
+						<p class="fragment"> Purpose: For educating high school students.</p>
+					</ol> -->
+		<!-- <p class="fragment"> Example 1: Growth of a cancer tumor.</p>
+		<p class="fragment"> Example 2: The spread of diseases.</p> -->
+		
+	</section>
+</section>
+
+
+<section>
+	<section>
+		
+		<h3>Matematisk model af cancertumorvækst</h3>
+		<!--<h3>Mathematical model of cancer growth</h3>-->
+		
+	    <p> 
+		<span class ="fragment">
+		<img src="img/tumorS.JPG" width = "200 px"> </span> 
+		<span class ="fragment">
+		<img src="img/tumorM.JPG" width = "200 px"> </span> 
+		<span class ="fragment">
+		<img src="img/tumorL.JPG" width = "200 px"> </span> </p>
+		
+		<!-- Growth of a cancer tumor, based on biological understanding.-->
+		
+	    <p> <span class ="fragment">
+		<img src="img/flowchart.JPG" width = "300 px"> </span> 
+		<span class="fragment" >
+		<img src="img/hillenGraph.JPG" width = "200 px"> </span> 
+		<span class="fragment" >
+		<img src="img/hillenArticle.JPG" width = "300 px"> </span> 
+		</p>
+		
+	  
+		<aside class="notes">
+		
+		Tumor growth
+		Flowchart
+		Graphs
+		Screenshot of article
+		
+		"And this is ofter where the things stop (Until future work or unless news-journalist use it)"
+		
+		</aside>
+		
+	  
+	  
+	  <!--<div id="CancerGrowth" align=center style="margin: 0 auto; border:1px solid; width: 500px"></div> -->
+	  <!-- <div id="CancerGrowth" align=center style="border:1px solid;"></div> -->
+	</section>
+	<section data-state="CancerInit">
+		<!--<h3> Interactive simulation of cancer growth</h3>-->
+		<h3> Interaktiv simulering af tumorvækst.</h3>
+		<iframe id="CancerGrowthIframe"
+			title="Cancer Growth"
+			width="700"
+			height="550"
+			style="width:100%"
+			src="http://www.rasmuspedersen.com/CancerGrowth/">
+		</iframe>
+		<input type="button"
+               id="btn" 
+               value="Refresh simulation" /> 
+  
+        <script> 
+            function reload() { 
+                document.getElementById('CancerGrowthIframe').src += ''; 
+            } 
+            btn.onclick = reload; 
+        </script> 
+	  <!--<p> Oh wow, it's a simulation of cancergrowth!</p>-->
+	</section>
+</section>
+
+<section>
+	<section data-state="CancerInit">
+		<h3>Matematisk modellering af sygdomsspredning</h3>
+		
+		<p class="fragment"> Matematik der beskriver hvordan en sygdom spredes i en population.</p>
+		
+		<p class="fragment"> Forskellige modeller til en lang række sygdomme, heriblandt Covid-19, Ebola og mæslinger.</p>
+		
+		<p class="fragment"> Klassiskeren: SIR modellen (<font color="green">Susceptible</font>, <font color="red">Infected</font> og <font color="magenta">Recovered</font>). </p>
+		
+		<p class="fragment"> Aldrig været vigtigere at kunne formidle det! </p>
+		<!-- Vigtigheden af at gøre disse modeller forståelige. Pludseligt en global udfordring at gøre det forståeligt for alle! -->
+		
+		
+		<!-- <h3>Modelling the spread of infectious diseases</h3>
+		
+		<p class="fragment"> Diseases that spread in a population of people.</p>
+		
+		<p class="fragment"> Predict how fast diseases like e.g. Ebola, Measles or Corona-virus spread.</p>
+		
+		<p class="fragment"> Classic example: The SIR model (<font color="green">Susceptible</font>, <font color="red">Infected</font> and <font color="magenta">Recovered</font>,). </p>-->
+		<!-- <p class="fragment"> Originally, considers Susceptible, Infected and Recovered persons, but many extensions exists.</p> -->
+		
+		<!-- <p class="fragment"> Herd immunity.</p>-->
+		
+		<!-- <p class="fragment"> How do you communicate it to someone who hasn't spent a whole career working with it. </p>  -->
+		
+		<aside class="notes">
+		
+		Something about how old the SIR model is
+		Something about how it is actually used in day-to-day life (e.g. the use of R_0)
+		Mention ebola outbreak?
+		The concept of herd immunity, and the challenges of communicating it.
+		(The researchers have an intuitive understanding of the concept, but how can that be transfered to someone who HASN'T used 30 years researching the topic?)
+		
+		</aside>
+  
+	</section>
+	<section data-state="SIRInit">
+		<h3>Interaktiv simulering af sygdomsspredning</h3>
+		<!--<div id="CancerGrowth" align=center style="margin: 0 auto; border:1px solid; width: 500px"></div> -->
+		<!--<div id="SIR" align=center style="border:1px solid;"></div>-->
+		<iframe id="SIRIframe"
+			title="SIR model"
+			style="width:100%"
+			height="540"
+			src="http://www.rasmuspedersen.com/SIR/index.html">
+		</iframe>        
+		<input type="button"
+               id="btnSIR" 
+               value="Refresh simulation" /> 
+  
+        <script> 
+            function reloadSIR() { 
+                document.getElementById('SIRIframe').src += ''; 
+            } 
+            btnSIR.onclick = reloadSIR(); 
+        </script> 
+		<!-- <p> Oh wow, it's a simulation of disease!</p>
+		
+			src="http://www.rasmuspedersen.com/SIR/">
+			src="SIR"
+		-->
+	</section>
+</section>
+<section>
+	<section data-state="Conclusion">	
+	<h3> Konklusion </h3>
+	
+	
+		<p class="fragment"> Videnskabelig formidling har aldrig været vigtigere for samfundet.</p>
+		<p class="fragment"> Kreative måder er visualisere matematikken på er nødvendige.</p>
+		<p class="fragment"> IT-værktøjer der gør det nemmere at udvikle visualiseringer er utroligt brugbare (f.eks. Processing, p5.js el.lign.).</p>
+		<p class="fragment"> Heldigvis er dette også gået op for andre at gode visualisering er brugbare. <a href="https://wapo.st/corona-simulator"> (Washington Post) </a> </p>
+		<!--<p class="fragment"> Even my bug-filled, hastily-written and somewhat uninviting visualizations have had a much better reception among my colleagues than expected. </p> -->
+		<!-- <p class="fragment"> Science communication is fundamental for society.</p>
+		<p class="fragment"> Creative coding can a way to make science more relatable.</p>
+		<p class="fragment"> Important to have tools that make visualization and interactivity easy (e.g. Processing and p5.js) </p>
+		<p class="fragment"> With my limited experience with p5.js, I have still made something useful for communicating science.</p> -->
+	
+	<!-- 
+	Bringing it back up to a higher level again
+	Scientists and creative coders working together
+	Scientists need training in creative coding
+	
+	Main point: The importance of accessible tools like processing and p5.js
+	
+	Minor point: I'm not particularly experienced with creative coding, but the examples shown here were relatively easy to make and the reception among scientific collaques has been much better than anticipated.
+	
+	
+	SPEND QUITE SOME TIME ON THIS SLIDE!
+	
+	
+	(Perhaps a shout-out to 3blue1brown and his manim package?)
+	-->
+	
+	</section>	
+	<section>	
+	
+		<h3> Tak for jeres opmærksomhed!</h3>
+		
+		
+		<!--
+		<h3> Thank you for your attention.</h3>
+		<p><a href="http://rasmuspedersen.com"> <img src="img/profile.jpg" width =  "300 px"> </a></p> -->
+		
+		<p><a href="http://rasmuspedersen.com"> Hjemmeside: rasmuspedersen.com </a></p>
+		<p><a href="mailto:rasmuspedersen1992@gmail.com"> Email: rasmuspedersen1992@gmail.com </a></p>
+	</section>	
+</section>
+
+
+    <script>
+
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: false,
+				progress: false,
+				slideNumber: 'c/t',
+
+			});
+			Reveal.addEventListener( 'CancerInit', function() {
+				reload();
+			} );
+			Reveal.addEventListener( 'SIRInit', function() {
+				// Restart cancer model so it doesn't use a lot of memory in background
+				reload();
+				// Restart SIR-simulation
+				reloadSIR();
+			} );
+			Reveal.addEventListener( 'Conclusion', function() {
+				// Restart cancer model so it doesn't use a lot of memory in background
+				reload();
+			} );
+			
+			
+    </script>
+
+
+<!--
+
+			window.addEventListener('load', function () {
+			 reload();
+			 reloadSIR();
+			})
+			document.addEventListener("DOMContentLoaded", function(event){
+				reloadSIR();
+			});
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script>
+-->
+<!--
+    <script type="text/javascript" async src="/home/urp/git/MathJax/MathJax.js?config=TeX-AMS_CHTML"></script>
+	
+	
+    <script src="../lib/js/head.min.js" type="text/javascript"></script>
+    -->    <!-- <script src="js/p5.sound.js" type="text/javascript"></script> 
+-->
+   
+	<!--
+    <script src="sketches/CancerGrowth.js" type="text/javascript"></script>
+    <script src="sketches/SIR.js" type="text/javascript"></script>
+
+    <script>
+	p5_CancerGrowth = new p5(CancerGrowth, "CancerGrowth");
+	p5_SIR = new p5(SIR, "SIR");
+    </script>
+	-->
+    <!--
+	p5_SIR = new p5(SIR, "SIR");
+	p5_VisualODE = new p5(VisualODE, "VisualODE");
+    <style> body {padding: 0; margin: 0;} canvas {vertical-align: top;} </style>
+    -->
+
+  </body>
+</html>
+
+
+
