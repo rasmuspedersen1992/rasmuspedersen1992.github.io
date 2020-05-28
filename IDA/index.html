@@ -84,8 +84,6 @@
 		</p>
 		<p class="fragment"> En stor udfordring: Jeg er ikke læge. </p>
 		<p class="fragment"> En større udfordring: Lægerne er ikke mig. </p>
-		<!-- <p class="fragment"> A big challenge: I'm not a doctor. </p>
-		<p class="fragment"> A bigger challenge: The doctors are not me. </p>-->
 		
 	</section>
 	
@@ -170,7 +168,7 @@
 		</iframe>
 		<input type="button"
                id="btn" 
-               value="Refresh simulation" /> 
+               value="Opdater simuleringsvindue" /> 
   
         <script> 
             function reload() { 
@@ -232,7 +230,7 @@
 		</iframe>        
 		<input type="button"
                id="btnSIR" 
-               value="Refresh simulation" /> 
+               value="Opdater simuleringsvindue" /> 
   
         <script> 
             function reloadSIR() { 
@@ -249,13 +247,26 @@
 </section>
 <section>
 	<section data-state="Conclusion">	
-	<h3> Konklusion </h3>
+	<h3> Afsluttende kommentarer </h3>
 	
 	
 		<p class="fragment"> Videnskabelig formidling har aldrig været vigtigere for samfundet.</p>
 		<p class="fragment"> Kreative måder er visualisere matematikken på er nødvendige.</p>
-		<p class="fragment"> IT-værktøjer der gør det nemmere at udvikle visualiseringer er utroligt brugbare (f.eks. Processing, p5.js el.lign.).</p>
+		<p class="fragment"> IT-værktøjer der gør det nemmere at udvikle visualiseringer er utroligt nyttige (f.eks. Processing, p5.js, manim, samt andre).</p>
+		<p class="fragment"> Værdien af gode visualiseringer ses verden rundt:</p>
+
+		<ul>
+			<li class="fragment">  De fleste nyhedsmediers Coronavirus dækning. </li>
+			<li class="fragment">  <a href="https://wapo.st/corona-simulator"> Washington Post "Corona-Simulator".  </a> </li>
+			<li class="fragment">  <a href="https://artistoo.net/"> Artistoo, simulering af celler i din browser.  </a> </li>
+			<li class="fragment">  <a href="https://www.youtube.com/channel/UCYO_jab_esuFRV4b17AJtAw"> 3Blue1Brown på Youtube. </a> </li>
+		</ul>
+		
+		<!--
 		<p class="fragment"> Heldigvis er dette også gået op for andre at gode visualisering er brugbare. <a href="https://wapo.st/corona-simulator"> (Washington Post) </a> </p>
+		
+		
+		-->
 		<!--<p class="fragment"> Even my bug-filled, hastily-written and somewhat uninviting visualizations have had a much better reception among my colleagues than expected. </p> -->
 		<!-- <p class="fragment"> Science communication is fundamental for society.</p>
 		<p class="fragment"> Creative coding can a way to make science more relatable.</p>
@@ -315,6 +326,8 @@
 			Reveal.addEventListener( 'Conclusion', function() {
 				// Restart cancer model so it doesn't use a lot of memory in background
 				reload();
+				// Restart SIR-simulation
+				reloadSIR();
 			} );
 			
 			
