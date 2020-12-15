@@ -2,6 +2,9 @@
 	Sketch for displaying difference in number of tests
 */
 
+// // For saving
+// let saveAllFrames = true;
+
 let imgHealthy;
 let imgSick;
 
@@ -21,15 +24,19 @@ let FPSize;
 let TNSize;
 
 let pSize = 20;
-let normalSpeed = 4;
-let reducedSpeed = 2;
+let normalSpeed = 10;
+let reducedSpeed = 10;
+// let normalSpeed = 4;
+// let reducedSpeed = 2;
 
-let testSens = 0.99;
-let testSpec = 0.75;
+// let testSens = 0.99;
+// let testSpec = 0.75;
+let singleTestTP = 0.99;
+let singleTestTN = 0.75;
 // let tpr = testSens;
 // let tnr = testSpec;
-let TPrate = testSens;
-let TNrate = testSpec;
+let TPrate = singleTestTP;
+let TNrate = singleTestTN;
 // let TPrate;
 // let TNrate;
 let numTests = 3;
@@ -39,6 +46,8 @@ let PCRSpec = 0.99;
 let PCRSens = 0.99;
 let AntiSpec = 0.75;
 let AntiSens = 0.99;
+// let AntiSpec = 0.60;
+// let AntiSens = 0.60;
 
 // let toBoost = 'Sens';
 let toBoost;
@@ -51,11 +60,26 @@ let toBoost;
 // let TPrate = 1-Math.pow((1-tpr),numTests);
 // let TNrate = Math.pow(tnr,numTests);
 
+// let ShowIndivRes = true;
+let ShowIndivRes = false;
+// let ShowTotalRes = true;
+let ShowTotalRes = false;
+
+let splitZones = false;
+
+// Define the number of rows in the quarentine area
+let quaRow = 5;
+let numInQua = 0;
+let countTP = 0;
+let countFP = 0;
+let countTN = 0;
+let countFN = 0;
 
 let tentPos;
 let allTentPos = [];
-let tentWidth = pSize*1.2;
-let tentHeight = pSize*2;
+let tentWidth = pSize*2;
+let tentHeight = pSize*2.5;
+// let tentHeight = pSize*2;
 
 // Interactivity
 let sliderNumTests;
@@ -74,8 +98,28 @@ let radioType;
 
 let midZones;
 
+function updateProbs(){
+	// Recalculates the effective probabilities
+	switch (toBoost) {
+		case 'Spec':
+			// spec_boost
+			TPrate = Math.pow(singleTestTP,numTests);
+			TNrate = 1-Math.pow((1-singleTestTN),numTests); 
+			break;
+		case 'Sens':
+			// sens_boost
+			TPrate = 1-Math.pow((1-singleTestTP),numTests);
+			TNrate = Math.pow(singleTestTN,numTests);
+			break;
+	
+		default:
+			break;
+	}
+}
+
 function setup(){
 
+	noSmooth();
 	// Load images
 	imgHealthy = loadImage('healthy.png');
 	imgSick = loadImage('sick.png');
@@ -93,14 +137,27 @@ function setup(){
 	// FNZonePos = createVector(5*divW/8,divH/2 + divH/4);
 	// FPZonePos = createVector(7*divW/8,divH/2 - divH/4);
 	// TNZonePos = createVector(7*divW/8,divH/2 + divH/4);
-	TPZonePos = createVector(5*divW/8,divH/2 - divH/4);
-	FNZonePos = createVector(5*divW/8,divH/2 + divH/4);
-	FPZonePos = createVector(7*divW/8,divH/2 - divH/4);
-	TNZonePos = createVector(7*divW/8,divH/2 + divH/4);
-	TPSize = createVector(divW/12,divH/10);
-	FNSize = TPSize;
-	FPSize = TPSize;
-	TNSize = TPSize;
+	if (splitZones){
+		TPZonePos = createVector(5*divW/8,divH/2 - divH/4);
+		FNZonePos = createVector(5*divW/8,divH/2 + divH/4);
+		FPZonePos = createVector(7*divW/8,divH/2 - divH/4);
+		TNZonePos = createVector(7*divW/8,divH/2 + divH/4);
+		TPSize = createVector(divW/12,divH/10);
+		FNSize = TPSize;
+		FPSize = TPSize;
+		TNSize = TPSize;
+	} else {
+		TPZonePos = createVector(5*divW/8,divH/2 - divH/4);
+		FPZonePos = TPZonePos;
+		FNZonePos = createVector(5*divW/8,divH/2 + divH/4);
+		TNZonePos = FNZonePos;
+
+		TPSize = createVector(2*divW/12,divH/10);
+		FNSize = TPSize;
+		FPSize = TPSize;
+		TNSize = TPSize;
+
+	}
 
 	// midZones = createVector(0,0);
 	calcAllPos()
@@ -258,7 +315,11 @@ function generateTentPos(numTents){
 }
 
 function restartTesting(){
-
+	numInQua = 0;
+	countTP = 0;
+	countFP = 0;
+	countTN = 0;
+	countFN = 0;
 	allPersons = [];
 }
 
@@ -296,11 +357,15 @@ function draw(){
 	toBoost = radioBoost.value();
 
 	if (curType == 'PCR'){
-		testSpec = PCRSpec;
-		testSens = PCRSens;
+		singleTestTP = PCRSpec;
+		singleTestTN = PCRSens;
+		// testSpec = PCRSpec;
+		// testSens = PCRSens;
 	} else {
-		testSpec = AntiSpec;
-		testSens = AntiSens;
+		singleTestTP = AntiSpec;
+		singleTestTN = AntiSens;
+		// testSpec = AntiSpec;
+		// testSens = AntiSens;
 	}
 
 	// Update probabilities
@@ -312,15 +377,15 @@ function draw(){
 	text('Specificitet:',xPosText,divH-5*hdiffText)
 	text('Sensitivitet:',xPosText,divH-4*hdiffText)
 	textAlign(LEFT,TOP);
-	text((testSpec*100) + '%',xPosText+hdiffText/2,divH-5*hdiffText);
-	text((testSens*100) + '%',xPosText+hdiffText/2,divH-4*hdiffText);
+	text((singleTestTP*100) + '%',xPosText+hdiffText/2,divH-5*hdiffText);
+	text((singleTestTN*100) + '%',xPosText+hdiffText/2,divH-4*hdiffText);
 
 	textAlign(RIGHT,TOP);
 	text('Effektiv specificitet:',xPosText,divH-3*hdiffText)
 	text('Effektiv sensitivitet:',xPosText,divH-2*hdiffText)
 	textAlign(LEFT,TOP);
-	text(Math.round(TNrate*100000)/1000 + '%',xPosText+hdiffText/2,divH-3*hdiffText);
-	text(Math.round(TPrate*100000)/1000 + '%',xPosText+hdiffText/2,divH-2*hdiffText);
+	text(Math.round(TPrate*100000)/1000 + '%',xPosText+hdiffText/2,divH-3*hdiffText);
+	text(Math.round(TNrate*100000)/1000 + '%',xPosText+hdiffText/2,divH-2*hdiffText);
 	// text(Math.round(TNrate*100) + '%',xPosText+hdiffText/2,divH-3*hdiffText);
 	// text(Math.round(TPrate*100) + '%',xPosText+hdiffText/2,divH-2*hdiffText);
 
@@ -357,6 +422,15 @@ function draw(){
 	textAlign(CENTER);
 	text('I karantæne',3*divW/4,20)
 	text('Ikke i karantæne',3*divW/4,divH-50)
+	textSize(16);
+	// text('Sandt positive: '+countTP,3*divW/4,50)
+	// text('Falsk positive: '+countFP,3*divW/4,65)
+	// text('Sandt negative: '+countTN,3*divW/4,divH-85)
+	// text('Falsk negative: '+countFN,3*divW/4,divH-70)
+	text('Syge: '+countTP,3*divW/4,50)
+	text('Raske: '+countFP,3*divW/4,65)
+	text('Raske: '+countTN,3*divW/4,divH-70)
+	text('Syge: '+countFN,3*divW/4,divH-85)
 
 	// Draw background of "test-tents"
 	for (let tentN = 0; tentN < allTentPos.length; tentN++) {
@@ -441,6 +515,14 @@ function draw(){
 	// var smallFieldLeft = 0;//sketchW * curFieldScreenRatio;
 	// var smallFieldTop = fieldHeight *0.5* (1-curFieldScreenRatio);
 	// translate(smallFieldLeft,smallFieldTop);
+
+	// if (saveAllFrames){
+	// 	// Save images
+	// 	frameRate(2); 
+	// 	saveCanvas('multipleTestingFrame'+frameCount, 'jpg');
+	// 	// delayTime(delayTime)
+	// 	// delayTime = 1
+	// }
 	
 }
 
@@ -448,55 +530,58 @@ function draw(){
 function drawTentFore(tentPos){
 	push()
 	translate(tentPos)
-	fill(255);
+	translate(0,pSize/2 +5)
 	noStroke();
-	// rect(tentWidth/2,- tentHeight/2,tentWidth,tentHeight);
-	// rect(- tentWidth,- tentHeight/2,tentWidth*2.5,-tentHeight/4);
-	rect(- tentWidth,- tentHeight/2,tentWidth*2,-tentHeight/4);
-	rect(tentWidth/2,- tentHeight/2,tentWidth/2,tentHeight);
 
 	// rect(tentWidth/2,- tentHeight/2,3*tentWidth/2,1.5*tentHeight);
 	// rect(tentWidth/2,- tentHeight,tentWidth,tentHeight*1.5);
 	fill(200,200,200,150);
-	rect(0, - tentHeight/2,tentWidth/2,tentHeight);
+	// rect(0, - tentHeight/2,tentWidth/2,tentHeight);
+	rect(tentWidth/2,-tentHeight,-tentWidth/2,tentHeight);
+
+
+	fill(255);
+	stroke(0)
+	strokeWeight(2)
+	rect(tentWidth/2,-tentHeight,-tentWidth/4,tentHeight);
+
+	rect(tentWidth/2,-tentHeight,-tentWidth,tentHeight/4); // Top
+
+
+	// rect(tentWidth/2,- tentHeight/2,tentWidth,tentHeight);
+	// rect(- tentWidth,- tentHeight/2,tentWidth*2.5,-tentHeight/4);
+	// rect(- tentWidth,- tentHeight/2,tentWidth*2,-tentHeight/4);
+	// rect(tentWidth/2,- tentHeight/2,tentWidth/2,tentHeight);
+
+	// rect(tentWidth/2,-tentHeight/2,-tentWidth/4,tentHeight);
+	// rect(tentWidth/2,-tentHeight/2,-tentWidth,tentHeight/4);
 	pop()
 }
 function drawTentBack(tentPos){
 	push()
 	translate(tentPos)
-	fill(255);
+	translate(0,pSize/2 +5)
 	noStroke();
+	fill(200,200,200,150);
+	rect(-tentWidth/2,-tentHeight,tentWidth/2,tentHeight);
+	stroke(0)
+	strokeWeight(2)
+	fill(255);
+	rect(-tentWidth/2,-tentHeight,tentWidth/4,tentHeight);
+
 	// rect(- tentWidth,-tentHeight,tentWidth*2,tentHeight/2);
 	// triangle(-tentWidth,-tentHeight/2,0,-tentHeight,tentWidth*2,-1.5*tentHeight/2);
 	// triangle(-tentWidth,-tentHeight/2,tentWidth*2,-1.5*tentHeight/2,tentWidth*2,-tentHeight/2);
 	// triangle(-tentWidth,-tentHeight/2-tentHeight/4,0,-tentHeight-tentHeight/4,tentWidth,-tentHeight/2-tentHeight/4);
 	// triangle(-tentWidth,-tentHeight/2,0,-tentHeight,tentWidth,-tentHeight/2);
 	// rect(0,-tentHeight/2,tentWidth,-tentHeight/2);
-	rect(- tentWidth,- tentHeight/2,tentWidth/2,tentHeight);
+	// rect(- tentWidth,- tentHeight/2,tentWidth/2,tentHeight);
+	// rect(-tentWidth/2,-tentHeight/2,-tentWidth/4,tentHeight)
 	
-	fill(200,200,200,150);
-	rect(- tentWidth/2, - tentHeight/2,tentWidth/2,tentHeight);
+	// rect(- tentWidth/2, - tentHeight/2,tentWidth/2,tentHeight);
 	pop()
 }
 
-function updateProbs(){
-	// Recalculates the probabilities
-	switch (toBoost) {
-		case 'Spec':
-			// spec_boost
-			TPrate = Math.pow(testSens,numTests);
-			TNrate = 1-Math.pow((1-testSpec),numTests); 
-			break;
-		case 'Sens':
-			// sens_boost
-			TPrate = 1-Math.pow((1-testSens),numTests);
-			TNrate = Math.pow(testSpec,numTests);
-			break;
-	
-		default:
-			break;
-	}
-}
 
 function getPlaceInZone(zoneName){
 
@@ -516,8 +601,13 @@ function getPlaceInZone(zoneName){
 		// 	break;
 			
 		case 'TruePos':
-			toReturnX = TPZonePos.x+random(-1,1)*TPSize.x;
-			toReturnY = TPZonePos.y+random(-1,1)*TPSize.y;
+			curRow = Math.floor(numInQua/quaRow)
+			curCol = numInQua % quaRow
+			toReturnX = TPZonePos.x - TPSize.x + curRow * pSize*2;
+			toReturnY = TPZonePos.y - TPSize.y + curCol * pSize*2;
+			numInQua = numInQua +1 
+			// toReturnX = TPZonePos.x+random(-1,1)*TPSize.x;
+			// toReturnY = TPZonePos.y+random(-1,1)*TPSize.y;
 			break;
 	
 		case 'TrueNeg':
@@ -531,8 +621,13 @@ function getPlaceInZone(zoneName){
 			break;
 		
 		case 'FalsePos':
-			toReturnX = FPZonePos.x+random(-1,1)*FPSize.x;
-			toReturnY = FPZonePos.y+random(-1,1)*FPSize.y;
+			curRow = Math.floor(numInQua/quaRow)
+			curCol = numInQua % quaRow
+			toReturnX = FPZonePos.x - FPSize.x + curRow * pSize*2;
+			toReturnY = FPZonePos.y - FPSize.y + curCol * pSize*2;
+			numInQua = numInQua +1 
+			// toReturnX = FPZonePos.x+random(-1,1)*FPSize.x;
+			// toReturnY = FPZonePos.y+random(-1,1)*FPSize.y;
 			break;
 	
 		default:
@@ -551,79 +646,211 @@ class Person {
 		this.sick = sick;
 		this.size = pSize;
 		this.size2 = this.size*2;
-		this.state = 'none';
+		// this.state = 'none';
+		this.state = 'move';
 		this.moveTo = createVector(0,0);
+		this.moveTo = allTentPos[0];
 		this.speed = normalSpeed;
 		this.testRes = false;
+		this.testResultCombined;
+		this.testResults = [];
 		this.testCount = 0;
 		this.toPreZone = true;
+		this.testDisplay = ''
+		this.testCombined = false;
+		this.stopNextRun = false;
 
-		this.testPerson();
+		// this.testPerson();
+		// this.getNewState();
+		
 	}
 	
 	display(){
+		push();
+		translate(this.pos.x,this.pos.y);
+
+		
 		if (this.sick){
-			image(imgSick,this.pos.x-this.size,this.pos.y-this.size,this.size*2,this.size*2);
+			image(imgSick,-this.size,-this.size,this.size*2,this.size*2);
 		} else {
-			image(imgHealthy,this.pos.x-this.size,this.pos.y-this.size,this.size*2,this.size*2);
+			image(imgHealthy,-this.size,-this.size,this.size*2,this.size*2);
 		}
+		textSize(20)
+		textLeading(10);
+		text(this.testDisplay,0,20)
+		// text(this.testCount,0,-30)
+		// for (let t = 0; t < this.testResults.length; t++) {
+		// 	const element = this.testResults[t];
+		// 	// text(element,this.pos.x,this.pos.y+(10*t)+30) 
+		// 	if (element == true){
+		// 		text('+',0,(15*t)+30)
+		// 	} else {
+		// 		text('-',0,(15*t)+30)
+		// 	}
+		// }
+		// if (this.testCount == numTests){
+		// 	text(this.testResultCombined,0,(15*(numTests+1)) + 30 )
+		// }
+		pop();
+		
+		// if (this.sick){
+		// 	image(imgSick,this.pos.x-this.size,this.pos.y-this.size,this.size*2,this.size*2);
+		// } else {
+		// 	image(imgHealthy,this.pos.x-this.size,this.pos.y-this.size,this.size*2,this.size*2);
+		// }
+		// textSize(20)
+		// text(this.testResultCombined,this.pos.x,this.pos.y+10)
+		// text(this.testCount,this.pos.x,this.pos.y-30)
+		// for (let t = 0; t < this.testResults.length; t++) {
+		// 	const element = this.testResults[t];
+		// 	// text(element,this.pos.x,this.pos.y+(10*t)+30) 
+		// 	if (element == true){
+		// 		text('+',this.pos.x,this.pos.y+(10*t)+30)
+		// 	} else {
+		// 		text('-',this.pos.x,this.pos.y+(10*t)+30)
+		// 	}
+		// }
 	}
 
-	testPerson(){
-		// Test
+	makeOneTest(){
+		let toAdd;
 		if (this.sick){
-			if (random(0,1) <= TPrate){
-				this.testRes = true;
+			if (random(0,1) <= singleTestTP){
+				toAdd = true;
 			} else {
-				this.testRes = false;
+				toAdd = false;
 			}
 		} else {
-			if (random(0,1) <= (1-TNrate)){
-				this.testRes = false;
+			if (random(0,1) <= singleTestTN){
+			// if (random(0,1) <= (1-singleTestTN)){
+				toAdd = false;
 			} else {
-				this.testRes = true;
+				toAdd = true;
+			}
+		}
+		// Add to test-result array
+		this.testResults.push(toAdd);
+		// Add to displaytext
+		if (ShowIndivRes){
+			if (toAdd){
+				this.testDisplay = this.testDisplay + '+\n'
+			} else {
+				this.testDisplay = this.testDisplay + '-\n'
 			}
 		}
 		
-		// this.speed = this.speed/2;
+		// if (toAdd){
+		// 	this.testDisplay = this.testDisplay + '+'
+		// } else {
+		// 	this.testDisplay = this.testDisplay + '-'
+		// }
 	}
 
-	getNewState() {
-		// Test
-		// if (this.sick){
-		// 	this.moveTo = getPlaceInZone('Positive');
-		// } else {
-		// 	this.moveTo = getPlaceInZone('Negative');
-		// }
-
-		// If the person has not been in all tents, go to next
-		if (this.testCount < numTests){  
-			// Set next waypoint
-			this.moveTo = allTentPos[this.testCount];
-			// Update count
-			this.testCount = this.testCount + 1;
-		} else {
-		// If the person is done being tested, go to zone
-			if (this.toPreZone){
-				this.moveTo = midZones;
-				this.toPreZone = false;
+	combineTestResults(){
+		let anyTrue = false;
+		let anyFalse = false;
+		for (let t = 0; t < this.testResults.length; t++) {
+			const element = this.testResults[t];
+			if (element == true){
+				anyTrue = true;
+			}
+			if (element == false){
+				anyFalse = true;
+			}
+		}
+		switch (toBoost) {
+			case 'Spec':
+				this.testResultCombined = !anyFalse;
+				// // spec_boost
+				// TPrate = Math.pow(singleTestTP,numTests);
+				// TNrate = 1-Math.pow((1-singleTestTN),numTests); 
+				break;
+			case 'Sens':
+				// sens_boost
+				this.testResultCombined = anyTrue;
+				// TPrate = 1-Math.pow((1-singleTestTP),numTests);
+				// TNrate = Math.pow(singleTestTN,numTests);
+				break;
+		
+			default:
+				break;
+		}
+		
+		// Increase global counter
+		if (this.sick){
+			if (this.testResultCombined){
+				countTP += 1;
 			} else {
-				this.speed = reducedSpeed;
-				if (this.sick){
-					if (this.testRes){
-						this.moveTo = getPlaceInZone('TruePos');
-					} else {
-						this.moveTo = getPlaceInZone('FalseNeg');
-					}
+				countFN += 1;
+			}
+		} else {
+			if (this.testResultCombined){
+				countFP += 1;
+			} else {
+				countTN += 1;
+			}
+		}
+		
+		// Add to displaytext
+		
+		if (ShowTotalRes){
+			if (this.testResultCombined){
+				this.testDisplay = this.testDisplay + '\nPositiv\n'
+			} else {
+				this.testDisplay = this.testDisplay + '\nNegativ\n'
+			}
+		}
+		
+	}
+		
+
+	getNewState() {
+		
+		if (!this.stopNextRun){
+			// If the person has not been in all tents, go to next
+			if (this.testCount < numTests){  
+				// Make next test
+				this.makeOneTest()
+				// Update count
+				this.testCount = this.testCount+1;
+				// Set next waypoint
+				this.moveTo = allTentPos[this.testCount];
+			} 		
+			// If the person is done being tested, go to zone
+			if (this.testCount == numTests){  
+				if (!this.testCombined){
+					this.combineTestResults()
+					this.testCombined = true;
+				}
+				
+
+				if (this.toPreZone){
+					this.moveTo = midZones;
+					this.toPreZone = false;
 				} else {
-					if (this.testRes){
-						this.moveTo = getPlaceInZone('TrueNeg');
+					this.speed = reducedSpeed;
+
+					if (this.testResultCombined){
+						
+						if (this.sick){
+							this.moveTo = getPlaceInZone('TruePos');
+							this.stopNextRun = true;
+						} else {
+							this.moveTo = getPlaceInZone('FalsePos');
+							this.stopNextRun = true;
+						}
 					} else {
-						this.moveTo = getPlaceInZone('FalsePos');
+						if (this.sick){
+							this.moveTo = getPlaceInZone('FalseNeg');
+						} else {
+							this.moveTo = getPlaceInZone('TrueNeg');
+						}
 					}
 				}
 			}
-		} 
+		} else{
+			this.state = 'none';
+		}
 	}
 
 	update(){
@@ -631,6 +858,9 @@ class Person {
 			case 'none':
 				// Do nothing
 				break;
+				
+			// case 'getTest':
+			// 	this.getNewState();
 			case 'move':
 				// Move toward point linearly
 				let xDiff = this.pos.x - this.moveTo.x;
@@ -661,10 +891,23 @@ class Person {
 				}
 
 				break;
-		
+
 			default:
 				break;
 		}
 	}
 }
 	
+
+			// for (let t = 0; t < this.testResults.length; t++) {
+			// 	const element = this.testResults[t];
+			// 	// text(element,this.pos.x,this.pos.y+(10*t)+30) 
+			// 	if (element == true){
+			// 		text('+',0,(15*t)+30)
+			// 	} else {
+			// 		text('-',0,(15*t)+30)
+			// 	}
+			// }
+			// if (this.testCount == numTests){
+			// 	text(this.testResultCombined,0,(15*(numTests+1)) + 30 )
+			// }
