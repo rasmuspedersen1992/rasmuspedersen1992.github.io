@@ -24,10 +24,10 @@ let FPSize;
 let TNSize;
 
 let pSize = 20;
-let normalSpeed = 10;
-let reducedSpeed = 10;
-// let normalSpeed = 4;
-// let reducedSpeed = 2;
+// let normalSpeed = 10;
+// let reducedSpeed = 10;
+let normalSpeed = 4;
+let reducedSpeed = 2;
 
 // let testSens = 0.99;
 // let testSpec = 0.75;
