@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 
+    <title>Sketch</title> -->
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <!-- <script src="libraries/p5.min.js"></script> -->
+    <!-- <script src="libraries/p5.sound.min.js"></script> -->
+
+    
+    <script src="./Chart.min.js"></script>
+    <script src="./utils.js"></script>
+    <style>
+    canvas{
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
+    </style>
+    </head>
+
+  <body>
+    <!-- <script src="sketch.js"></script> -->
+    <div style="width:75%;">
+      <canvas id="canvas"></canvas>
+      <canvas id="canvas2"></canvas>
+    </div>
+    <br>
+    <br>
+    <input type="range" min="0.5" max="1.5" value="0.7" step="0.05" class="slider" id="RW_range">
+    <input type="range" min="0.5" max="1.5" value="1.4" step="0.05" class="slider" id="RM_range">
+    <!-- <button id="randomizeData">Randomize Data</button> -->
+    <script src="chartScript.js"></script>
+  </body>
+</html>
