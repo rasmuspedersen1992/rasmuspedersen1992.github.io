@@ -5,4 +5,25 @@ html, body {
 
 canvas {
   display: block;
+  margin: auto;
+}
+.canvasR-container{
+  /* width: 100%; */
+  width:75%;
+  height: 300px;
+  margin: auto;
+}
+/* #canvasR {
+  display: block;
+  height:100px !important;
+}   */
+
+.flex-item {
+  flex-grow: 1;
+  text-align: center;
+}
+.slider-container{
+  display:flex;
+  width: 70%;
+  margin: auto;
 }

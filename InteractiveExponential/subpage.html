@@ -25,14 +25,37 @@
 
   <body>
     <!-- <script src="sketch.js"></script> -->
-    <div style="width:75%;">
+    <!-- <div style="position:relative; width:80vw; margin: auto;"> -->
+    <div style="width:70%;margin: auto;">
       <canvas id="canvas"></canvas>
       <canvas id="canvas2"></canvas>
+      <canvas id="canvasR"></canvas>
+    </div>
+    <!-- <div class="canvasR-container"> -->
+    <!-- </div> -->
+    <br>
+    <div class="slider-container">
+      <!-- <div class="flex-item"> 
+        <input type="range" min="0.5" max="1.2" value="0.8" step="0.025" class="slider" id="RW_range">
+      <p id="RW_Label">RW_Text</p>
+      </div> -->
+      <div class="flex-item"> 
+        <!-- <input type="range" min="0.5" max="1.5" value="0.7" step="0.05" class="slider" id="RW_range"> -->
+        <input type="range" min="0.6" max="1" value="0.7" step="0.01" class="slider" id="RW_range_2">
+      <p id="RW_Label_2">RW_Text_2</p>
+      </div>
+      <div class="flex-item"> 
+        <!-- <input type="range" min="0.5" max="1.5" value="1.4" step="0.05" class="slider" id="RM_range"> -->
+        <input type="range" min="30" max="60" value="50" step="5" class="slider" id="RM_range">
+      <p id="RM_Label">RM_Text</p>
+      </div>
+      <div class="flex-item">
+        <input id="VariantCheckbox" type="checkbox" checked >
+        <p>Med variant</p>
+      </div>
     </div>
     <br>
-    <br>
-    <input type="range" min="0.5" max="1.5" value="0.7" step="0.05" class="slider" id="RW_range">
-    <input type="range" min="0.5" max="1.5" value="1.4" step="0.05" class="slider" id="RM_range">
+    
     <!-- <button id="randomizeData">Randomize Data</button> -->
     <script src="chartScript.js"></script>
   </body>
