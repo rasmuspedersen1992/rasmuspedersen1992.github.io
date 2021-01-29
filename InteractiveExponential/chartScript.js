@@ -500,7 +500,7 @@ var configR = {
             ticks: {
             min: 0.4,
             max: 1.6,
-            stepSize: 0.2,               
+            stepSize: 0.1,               
             }
         }]
         }
