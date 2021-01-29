@@ -46,11 +46,17 @@ data_count[3] = 11288/tScale
 data_count[4] =  6986/tScale
 
 // data_ratio[0] = 0.4 / 100
-data_ratio[0] = 0.8 / 100
-data_ratio[1] = 2.0 / 100
-data_ratio[2] = 2.4 / 100
-data_ratio[3] = 4.0 / 100
-data_ratio[4] = 7.4 / 100
+// data_ratio[0] = 0.8 / 100
+// data_ratio[1] = 2.0 / 100
+// data_ratio[2] = 2.4 / 100
+// data_ratio[3] = 4.0 / 100
+// data_ratio[4] = 7.4 / 100
+
+data_ratio[0] = 0.8 
+data_ratio[1] = 2.0 
+data_ratio[2] = 2.4 
+data_ratio[3] = 4.0 
+data_ratio[4] = 7.4 
 
 let data_kontakt = [];
 // data_kontakt[0] = 1;
@@ -83,8 +89,8 @@ data_kontakt[1] = 0.85;
 data_kontakt[2] = 0.8; 
 data_kontakt[3] = 0.75;
 data_kontakt[4] = 0.7;
-data_kontakt[5] = NaN;
 data_kontakt[5] = 0.8;
+// data_kontakt[5] = NaN;
 
 let data_kontakt2 = []
 data_kontakt2[0] = NaN; 
@@ -93,6 +99,10 @@ data_kontakt2[2] = NaN;
 data_kontakt2[3] = NaN;
 data_kontakt2[4] = NaN;
 data_kontakt2[5] = 0.8;
+
+
+// let data_kontakt_lower = []
+// data_kontakt_lower[0] = 
 
 // let tEndPlot = Math.floor(tEnd/tScale);
 // let tRangePlot;
@@ -108,7 +118,8 @@ data_kontakt2[5] = 0.8;
 // let ini_M = 2;
 // let ini_W = data_count[0];
 let ini_W = 3200;
-let ini_M = ini_W * data_ratio[0];
+// let ini_M = ini_W * data_ratio[0];
+let ini_M = ini_W * data_ratio[0] / 100;
 // let ini_W = 21000/tScale;
 // let ini_W = 2000/tScale;
 // let ini_M = 10/tScale;
@@ -204,6 +215,9 @@ var calcValues = function(){
         rel_M[i] = count_M[i]/count_sum[i];
         // RT_List[i] = rel_W[i] * RW + rel_M[i] * RM;
         RT_List[i] = rel_W[i] * curRW + rel_M[i] * curRM;
+        
+        rel_W[i] = rel_W[i]*100;
+        rel_M[i] = rel_M[i]*100;
     }
 
     window.myLine.update();
@@ -374,13 +388,13 @@ var config2 = {
         yAxes: [{
             display: true,
             scaleLabel: {
-            fontSize: 22,
+            fontSize: 18,
             display: true,
-            labelString: 'Relativ fordeling af typer'
+            labelString: 'Fordeling af typer i procent'
             },
             ticks: {
             min: 0,
-            max: 1
+            max: 100
             
             }
         }]
@@ -403,8 +417,9 @@ var configR = {
             fill: false,
             showLine: false,
             lineTension: 0,
-            pointRadius: 2,
-            pointHoverRadius: 5,
+            pointRadius: 10,
+            pointStyle: 'star',
+            pointHoverRadius: 10,
         },
         //     {
         //     label: 'Data (SSI estimat)',
@@ -507,16 +522,26 @@ calcValues();
 //     calcValues();
     
 // });
-RW_slider_2.addEventListener('click', function() {
-    calcValues();
+// RW_slider_2.addEventListener('click', function() {
+//     calcValues();
     
-});
-RM_slider.addEventListener('click', function() {
-    calcValues();
-});
-VariantCheckbox.addEventListener('click', function(){
-    calcValues();
-});
+// }); 
+// RM_slider.addEventListener('click', function() {
+//     calcValues();
+// });
+// VariantCheckbox.addEventListener('click', function(){
+//     calcValues();
+// });
+
+RW_slider_2.onchange = function(){
+    calcValues()
+}
+RM_slider.onchange = function(){
+    calcValues()
+}
+VariantCheckbox.onchange = function(){
+    calcValues()
+}
 
 
     // console.log(RW);
