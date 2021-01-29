@@ -1,88 +1,45 @@
-// let RW_Slider,RM_Slider;
-// let sliderWidth = 200;
-// let sliderMargin = 50;
-
-
-// let sliders_Y;
-
 // Starter i uge 50, med omkring 21000 ugentlige tilfælde, så 3000 daglige
-// Dage fra mandag uge 50 til søndag uge 10: 7 * 14 = 98
-
-let tScale = 7;
 let genTid = 4.7;
-
-// let tEnd = 20
-// let tEnd = 20*tScale;
-// let tEnd = 98;
+let tScale = 7;
 let tEnd = 120;
 tEnd = Math.floor(tEnd/tScale);
 let tRange = [];
 let tRangePlot = [];
 let data_count = [];
 let data_ratio = [];
+let data_kontakt = [];
+
+// Initialize t-array and data-arrays
 // tRange = [...Array(tEnd).keys()];
 for (let i = 0; i < tEnd; i++) {
     tRange[i] = i
     tRangePlot[i] = 'Uge '+(i-2)
     data_count[i] = NaN
-    data_ratio[i] = NaN    
+    data_ratio[i] = NaN   
+    data_kontakt[i] = NaN    
 }
-
-// let uge2Index = 4;
-let uge2Index = 5;
-let withMutation = false;
-
+// Manually set the "pre-week 0" labels
 // tRangePlot[0] = 'Uge '+50
 tRangePlot[0] = 'Uge '+51
 tRangePlot[1] = 'Uge '+52
 tRangePlot[2] = 'Uge '+53
 
+// let uge2Index = 4;
+let uge2Index = 5;
+
 // Hardcoded data from SSI numbers
-// data_count[0] = 21804/tScale
-data_count[0] = 24425/tScale
+// data_count[0] = 21804/tScale // Uge 50
+data_count[0] = 24425/tScale // Uge 51
 data_count[1] = 16928/tScale
 data_count[2] = 14533/tScale
 data_count[3] = 11288/tScale
 data_count[4] =  6986/tScale
-
-// data_ratio[0] = 0.4 / 100
-// data_ratio[0] = 0.8 / 100
-// data_ratio[1] = 2.0 / 100
-// data_ratio[2] = 2.4 / 100
-// data_ratio[3] = 4.0 / 100
-// data_ratio[4] = 7.4 / 100
 
 data_ratio[0] = 0.8 
 data_ratio[1] = 2.0 
 data_ratio[2] = 2.4 
 data_ratio[3] = 4.0 
 data_ratio[4] = 7.4 
-
-let data_kontakt = [];
-// data_kontakt[0] = 1;
-// data_kontakt[1] = 0.9; // 20 december, søndag i uge 51
-// data_kontakt[2] = 0.8;
-// data_kontakt[3] = 0.7;
-// data_kontakt[4] = 0.7;
-// data_kontakt[5] = 0.8;
-// data_kontakt[0] = 0.9;
-// data_kontakt[1] = 1; 
-// data_kontakt[2] = 0.9; 
-// data_kontakt[3] = 0.8;
-// data_kontakt[4] = 0.7;
-// data_kontakt[5] = 0.8;
-
-// data_kontakt[0] = 0.9; 
-// data_kontakt[1] = 0.9; 
-// data_kontakt[2] = 0.8;
-// data_kontakt[3] = 0.7;
-// data_kontakt[4] = 0.8;
-
-// data_kontakt[0] = 0.9; 
-// data_kontakt[1] = 0.833; 
-// data_kontakt[2] = 0.766;
-// data_kontakt[3] = 0.7;
-// data_kontakt[4] = 0.8;
 
 data_kontakt[0] = 0.9; 
 data_kontakt[1] = 0.85; 
@@ -92,37 +49,12 @@ data_kontakt[4] = 0.7;
 data_kontakt[5] = 0.8;
 // data_kontakt[5] = NaN;
 
-let data_kontakt2 = []
-data_kontakt2[0] = NaN; 
-data_kontakt2[1] = NaN;
-data_kontakt2[2] = NaN;
-data_kontakt2[3] = NaN;
-data_kontakt2[4] = NaN;
-data_kontakt2[5] = 0.8;
-
-
-// let data_kontakt_lower = []
-// data_kontakt_lower[0] = 
-
-// let tEndPlot = Math.floor(tEnd/tScale);
-// let tRangePlot;
-// tRangePlot = [...Array(tEndPlot).keys()];
-
-// let tRangePlot = [];
-// for (let i = 0; i < tRange.length; i++) {
-//     tRangePlot[i] = Math.floor(tRange[i]/tScale); 
-// }
-
-
-// let ini_W = 3000;
-// let ini_M = 2;
+// Initial condition for calculations
 // let ini_W = data_count[0];
-let ini_W = 3200;
-// let ini_M = ini_W * data_ratio[0];
+let ini_W = 3200; // A little below week 51, since week 51 numbers seemed too high, at least for this model
 let ini_M = ini_W * data_ratio[0] / 100;
-// let ini_W = 21000/tScale;
-// let ini_W = 2000/tScale;
-// let ini_M = 10/tScale;
+
+// Initialize arrays used in calcuations
 let count_W = [];
 let count_M = [];
 let count_sum = [];
@@ -135,109 +67,94 @@ let RW_List = [];
 let RM_List = [];
 let RT_List = [];
 
-
-
-
-// let RW_slider = document.getElementById('RW_range');
+// Objects for referencing inputs
 let RW_slider_2 = document.getElementById('RW_range_2');
 let RM_slider = document.getElementById('RM_range');
-// let RW_Label = document.getElementById('RW_Label');
+
 let RW_Label_2 = document.getElementById('RW_Label_2');
 let RM_Label = document.getElementById('RM_Label');
-let VariantCheckbox = document.getElementById('VariantCheckbox');
 
+let VariantCheckbox = document.getElementById('VariantCheckbox');
+let withMutation = false;
+
+// Model parameters
 let RW;
 let RW_2;
 let RM;
 let RM_2;
 
+// Function for re-calculating all values
 var calcValues = function(){
-    // RW = RW_slider.value;
+
+    // Get variable values from inputs
     RW_2 = RW_slider_2.value;
-    // RM = RM_slider.value;
     RM = RW*(1+(RM_slider.value/100));
     RM_2 = RW_2*(1+(RM_slider.value/100));
     withMutation = VariantCheckbox.checked;
 
+    // Set the initial values 
     curW = ini_W;
     curM = ini_M;
 
+    // Go through all time-steps
     for (var i = 0, len = tRange.length; i < len; ++i) {
-        // count_W[i] = Math.floor(ini_W * Math.exp((RW-1)*tRange[i]/tScale));
-        // count_M[i] = Math.floor(ini_M * Math.exp((RM-1)*tRange[i]/tScale));
-        // if (i < uge2Index){
-        //     count_W[i] = ini_W * Math.exp(tScale*(RW-1)*tRange[i]/genTid);
-        // } else {
-        //     count_W[i] = ini_W * Math.exp(tScale*(RW_2-1)*tRange[i]/genTid);
-        // }
-        // count_M[i] = ini_M * Math.exp(tScale*(RM-1)*tRange[i]/genTid);
-        // RW_List[i] = RW;
-        // RM_List[i] = RM;
-
         
+        // Use data from kontakttal until week 2
         if (i < uge2Index){
-            // curRW = RW;
-            // curRM = RM;
             curRW = data_kontakt[i];
             curRM = data_kontakt[i]*(1+(RM_slider.value/100));
         } else {
             curRW = RW_2;
             curRM = RM_2;
         }
+        // Save the kontakttal
+        RW_List[i] = curRW;
+        RM_List[i] = curRM;
 
+        // Save the current infection counts
         count_W[i] = curW;
         count_M[i] = curM;
+        count_sum[i] = count_W[i]+count_M[i];
 
+        // Update infection counts
         curW = curW *  Math.exp(tScale*(curRW-1)/genTid);
         if (withMutation){
             curM = curM *  Math.exp(tScale*(curRM-1)/genTid);
         } else {
             curM = 0;
         }
-        RW_List[i] = curRW;
-        RM_List[i] = curRM;
-        // if (i < uge2Index){
-            // curW = curW *  Math.exp(tScale*(RW-1)/genTid);
-            // curM = curM *  Math.exp(tScale*(RM-1)/genTid);
-            // RW_List[i] = RW;
-            // RM_List[i] = RM;
-        // } else {
-            // curW = curW *  Math.exp(tScale*(RW_2-1)/genTid);
-            // curM = curM *  Math.exp(tScale*(RM_2-1)/genTid);
-            // RW_List[i] = RW_2;
-            // RM_List[i] = RM_2;
-        // }
-        count_sum[i] = count_W[i]+count_M[i];
+        
+        // Round figures for plotting the counts
         count_M_Plot[i] = Math.round(count_M[i]);
         count_W_Plot[i] = Math.round(count_W[i]);
         count_sum_Plot[i] = Math.round(count_sum[i]);
+
+        // Calculate relative infectioncounts
         rel_W[i] = count_W[i]/count_sum[i];
         rel_M[i] = count_M[i]/count_sum[i];
-        // RT_List[i] = rel_W[i] * RW + rel_M[i] * RM;
-        RT_List[i] = rel_W[i] * curRW + rel_M[i] * curRM;
-        
+        // Multiply by 100 for percentage
         rel_W[i] = rel_W[i]*100;
         rel_M[i] = rel_M[i]*100;
+        
+        // Calculate the effective reproduction-number
+        RT_List[i] = rel_W[i] * curRW + rel_M[i] * curRM;
     }
 
+    // Update figures
     window.myLine.update();
     window.myLine2.update();
     window.linesR.update();
 
-    
-    // RW_Label.innerHTML = 'Normal Coronavirus: '+RW;
-    // RW_Label.innerHTML = 'Kontakttal indtil uge 2: '+RW;
+    // Update text below sliders
     RW_Label_2.innerHTML = 'Kontakttal efter uge 2: '+RW_2;
-    // RM_Label.innerHTML = 'B.1.1.7. variant: '+RM
-    // RM_Label.innerHTML = 'B.1.1.7. variant: '+Math.round(RM*100)/100;
     RM_Label.innerHTML = 'B.1.1.7. variant: '+RM_slider.value + "% højere";
 
 }
 
+// Define first figure
 var config = {
     type: 'line',
     data: {
-        // labels: tRange,
         labels: tRangePlot,
         datasets: [
             {
@@ -282,15 +199,6 @@ var config = {
     },
     options: {
         responsive: true,
-        // maintainAspectRatio: false,
-
-        // title: {
-        // display: true,
-        // text: ''
-        // },
-        // tooltips: {
-        // mode: 'index'
-        // },
         legend: {
             position: 'top',
             labels: {
@@ -313,8 +221,6 @@ var config = {
             },
             ticks: {
             min: 0,
-            // max: Math.round(1.5*ini_W / 100)*100
-            // suggestedMax: Math.round(1.2*ini_W / 100)*100
             // max: Math.round(1.2*ini_W / 100)*100
             max: 5000
             
@@ -324,10 +230,10 @@ var config = {
     }
     };
     
+// Define second figure
 var config2 = {
     type: 'line',
     data: {
-        // labels: tRange,
         labels: tRangePlot,
         datasets: [
             {
@@ -364,11 +270,6 @@ var config2 = {
     options: {
         
         responsive: true,
-        // maintainAspectRatio: false,
-        // title: {
-        // display: true,
-        // text: ''
-        // },
         tooltips: {
         mode: 'index'
         },
@@ -402,11 +303,10 @@ var config2 = {
     }
     };
     
-    
+// Define third figure
 var configR = {
     type: 'line',
     data: {
-        // labels: tRange,
         labels: tRangePlot,
         datasets: [
             {
@@ -421,19 +321,6 @@ var configR = {
             pointStyle: 'star',
             pointHoverRadius: 10,
         },
-        //     {
-        //     label: 'Data (SSI estimat)',
-        //     data: data_kontakt2,
-        //     display: false,
-        //     borderColor: window.chartColors.black,
-        //     backgroundColor:  window.chartColors.black,
-        //     fill: false,
-        //     showLine: false,
-        //     pointStyle: 'star',
-        //     lineTension: 0,
-        //     pointRadius: 5,
-        //     pointHoverRadius: 5,
-        // },
             {
                 label: 'Effektiv',
                 data: RT_List,
@@ -469,16 +356,11 @@ var configR = {
     },
     options: {
         responsive: true,
-        // title: {
-        // display: true,
-        // text: ''
-        // },
         tooltips: {
         mode: 'index'
         },        
         legend: {
             position: 'top',
-            // position: 'right',
             labels: {
             usePointStyle: true,
             }
@@ -507,6 +389,7 @@ var configR = {
     }
     };
 
+// On loading the page, make the chartjs figures
 window.onload = function() {
 var ctx = document.getElementById('canvas').getContext('2d');
 window.myLine = new Chart(ctx, config);
@@ -514,25 +397,11 @@ var ctx2 = document.getElementById('canvas2').getContext('2d');
 window.myLine2 = new Chart(ctx2, config2);
 var ctxR = document.getElementById('canvasR').getContext('2d');
 window.linesR = new Chart(ctxR, configR);
+// Calculate data to plot
 calcValues();
 };
 
-
-// RW_slider.addEventListener('click', function() {
-//     calcValues();
-    
-// });
-// RW_slider_2.addEventListener('click', function() {
-//     calcValues();
-    
-// }); 
-// RM_slider.addEventListener('click', function() {
-//     calcValues();
-// });
-// VariantCheckbox.addEventListener('click', function(){
-//     calcValues();
-// });
-
+// Check for changes to inputs, re-calculate data if anything changes
 RW_slider_2.onchange = function(){
     calcValues()
 }
@@ -542,25 +411,3 @@ RM_slider.onchange = function(){
 VariantCheckbox.onchange = function(){
     calcValues()
 }
-
-
-    // console.log(RW);
-    // console.log(RM);
-        // datapoints[i] = Math.random() < 0.05 ? NaN : randomScalingFactor();
-        // count_W[i] = ini_W * Math.exp((RW-1)*tRange[i]);
-        // count_M[i] = ini_M * Math.exp((RM-1)*tRange[i]);
-        // count_W[i] = Math.floor(ini_W * Math.exp((RW-1)*tRange[i]));
-        // count_M[i] = Math.floor(ini_M * Math.exp((RM-1)*tRange[i]));
-// var randomScalingFactor = function() {
-// return Math.round(Math.random() * 100);
-// };
-//['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-// var datapoints = [0, 20, 20, 60, 60, 120, NaN, 180, 120, 125, 105, 110, 170];
-
-
-// document.getElementById('randomizeData').addEventListener('click', function() {
-// for (var i = 0, len = datapoints.length; i < len; ++i) {
-//     datapoints[i] = Math.random() < 0.05 ? NaN : randomScalingFactor();
-// }
-// window.myLine.update();
-// });
