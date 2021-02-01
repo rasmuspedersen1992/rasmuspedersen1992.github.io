@@ -217,7 +217,7 @@ var config = {
             scaleLabel: {
             fontSize: 14,
             display: true,
-            labelString: 'Antal inficerede'
+            labelString: 'Antal nye smittede per dag'
             },
             ticks: {
             min: 0,
