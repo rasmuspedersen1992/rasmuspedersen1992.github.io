@@ -13,48 +13,56 @@ let data_kontakt = [];
 // tRange = [...Array(tEnd).keys()];
 for (let i = 0; i < tEnd; i++) {
     tRange[i] = i
-    tRangePlot[i] = 'Uge '+(i-2)
+    tRangePlot[i] = 'Uge '+(i-1)
     data_count[i] = NaN
     data_ratio[i] = NaN   
     data_kontakt[i] = NaN    
 }
 // Manually set the "pre-week 0" labels
 // tRangePlot[0] = 'Uge '+50
-tRangePlot[0] = 'Uge '+51
-tRangePlot[1] = 'Uge '+52
-tRangePlot[2] = 'Uge '+53
+// tRangePlot[0] = 'Uge '+51
+tRangePlot[0] = 'Uge '+52
+tRangePlot[1] = 'Uge '+53
 
 // let uge2Index = 4;
-let uge2Index = 5;
+let uge2Index = 3;
 
 // Hardcoded data from SSI numbers
 // data_count[0] = 21804/tScale // Uge 50
-data_count[0] = 24428/tScale // Uge 51
-data_count[1] = 16930/tScale
-data_count[2] = 14535/tScale
-data_count[3] = 11289/tScale
-data_count[4] =  6986/tScale
-data_count[5] =  5315/tScale
+// data_count[0] = 24425/tScale // Uge 51
+data_count[0] = 16928/tScale
+data_count[1] = 14533/tScale
+data_count[2] = 11288/tScale
+data_count[3] =  6986/tScale
+data_count[4] =  5315/tScale
 
-data_ratio[0] = 0.8 
-data_ratio[1] = 2.0 
-data_ratio[2] = 2.4 
-data_ratio[3] = 4.0 
-data_ratio[4] = 7.4 
-data_ratio[5] = 13.1
+// data_ratio[0] = 0.8 
+data_ratio[0] = 2.0 
+data_ratio[1] = 2.4 
+data_ratio[2] = 4.0 
+data_ratio[3] = 7.4 
+data_ratio[4] = 13.1
 
-data_kontakt[0] = 0.9; 
-data_kontakt[1] = 0.85; 
-data_kontakt[2] = 0.8; 
-data_kontakt[3] = 0.75;
-data_kontakt[4] = 0.7;
-data_kontakt[5] = 0.8;
+
+data_kontakt[0] = 0.9;  // Uge 52 (24/12)
+data_kontakt[1] = 0.8; // Uge 53 (31/12)
+data_kontakt[2] = 0.7; // Uge 1 (7/01-2021)
+data_kontakt[3] = 0.8; // Uge 2 (14/01-2021)
+
+// data_kontakt[0] = 0.9; 
+// data_kontakt[1] = 0.85; 
+// data_kontakt[2] = 0.8; 
+// data_kontakt[3] = 0.75;
+// data_kontakt[4] = 0.7;
+// data_kontakt[5] = 0.8;
 // data_kontakt[5] = NaN;
 
+
 // Initial condition for calculations
-// let ini_W = data_count[0];
-let ini_W = 3200; // A little below week 51, since week 51 numbers seemed too high, at least for this model
-let ini_M = ini_W * data_ratio[0] / 100;
+let ini_W = data_count[0];
+// let ini_W = 3200; // A little below week 51, since week 51 numbers seemed too high, at least for this model
+// let ini_M = ini_W * data_ratio[0] / 100;
+let ini_M = ini_W * data_ratio[0]*0.7 / 100;
 
 // Initialize arrays used in calcuations
 let count_W = [];
