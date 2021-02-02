@@ -29,17 +29,19 @@ let uge2Index = 5;
 
 // Hardcoded data from SSI numbers
 // data_count[0] = 21804/tScale // Uge 50
-data_count[0] = 24425/tScale // Uge 51
-data_count[1] = 16928/tScale
-data_count[2] = 14533/tScale
-data_count[3] = 11288/tScale
+data_count[0] = 24428/tScale // Uge 51
+data_count[1] = 16930/tScale
+data_count[2] = 14535/tScale
+data_count[3] = 11289/tScale
 data_count[4] =  6986/tScale
+data_count[5] =  5315/tScale
 
 data_ratio[0] = 0.8 
 data_ratio[1] = 2.0 
 data_ratio[2] = 2.4 
 data_ratio[3] = 4.0 
 data_ratio[4] = 7.4 
+data_ratio[5] = 13.1
 
 data_kontakt[0] = 0.9; 
 data_kontakt[1] = 0.85; 
@@ -132,12 +134,15 @@ var calcValues = function(){
         // Calculate relative infectioncounts
         rel_W[i] = count_W[i]/count_sum[i];
         rel_M[i] = count_M[i]/count_sum[i];
-        // Multiply by 100 for percentage
-        rel_W[i] = rel_W[i]*100;
-        rel_M[i] = rel_M[i]*100;
         
         // Calculate the effective reproduction-number
         RT_List[i] = rel_W[i] * curRW + rel_M[i] * curRM;
+
+        // Multiply by 100 for percentage
+        rel_W[i] = rel_W[i]*100;
+        rel_M[i] = rel_M[i]*100;
+
+
     }
 
     // Update figures
@@ -327,6 +332,7 @@ var configR = {
                 borderColor: window.chartColors.green,
                 backgroundColor: window.chartColors.green,
                 fill: false,
+                showLine: true,
                 lineTension: 0,
                 pointRadius: 1,
                 pointHoverRadius: 3,
