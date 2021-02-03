@@ -62,7 +62,7 @@ data_kontakt[3] = 0.8; // Uge 2 (14/01-2021)
 let ini_W = data_count[0];
 // let ini_W = 3200; // A little below week 51, since week 51 numbers seemed too high, at least for this model
 // let ini_M = ini_W * data_ratio[0] / 100;
-let ini_M = ini_W * data_ratio[0]*0.7 / 100;
+let ini_M = 0.6 * ini_W * data_ratio[0]/ 100; //Reduced a little, since Uge52 seems excessively high
 
 // Initialize arrays used in calcuations
 let count_W = [];
