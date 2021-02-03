@@ -160,7 +160,7 @@ var calcValues = function(){
 
     // Update text below sliders
     RW_Label_2.innerHTML = 'Kontakttal efter uge 2: '+RW_2;
-    RM_Label.innerHTML = 'B.1.1.7. variant: '+RM_slider.value + "% højere";
+    RM_Label.innerHTML = 'B117 variant: '+RM_slider.value + "% højere";
 
 }
 
@@ -190,7 +190,7 @@ var config = {
                 pointRadius: 1,
                 pointHoverRadius: 5,
             }, {
-                label: 'Normal Corona-virus',
+                label: 'Normal coronavirus',
                 data: count_W_Plot,
                 borderColor: window.chartColors.blue,
                 backgroundColor:  window.chartColors.blue,
@@ -199,7 +199,7 @@ var config = {
                 pointRadius: 1,
                 pointHoverRadius: 1,
             }, {
-                label: 'B.1.1.7. Variant',
+                label: 'B117 Variant',
                 data: count_M_Plot,
                 borderColor: window.chartColors.orange,
                 backgroundColor:  window.chartColors.orange,
@@ -228,7 +228,8 @@ var config = {
         yAxes: [{
             display: true,
             scaleLabel: {
-            fontSize: 14,
+            // fontSize: 14,
+            fontSize: 20,
             display: true,
             labelString: 'Antal nye smittede per dag'
             },
@@ -250,7 +251,7 @@ var config2 = {
         labels: tRangePlot,
         datasets: [
             {
-                label: 'Data (B.1.1.7.)',
+                label: 'Data (B117)',
                 data: data_ratio,
                 borderColor: window.chartColors.black,
                 backgroundColor: window.chartColors.black,
@@ -260,7 +261,7 @@ var config2 = {
                 pointRadius: 2,
                 pointHoverRadius: 5,
             },{
-                label: 'Normal Corona-virus',
+                label: 'Normal coronavirus',
                 data: rel_W,
                 borderColor: window.chartColors.blue,
                 backgroundColor: window.chartColors.blue,
@@ -269,7 +270,7 @@ var config2 = {
                 pointRadius: 1,
                 pointHoverRadius: 1,
             }, {
-                label: 'B.1.1.7. Variant',
+                label: 'B117 Variant',
                 data: rel_M,
                 borderColor: window.chartColors.orange,
                 backgroundColor: window.chartColors.orange,
@@ -302,7 +303,8 @@ var config2 = {
         yAxes: [{
             display: true,
             scaleLabel: {
-            fontSize: 18,
+            // fontSize: 18,
+            fontSize: 20,
             display: true,
             labelString: 'Fordeling af typer i procent'
             },
@@ -346,7 +348,7 @@ var configR = {
                 pointHoverRadius: 3,
             },
             {
-                label: 'Normal Corona-virus',
+                label: 'Normal coronavirus',
                 data: RW_List,
                 borderColor: window.chartColors.blue,
                 backgroundColor: window.chartColors.blue,
@@ -356,7 +358,7 @@ var configR = {
                 pointRadius: 0,
                 pointHoverRadius: 3,
             }, {
-                label: 'B.1.1.7. Variant',
+                label: 'B117 Variant',
                 data: RM_List,
                 borderColor: window.chartColors.orange,
                 backgroundColor: window.chartColors.orange,
@@ -390,7 +392,7 @@ var configR = {
             display: true,
             scaleLabel: {
             display: true,
-            fontSize: 22,
+            fontSize: 20,
             labelString: 'Kontakttal'
             },
             ticks: {
