@@ -49,7 +49,9 @@ data_ratio[5] = 16.5;
 data_kontakt[0] = 0.9;  // Uge 52 (24/12)
 data_kontakt[1] = 0.8; // Uge 53 (31/12)
 data_kontakt[2] = 0.7; // Uge 1 (7/01-2021)
-data_kontakt[3] = 0.8; // Uge 2 (14/01-2021)
+// data_kontakt[3] = 0.8; // Uge 2 (14/01-2021) OBS: GAMMELT TAL! Blev opdateret i seneste datasamling fra SSI
+data_kontakt[3] = 0.7; // Uge 2 (14/01-2021), Nyt tal
+data_kontakt[4] = 0.7; // Uge 3 (21/01-2021), 
 
 // data_kontakt[0] = 0.9; 
 // data_kontakt[1] = 0.85; 
