@@ -39,11 +39,11 @@ data_count[5] =  3611/tScale
 
 // data_ratio[0] = 0.8 
 data_ratio[0] = 2.0;
-data_ratio[1] = 2.4; 
+data_ratio[1] = 2.3; 
 data_ratio[2] = 4.0;
-data_ratio[3] = 7.4;
-data_ratio[4] = 13.1;
-data_ratio[5] = 16.5;
+data_ratio[3] = 7.5;
+data_ratio[4] = 12.8;
+data_ratio[5] = 19.1;
 
 
 data_kontakt[0] = 0.9;  // Uge 52 (24/12)
