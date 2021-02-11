@@ -326,12 +326,18 @@ function draw() {
   
   // Low sensitivity test-points
   // fill(0,0,255)
+  let anyFoundLow = false;
+  let firstFoundTimeLow = 30;
   for (let k = 0; k < LowPoints.length; k++) {
     const curT = (LowOffset + LowPoints[k])*timeScale;
     let pointFound = false;
     if (curT >= firstDetectableLow){
       if (curT <= lastDetectableLow){
         pointFound = true;
+        if (anyFoundLow == false){
+          firstFoundTimeLow = curT;
+        }
+        anyFoundLow = true;
       }
     }
     if (pointFound){
@@ -345,13 +351,20 @@ function draw() {
   }
   
   // High sensitivity test-points
-  fill(255,255,0)
+  // fill(255,255,0)
+  stroke(0)
+  let anyFoundHigh = false;
+  let firstFoundTimeHigh = 30;
   for (let k = 0; k < HighPoints.length; k++) {
     const curT = (HighOffset + HighPoints[k])*timeScale;
     let pointFound = false;
     if (curT >= firstDetectableHigh){
       if (curT <= lastDetectableHigh){
         pointFound = true;
+        if (anyFoundHigh == false){
+          firstFoundTimeHigh = curT;
+        }
+        anyFoundHigh = true;
       }
     }
     if (pointFound){
@@ -363,6 +376,22 @@ function draw() {
     circle(curX,curY,testRadius)
   }
 
+  // Show the isolation curves
+  let newPos;
+  let newPos2;
+
+  if (anyFoundLow){ 
+    stroke(0,0,255) 
+    newPos = coorToScreenCoor(firstFoundTimeLow,LowSensThres)
+    newPos2 = coorToScreenCoor(firstFoundTimeLow,0)
+    line(newPos[0],newPos[1],newPos2[0],newPos2[1])
+  }
+  if (anyFoundHigh){  
+    stroke(255,255,0)
+    newPos = coorToScreenCoor(firstFoundTimeHigh,HighSensThres)
+    newPos2 = coorToScreenCoor(firstFoundTimeHigh,0)
+    line(newPos[0],newPos[1],newPos2[0],newPos2[1])
+  }
   // Plot viral load curve
   // let prevT = plotTimeArray[0] + InfectionInit;
   let prevT = plotTimeArray[0];
@@ -387,32 +416,32 @@ function draw() {
   
   // Plot infection point
   stroke(0,150,0)
-  fill(0,150,0)
-  let newPos = coorToScreenCoor(plotTimeArray[0],viralLoadArray[0]);
+  fill(0,250,0)
+  newPos = coorToScreenCoor(plotTimeArray[0],viralLoadArray[0]);
   // let newPos = coorToScreenCoor(timeArray[0]+InfectionInit,viralLoadArray[0]);
   curX = newPos[0]
   curY = newPos[1]
   circle(curX,curY,testRadius);
 
-  // Plot ends of detectable interval
-  let newPos2;
-  stroke(0,0,255)
-  newPos = coorToScreenCoor(lastDetectableLow,LowSensThres)
-  newPos2 = coorToScreenCoor(lastDetectableLow,0)
-  line(newPos[0],newPos[1],newPos2[0],newPos2[1])
+  // // Plot ends of detectable interval
+  // let newPos2;
+  // stroke(0,0,255)
+  // newPos = coorToScreenCoor(lastDetectableLow,LowSensThres)
+  // newPos2 = coorToScreenCoor(lastDetectableLow,0)
+  // line(newPos[0],newPos[1],newPos2[0],newPos2[1])
 
-  newPos = coorToScreenCoor(firstDetectableLow,LowSensThres)
-  newPos2 = coorToScreenCoor(firstDetectableLow,0)
-  line(newPos[0],newPos[1],newPos2[0],newPos2[1])
+  // newPos = coorToScreenCoor(firstDetectableLow,LowSensThres)
+  // newPos2 = coorToScreenCoor(firstDetectableLow,0)
+  // line(newPos[0],newPos[1],newPos2[0],newPos2[1])
   
-  stroke(255,255,0)
-  newPos = coorToScreenCoor(lastDetectableHigh,HighSensThres)
-  newPos2 = coorToScreenCoor(lastDetectableHigh,0)
-  line(newPos[0],newPos[1],newPos2[0],newPos2[1])
+  // stroke(255,255,0)
+  // newPos = coorToScreenCoor(lastDetectableHigh,HighSensThres)
+  // newPos2 = coorToScreenCoor(lastDetectableHigh,0)
+  // line(newPos[0],newPos[1],newPos2[0],newPos2[1])
 
-  newPos = coorToScreenCoor(firstDetectableHigh,HighSensThres)
-  newPos2 = coorToScreenCoor(firstDetectableHigh,0)
-  line(newPos[0],newPos[1],newPos2[0],newPos2[1])
+  // newPos = coorToScreenCoor(firstDetectableHigh,HighSensThres)
+  // newPos2 = coorToScreenCoor(firstDetectableHigh,0)
+  // line(newPos[0],newPos[1],newPos2[0],newPos2[1])
 
 
 
