@@ -2,8 +2,9 @@ let axLeft;
 let axTop;
 let axWidth;
 let axHeight;
-let axMargin = 40;
-
+let axMargin = 50;
+let axSize = 4;
+ 
 let pLeft;
 let pRight;
 let pBot;
@@ -30,7 +31,9 @@ let timeArray = [];
 let plotTimeArray = [];
 let viralLoadArray = [];
 
+let dayEnd = 30;
 let timeScale = 10; // ten points per day
+let yMax  = 12;
 
 let InfectionInit = 0;
 
@@ -44,11 +47,16 @@ let sliderLowOff;
 let sliderHighInt;
 let sliderHighOff;
 
+let sliderLowSens;
+let sliderHighSens;
+
 let textInfInit = 'textInfInit';
 let textLowInt = 'textLowInt';
 let textLowOff = 'textLowOff';
 let textHighInt = 'textHighInt';
 let textHighOff = 'textHighOff';
+let textLowSens = 'textLowSens';
+let textHighSens = 'textHighSens';
 
 
 let curX;
@@ -148,7 +156,7 @@ function coorToScreenCoor(t,v){
   let xZero = 0;
   let xMax  = 30 * timeScale;
   let yZero = 0;
-  let yMax  = 12;
+  // let yMax  = 12;
 
   let x = lerp(pLeft,pRight,t/xMax);
   let y = lerp(pBot,pTop,v/yMax)
@@ -158,8 +166,8 @@ function coorToScreenCoor(t,v){
 
 function setup() {
   // createCanvas(800, 400);
-  let roomForSliders = 200;
-  createCanvas(800, 400 + roomForSliders);
+  let roomForSliders = 300;
+  createCanvas(1200, 500 + roomForSliders);
 
 
   // Set position of axes  
@@ -180,17 +188,17 @@ function setup() {
 
   // Create sliders
   sliderDist = axMargin;
-  sliderWidth = 200;
+  sliderWidth = 300;
   sliderInfInit = createSlider(0,30,0);
   sliderInfInit.position(pLeft, pBot + axMargin);
   sliderInfInit.changed(slidersChanged)
   sliderInfInit.style('width',sliderWidth+'px');
   sliderLowInt = createSlider(1,21,3);
-  sliderLowInt.position(pLeft, pBot + axMargin + sliderDist);
+  sliderLowInt.position(pLeft, pBot + axMargin + 1.5*sliderDist);
   sliderLowInt.changed(slidersChanged)
   sliderLowInt.style('width',sliderWidth+'px');
   sliderHighInt = createSlider(1,21,7);
-  sliderHighInt.position(pLeft, pBot + axMargin + 2*sliderDist);
+  sliderHighInt.position(pLeft, pBot + axMargin + 2.5*sliderDist);
   sliderHighInt.changed(slidersChanged)
   sliderHighInt.style('width',sliderWidth+'px');
   // sliderLowOff = createSlider(0,10,0);
@@ -201,6 +209,14 @@ function setup() {
   // sliderHighOff.position(pLeft, pBot + axMargin + 4*sliderDist);
   // sliderHighOff.changed(slidersChanged)
   // sliderHighOff.style('width',sliderWidth+'px');
+  sliderLowSens = createSlider(0,10,5);
+  sliderLowSens.position(pLeft, pBot + axMargin + 4*sliderDist);
+  sliderLowSens.changed(slidersChanged)
+  sliderLowSens.style('width',sliderWidth+'px');
+  sliderHighSens = createSlider(0,10,3);
+  sliderHighSens.position(pLeft, pBot + axMargin + 5*sliderDist);
+  sliderHighSens.changed(slidersChanged)
+  sliderHighSens.style('width',sliderWidth+'px');
 }
 
 function slidersChanged(){
@@ -210,6 +226,8 @@ function slidersChanged(){
   HighInterval = sliderHighInt.value();
   // LowOffset = sliderLowOff.value();
   // HighOffset = sliderHighOff.value();
+  LowSensThres = sliderLowSens.value();
+  HighSensThres = sliderHighSens.value();
 
   // calcViralLoad()
   calcTestPoint()
@@ -226,7 +244,6 @@ function calcDetectableAndTimeArray(){
   }
 
   // Calculate the (relative) time-points at which the thresholds are exceeded.
-  let dayEnd = 30;
   lastDetectableLow = dayEnd;
   firstDetectableLow = dayEnd;
   lastDetectableHigh = dayEnd;
@@ -268,6 +285,8 @@ function draw() {
   textHighOff = 'Første test, højsensitivitetstest: Dag '+HighOffset;
   textLowInt = 'Testinterval, lavsensitivitetstest: '+LowInterval;
   textHighInt = 'Testinterval, højsensitivitetstest: '+HighInterval;
+  textLowSens = 'Sensitivitet, lav: 10^'+LowSensThres;
+  textHighSens = 'Sensitivitet, høj: 10^'+HighSensThres;
   if (LowInterval == 1){
     textLowInt = textLowInt + ' dag'
   } else {
@@ -284,10 +303,12 @@ function draw() {
   fill(0);
   strokeWeight(0);
   text(textInfInit,pLeft+sliderWidth+axMargin,pBot + axMargin);
-  text(textLowInt,pLeft+sliderWidth+axMargin,pBot + axMargin + sliderDist);
-  text(textHighInt,pLeft+sliderWidth+axMargin,pBot + axMargin + 2*sliderDist);
+  text(textLowInt,pLeft+sliderWidth+axMargin,pBot + axMargin + 1.5*sliderDist);
+  text(textHighInt,pLeft+sliderWidth+axMargin,pBot + axMargin + 2.5*sliderDist);
   // text(textLowOff,pLeft+sliderWidth+axMargin,pBot + axMargin + 3*sliderDist);
   // text(textHighOff,pLeft+sliderWidth+axMargin,pBot + axMargin + 4*sliderDist);
+  text(textLowSens,pLeft+sliderWidth+axMargin,pBot + axMargin + 4*sliderDist);
+  text(textHighSens,pLeft+sliderWidth+axMargin,pBot + axMargin + 5*sliderDist);
 
   // Draw background and axes
   fill(230);
@@ -296,7 +317,6 @@ function draw() {
 
   fill(0);
   stroke(0);
-  let axSize = 4;
   strokeWeight(axSize);
   line(axLeft,axTop+axHeight,axLeft+axWidth,axTop+axHeight);
   line(axLeft+axWidth,axTop+axHeight,axLeft+axWidth-axSize,axTop+axHeight-axSize);
@@ -305,15 +325,33 @@ function draw() {
   line(axLeft,axTop,axLeft-axSize,axTop+axSize);
   line(axLeft,axTop,axLeft+axSize,axTop+axSize);
 
+  let textXAxis = 'Tid [dage]';
+  let textYAxis = 'Log10 Viral load';
+  textAlign(RIGHT,TOP);
+  strokeWeight(0.1);
+  textSize(16);
+  text(textXAxis,pRight,pBot+axMargin/2);
+  push();
+  translate(pLeft-axMargin*0.75,pTop);
+  rotate(-PI/2);
+  textSize(14);
+  text(textYAxis,0,0);
+  pop();
+
   // Draw ticks on axes 
-  for (let k = 1; k < 30*timeScale; k++) {
+  for (let k = 0; k < 30*timeScale; k++) {
     const curT = k;
 
     if ((curT % (1*timeScale)) == 0){
       let thisTime;
       thisTime = coorToScreenCoor(curT,0);
       strokeWeight(1);
-      line(thisTime[0],pBot-axSize,thisTime[0],pBot+axSize)      
+      line(thisTime[0],pBot-axSize,thisTime[0],pBot+axSize)     
+      
+      textAlign(CENTER,TOP);
+      strokeWeight(0);
+      textSize(12);
+      text(Math.floor(curT/timeScale),thisTime[0],pBot+2*axSize)
     }
     if ((curT % (5*timeScale)) == 0){
       let thisTime;
@@ -321,6 +359,29 @@ function draw() {
       strokeWeight(4);
       line(thisTime[0],pBot-axSize,thisTime[0],pBot+axSize)      
     }
+  }
+  
+  for (let k = 0; k < yMax; k++) {
+    const curY = k;
+
+    if ((curY % 1) == 0){
+      let thisViral;
+      thisViral = coorToScreenCoor(0,curY);
+      // console.log(curY)
+      strokeWeight(1);
+      line(pLeft-axSize,thisViral[1],pLeft+axSize,thisViral[1])     
+      
+      textAlign(RIGHT,CENTER);
+      strokeWeight(0);
+      textSize(10);
+      text(curY,pLeft-2*axSize,thisViral[1])
+    }
+    // if ((curT % (5*timeScale)) == 0){
+    //   let thisTime;
+    //   thisTime = coorToScreenCoor(curT,0);
+    //   strokeWeight(4);
+    //   line(thisTime[0],pBot-axSize,thisTime[0],pBot+axSize)      
+    // }
   }
 
   // Draw thresholds
