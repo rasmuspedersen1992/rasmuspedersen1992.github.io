@@ -18,8 +18,8 @@ let LowPoints  = [];
 let LowInterval = 3;
 let HighInterval = 7;
 
-let LowOffset = 1;
-let HighOffset = 2;
+let LowOffset = 0;
+let HighOffset = 0;
 
 let lastDetectableLow;
 let lastDetectableHigh;
@@ -189,18 +189,18 @@ function setup() {
   sliderLowInt.position(pLeft, pBot + axMargin + sliderDist);
   sliderLowInt.changed(slidersChanged)
   sliderLowInt.style('width',sliderWidth+'px');
-  sliderLowOff = createSlider(0,10,0);
-  sliderLowOff.position(pLeft, pBot + axMargin + 2*sliderDist);
-  sliderLowOff.changed(slidersChanged)
-  sliderLowOff.style('width',sliderWidth+'px');
   sliderHighInt = createSlider(1,21,7);
-  sliderHighInt.position(pLeft, pBot + axMargin + 3*sliderDist);
+  sliderHighInt.position(pLeft, pBot + axMargin + 2*sliderDist);
   sliderHighInt.changed(slidersChanged)
   sliderHighInt.style('width',sliderWidth+'px');
-  sliderHighOff = createSlider(0,10,0);
-  sliderHighOff.position(pLeft, pBot + axMargin + 4*sliderDist);
-  sliderHighOff.changed(slidersChanged)
-  sliderHighOff.style('width',sliderWidth+'px');
+  // sliderLowOff = createSlider(0,10,0);
+  // sliderLowOff.position(pLeft, pBot + axMargin + 3*sliderDist);
+  // sliderLowOff.changed(slidersChanged)
+  // sliderLowOff.style('width',sliderWidth+'px');
+  // sliderHighOff = createSlider(0,10,0);
+  // sliderHighOff.position(pLeft, pBot + axMargin + 4*sliderDist);
+  // sliderHighOff.changed(slidersChanged)
+  // sliderHighOff.style('width',sliderWidth+'px');
 }
 
 function slidersChanged(){
@@ -208,8 +208,8 @@ function slidersChanged(){
   InfectionInit = sliderInfInit.value()*timeScale;
   LowInterval = sliderLowInt.value();
   HighInterval = sliderHighInt.value();
-  LowOffset = sliderLowOff.value();
-  HighOffset = sliderHighOff.value();
+  // LowOffset = sliderLowOff.value();
+  // HighOffset = sliderHighOff.value();
 
   // calcViralLoad()
   calcTestPoint()
@@ -266,8 +266,8 @@ function draw() {
   textInfInit = 'Infektionstart: Dag '+(InfectionInit/timeScale);
   textLowOff = 'Første test, lavsensitivitetstest: Dag '+LowOffset;
   textHighOff = 'Første test, højsensitivitetstest: Dag '+HighOffset;
-  textLowInt = 'Interval, lavsensitivitetstest: '+LowInterval;
-  textHighInt = 'Interval, højsensitivitetstest: '+HighInterval;
+  textLowInt = 'Testinterval, lavsensitivitetstest: '+LowInterval;
+  textHighInt = 'Testinterval, højsensitivitetstest: '+HighInterval;
   if (LowInterval == 1){
     textLowInt = textLowInt + ' dag'
   } else {
@@ -285,9 +285,9 @@ function draw() {
   strokeWeight(0);
   text(textInfInit,pLeft+sliderWidth+axMargin,pBot + axMargin);
   text(textLowInt,pLeft+sliderWidth+axMargin,pBot + axMargin + sliderDist);
-  text(textLowOff,pLeft+sliderWidth+axMargin,pBot + axMargin + 2*sliderDist);
-  text(textHighInt,pLeft+sliderWidth+axMargin,pBot + axMargin + 3*sliderDist);
-  text(textHighOff,pLeft+sliderWidth+axMargin,pBot + axMargin + 4*sliderDist);
+  text(textHighInt,pLeft+sliderWidth+axMargin,pBot + axMargin + 2*sliderDist);
+  // text(textLowOff,pLeft+sliderWidth+axMargin,pBot + axMargin + 3*sliderDist);
+  // text(textHighOff,pLeft+sliderWidth+axMargin,pBot + axMargin + 4*sliderDist);
 
   // Draw background and axes
   fill(230);
@@ -304,6 +304,24 @@ function draw() {
   line(axLeft,axTop+axHeight,axLeft,axTop);
   line(axLeft,axTop,axLeft-axSize,axTop+axSize);
   line(axLeft,axTop,axLeft+axSize,axTop+axSize);
+
+  // Draw ticks on axes 
+  for (let k = 1; k < 30*timeScale; k++) {
+    const curT = k;
+
+    if ((curT % (1*timeScale)) == 0){
+      let thisTime;
+      thisTime = coorToScreenCoor(curT,0);
+      strokeWeight(1);
+      line(thisTime[0],pBot-axSize,thisTime[0],pBot+axSize)      
+    }
+    if ((curT % (5*timeScale)) == 0){
+      let thisTime;
+      thisTime = coorToScreenCoor(curT,0);
+      strokeWeight(4);
+      line(thisTime[0],pBot-axSize,thisTime[0],pBot+axSize)      
+    }
+  }
 
   // Draw thresholds
   let HighSensScreen;
@@ -341,13 +359,15 @@ function draw() {
       }
     }
     if (pointFound){
-      fill(155,155,255);
+      fill(200,200,255);
+      testRadiusToShow = 1.3*testRadius;
     } else {
       fill(0,0,155);
+      testRadiusToShow = testRadius;
     }
 
     [curX,curY] = coorToScreenCoor(curT,LowSensThres);
-    circle(curX,curY,testRadius)
+    circle(curX,curY,testRadiusToShow)
   }
   
   // High sensitivity test-points
@@ -368,12 +388,14 @@ function draw() {
       }
     }
     if (pointFound){
-      fill(255,255,155);
+      testRadiusToShow = 1.3*testRadius;
+      fill(255,255,200);
     } else {
+      testRadiusToShow = testRadius;
       fill(155,155,0);
     }
     [curX,curY] = coorToScreenCoor(curT,HighSensThres);
-    circle(curX,curY,testRadius)
+    circle(curX,curY,testRadiusToShow)
   }
 
   // Show the isolation curves
@@ -381,17 +403,19 @@ function draw() {
   let newPos2;
 
   if (anyFoundLow){ 
-    stroke(0,0,255) 
+    stroke(0,100) 
     newPos = coorToScreenCoor(firstFoundTimeLow,LowSensThres)
     newPos2 = coorToScreenCoor(firstFoundTimeLow,0)
     line(newPos[0],newPos[1],newPos2[0],newPos2[1])
   }
   if (anyFoundHigh){  
-    stroke(255,255,0)
+    // stroke(255,255,0)
+    stroke(0,100)
     newPos = coorToScreenCoor(firstFoundTimeHigh,HighSensThres)
     newPos2 = coorToScreenCoor(firstFoundTimeHigh,0)
     line(newPos[0],newPos[1],newPos2[0],newPos2[1])
   }
+
   // Plot viral load curve
   // let prevT = plotTimeArray[0] + InfectionInit;
   let prevT = plotTimeArray[0];
@@ -415,13 +439,16 @@ function draw() {
   }
   
   // Plot infection point
-  stroke(0,150,0)
-  fill(0,250,0)
+  stroke(0,190,0)
+  // fill(0,250,0)
   newPos = coorToScreenCoor(plotTimeArray[0],viralLoadArray[0]);
   // let newPos = coorToScreenCoor(timeArray[0]+InfectionInit,viralLoadArray[0]);
   curX = newPos[0]
   curY = newPos[1]
-  circle(curX,curY,testRadius);
+  // circle(curX,curY,testRadius);
+  // rect(curX-testRadius/2,curY-testRadius/2,testRadius/2,testRadius);
+  strokeWeight(5);
+  line(curX,curY-testRadius,curX,curY+testRadius);
 
   // // Plot ends of detectable interval
   // let newPos2;
