@@ -12,6 +12,7 @@ let pTop;
 
 let HighSensThres = 3;
 let LowSensThres = 5;
+let InfectThres = 6;
 
 let HighPoints = [];
 let LowPoints  = [];
@@ -37,6 +38,11 @@ let yMax  = 12;
 
 let InfectionInit = 0;
 
+let showInfectiousPeriod = true;
+let showIsolationSelf = false;
+let showIsolationLow = false;
+let showIsolationHigh = false;
+
 // Initialize interactive stuff
 let sliderDist;
 let sliderWidth; 
@@ -50,6 +56,14 @@ let sliderHighOff;
 let sliderLowSens;
 let sliderHighSens;
 
+let checkIsoSymp;
+let checkIsoLow;
+let checkIsoHigh;
+
+let checkboxX;
+let checkboxY;
+let checkboxDist;
+
 let textInfInit = 'textInfInit';
 let textLowInt = 'textLowInt';
 let textLowOff = 'textLowOff';
@@ -57,6 +71,13 @@ let textHighInt = 'textHighInt';
 let textHighOff = 'textHighOff';
 let textLowSens = 'textLowSens';
 let textHighSens = 'textHighSens';
+
+// let textIsoSymp = 'Vis periode for isolation, symptomer';
+// let textIsoLow =  'Vis periode for isolation, lavsensitivitetstest';
+// let textIsoHigh = 'Vis periode for isolation, højsensitivitetstest';
+let textIsoSymp = 'Symptomer';
+let textIsoLow =  'Lavsensitivitetstest';
+let textIsoHigh = 'Højsensitivitetstest';
 
 
 let curX;
@@ -217,6 +238,42 @@ function setup() {
   sliderHighSens.position(pLeft, pBot + axMargin + 5*sliderDist);
   sliderHighSens.changed(slidersChanged)
   sliderHighSens.style('width',sliderWidth+'px');
+
+  // Create checkboxes
+  checkboxX = pLeft + sliderWidth*1.75;
+  checkboxY = pBot+axMargin;
+  checkboxDist = sliderDist/2;
+  checkIsoSymp = createCheckbox(textIsoSymp); 
+  checkIsoSymp.changed(funcIsoSymp);
+  checkIsoSymp.position(checkboxX,checkboxY +  checkboxDist);
+  checkIsoLow = createCheckbox(textIsoLow);
+  checkIsoLow.changed(funcIsoLow);
+  checkIsoLow.position(checkboxX,checkboxY + 2*checkboxDist);
+  checkIsoHigh = createCheckbox(textIsoHigh);
+  checkIsoHigh.changed(funcIsoHigh);
+  checkIsoHigh.position(checkboxX,checkboxY+ 3*checkboxDist);
+}
+
+function funcIsoSymp(){
+  if (this.checked()){
+    showIsolationSelf = true;
+  } else {
+    showIsolationSelf = false;
+  }
+}
+function funcIsoLow(){
+  if (this.checked()){
+    showIsolationLow = true;
+  } else {
+    showIsolationLow = false;
+  }
+}
+function funcIsoHigh(){
+  if (this.checked()){
+    showIsolationHigh = true;
+  } else {
+    showIsolationHigh = false;
+  }
 }
 
 function slidersChanged(){
@@ -248,9 +305,11 @@ function calcDetectableAndTimeArray(){
   firstDetectableLow = dayEnd;
   lastDetectableHigh = dayEnd;
   firstDetectableHigh = dayEnd;
+
   for (let k = 0; k < viralLoadArray.length; k++) {
     const curV = viralLoadArray[k];
     const curT = timeArray[k];
+    // const curT = plotTimeArray[k];
 
     if (curV > LowSensThres){
       lastDetectableLow = curT;
@@ -273,6 +332,11 @@ function calcDetectableAndTimeArray(){
   lastDetectableHigh = lastDetectableHigh+InfectionInit;
   firstDetectableHigh = firstDetectableHigh+InfectionInit;
 
+  // lastDetectableLow = lastDetectableLow;
+  // firstDetectableLow = firstDetectableLow;
+  // lastDetectableHigh = lastDetectableHigh;
+  // firstDetectableHigh = firstDetectableHigh;
+
 }
 
 function draw() {
@@ -283,10 +347,12 @@ function draw() {
   textInfInit = 'Infektionstart: Dag '+(InfectionInit/timeScale);
   textLowOff = 'Første test, lavsensitivitetstest: Dag '+LowOffset;
   textHighOff = 'Første test, højsensitivitetstest: Dag '+HighOffset;
-  textLowInt = 'Testinterval, lavsensitivitetstest: '+LowInterval;
-  textHighInt = 'Testinterval, højsensitivitetstest: '+HighInterval;
-  textLowSens = 'Sensitivitet, lav: 10^'+LowSensThres;
-  textHighSens = 'Sensitivitet, høj: 10^'+HighSensThres;
+  // textLowInt = 'Testinterval\nLavsensitivitetstest: '+LowInterval;
+  // textHighInt = 'Testinterval\nHøjsensitivitetstest: '+HighInterval;
+  textLowInt = 'Lavsensitivitetstest: \nHver '+LowInterval;
+  textHighInt = 'Højsensitivitetstest: \nHver '+HighInterval;
+  textLowSens = 'Lavsensitivitetstest: 10^'+LowSensThres;
+  textHighSens = 'Højsensitivitetstest: 10^'+HighSensThres;
   if (LowInterval == 1){
     textLowInt = textLowInt + ' dag'
   } else {
@@ -297,18 +363,26 @@ function draw() {
   } else {
     textHighInt = textHighInt + ' dage'
   }
+
   textAlign(LEFT,TOP);
   textSize(16);
   stroke(0);
   fill(0);
   strokeWeight(0);
-  text(textInfInit,pLeft+sliderWidth+axMargin,pBot + axMargin);
-  text(textLowInt,pLeft+sliderWidth+axMargin,pBot + axMargin + 1.5*sliderDist);
-  text(textHighInt,pLeft+sliderWidth+axMargin,pBot + axMargin + 2.5*sliderDist);
-  // text(textLowOff,pLeft+sliderWidth+axMargin,pBot + axMargin + 3*sliderDist);
-  // text(textHighOff,pLeft+sliderWidth+axMargin,pBot + axMargin + 4*sliderDist);
-  text(textLowSens,pLeft+sliderWidth+axMargin,pBot + axMargin + 4*sliderDist);
-  text(textHighSens,pLeft+sliderWidth+axMargin,pBot + axMargin + 5*sliderDist);
+  let sliderLabelLeft = pLeft+sliderWidth*0.9+axMargin;
+  text(textInfInit,sliderLabelLeft,pBot + axMargin);
+  text('Testinterval:',pLeft,pBot + axMargin + sliderDist);
+  text(textLowInt,sliderLabelLeft,pBot + axMargin + 1.4*sliderDist);
+  text(textHighInt,sliderLabelLeft,pBot + axMargin + 2.4*sliderDist);
+  text('Sensitivitet:',pLeft,pBot + axMargin + 3.5*sliderDist);
+  text(textLowSens,sliderLabelLeft,pBot + axMargin + 4*sliderDist);
+  text(textHighSens,sliderLabelLeft,pBot + axMargin + 5*sliderDist);
+  // text(textLowOff,sliderLabelLeft,pBot + axMargin + 3*sliderDist);
+  // text(textHighOff,sliderLabelLeft,pBot + axMargin + 4*sliderDist);
+
+  // Checkbox text
+  text('Vis periode for isolation:',checkboxX,checkboxY);
+
 
   // Draw background and axes
   fill(230);
@@ -367,7 +441,6 @@ function draw() {
     if ((curY % 1) == 0){
       let thisViral;
       thisViral = coorToScreenCoor(0,curY);
-      // console.log(curY)
       strokeWeight(1);
       line(pLeft-axSize,thisViral[1],pLeft+axSize,thisViral[1])     
       
@@ -376,29 +449,118 @@ function draw() {
       textSize(10);
       text(curY,pLeft-2*axSize,thisViral[1])
     }
-    // if ((curT % (5*timeScale)) == 0){
-    //   let thisTime;
-    //   thisTime = coorToScreenCoor(curT,0);
-    //   strokeWeight(4);
-    //   line(thisTime[0],pBot-axSize,thisTime[0],pBot+axSize)      
-    // }
   }
 
   // Draw thresholds
   let HighSensScreen;
   let LowSensScreen;
-  let asdf;
-  [asdf,HighSensScreen] = coorToScreenCoor(0,HighSensThres);
-  [asdf,LowSensScreen] = coorToScreenCoor(0,LowSensThres);
+  let InfectCoor;
+  HighSensScreen = coorToScreenCoor(0,HighSensThres);
+  LowSensScreen = coorToScreenCoor(0,LowSensThres);
+  InfectCoor = coorToScreenCoor(0,InfectThres);
 
   strokeWeight(3);
   stroke(255,155,0,100)
-  line(pLeft,HighSensScreen,pRight,HighSensScreen)
+  line(pLeft,HighSensScreen[1],pRight,HighSensScreen[1])
   stroke(0,155,255,100)
-  line(pLeft,LowSensScreen,pRight,LowSensScreen)
+  line(pLeft,LowSensScreen[1],pRight,LowSensScreen[1])
+  stroke(255,100,100,100)
+  line(pLeft,InfectCoor[1],pRight,InfectCoor[1])
 
 
-  // Plot test points
+
+  // --- Show infective period ---
+  if (showInfectiousPeriod){
+    let infXs =[];
+    let infYs =[];
+    // Go through the times
+    for (let k = 0; k < plotTimeArray.length; k++) {
+      const curT = plotTimeArray[k];
+      const curV = viralLoadArray[k];
+
+      if (curV > InfectThres){
+        [curX,curY] = coorToScreenCoor(curT,curV);
+        infXs.push(curX);
+        infYs.push(curY);
+      }
+    }
+    // Move first and last point a little down
+    let InfectThresCoor = coorToScreenCoor(0,InfectThres);
+    infYs[0] = InfectThresCoor[1];
+    infYs[infYs.length-1] = InfectThresCoor[1];
+
+    // Draw the shape
+    fill(255,0,0,50)
+    beginShape()
+    for (let k = 0; k < infXs.length; k++) {
+      const curNum1 = infXs[k];
+      const curNum2 = infYs[k];
+      vertex(curNum1,curNum2)
+    }
+    endShape(CLOSE);
+  }
+
+  // --- Show Self-isolation period ---
+  if (showIsolationSelf){
+    // --- Show symptom-start ---
+    let symptomDay = 5*timeScale;
+    let sympStartCoor = coorToScreenCoor(symptomDay+InfectionInit,10);
+    stroke(100,0,0)
+    let sympLabelOffset = 10;
+    line(sympStartCoor[0],sympStartCoor[1],sympStartCoor[0]+sympLabelOffset/2,sympStartCoor[1]-sympLabelOffset/2)
+    strokeWeight(0);
+    fill(0);
+    textSize(12);
+    textAlign(LEFT,BOTTOM);
+    text('Symptomstart, selv-isolation',sympStartCoor[0]+sympLabelOffset,sympStartCoor[1]-sympLabelOffset)
+  
+  
+    let infXs =[];
+    let infYs =[];
+    // Go through the times
+    for (let k = 0; k < plotTimeArray.length; k++) {
+      const curT = plotTimeArray[k];
+      const curTInf = timeArray[k];
+      const curV = viralLoadArray[k];
+
+      
+      if (curTInf > symptomDay){
+        // if (curV > InfectThres){
+          [curX,curY] = coorToScreenCoor(curT,curV);
+          infXs.push(curX);
+          infYs.push(curY);
+        // }
+      }
+    }
+    // // Move first and last point a little down
+    let newPos2 = coorToScreenCoor(symptomDay+InfectionInit,0)
+    infXs.unshift(newPos2[0]);
+    infYs.unshift(infYs[0]);
+    infXs.unshift(newPos2[0])
+    infYs.unshift(pBot);
+    // // Move first and last point a little down
+    // // let InfectThresCoor = coorToScreenCoor(0,InfectThres);
+    // let InfectThresCoor = coorToScreenCoor(0,0);
+    // infYs[0] = InfectThresCoor[1];
+    // infYs[infYs.length-1] = InfectThresCoor[1];
+    
+    // infXs[1] = infXs[0];
+
+    // Draw the shape
+    fill(155,100)
+    noStroke();
+    beginShape()
+    for (let k = 0; k < infXs.length; k++) {
+      const curNum1 = infXs[k];
+      const curNum2 = infYs[k];
+      vertex(curNum1,curNum2)
+    }
+    endShape(CLOSE);
+  }
+
+
+
+  // ---  Plot test points ---
   let testRadius = 10;
   strokeWeight(2);
   stroke(0)
@@ -477,6 +639,120 @@ function draw() {
     line(newPos[0],newPos[1],newPos2[0],newPos2[1])
   }
 
+
+  // --- Show isolation-period due to low sensitivity test  ---
+  if (showIsolationLow){
+     
+    if (anyFoundLow){ 
+      let infXs =[];
+      let infYs =[];
+      // Go through the times
+      for (let k = 0; k < plotTimeArray.length; k++) {
+        const curT = plotTimeArray[k];
+        const curV = viralLoadArray[k];
+
+        if (curT > firstFoundTimeLow){
+          // if (curV > LowSensThres){
+            [curX,curY] = coorToScreenCoor(curT,curV);
+            infXs.push(curX);
+            infYs.push(curY);
+          // }
+        }
+      }
+      // Move first and last point a little down
+      newPos2 = coorToScreenCoor(firstFoundTimeLow,0)
+      infXs.unshift(newPos2[0]);
+      infYs.unshift(infYs[0]);
+      infXs.unshift(newPos2[0])
+      infYs.unshift(pBot);
+
+      // Draw the shape
+      fill(0,0,155,50)
+      noStroke();
+      beginShape()
+      for (let k = 0; k < infXs.length; k++) {
+        const curNum1 = infXs[k];
+        const curNum2 = infYs[k];
+        vertex(curNum1,curNum2)
+      }
+      endShape(CLOSE);
+    }
+    
+    // --- Show label ---
+    let LowStartCoor = coorToScreenCoor(firstFoundTimeLow,LowSensThres);
+    let LowLabelOffset = 10;
+    stroke(0,0,100)
+    line(LowStartCoor[0],LowStartCoor[1],LowStartCoor[0]-LowLabelOffset,LowStartCoor[1]-LowLabelOffset)
+    strokeWeight(0);
+    fill(0);
+    textSize(12);
+    textAlign(RIGHT,CENTER);
+    push();
+    translate(LowStartCoor[0]-LowLabelOffset*1.25,LowStartCoor[1]-LowLabelOffset*1.25)
+    rotate(PI/4)
+    text('Positiv test, isolation',0,0)
+    pop();
+  
+  }
+
+
+  // --- Show isolation-period due to high sensitivity test  ---
+  if (showIsolationHigh){
+    
+    if (anyFoundHigh){ 
+      let infXs =[];
+      let infYs =[];
+      // Go through the times
+      for (let k = 0; k < plotTimeArray.length; k++) {
+        const curT = plotTimeArray[k];
+        const curV = viralLoadArray[k];
+
+        if (curT > firstFoundTimeHigh){
+          // if (curV > LowSensThres){
+            [curX,curY] = coorToScreenCoor(curT,curV);
+            infXs.push(curX);
+            infYs.push(curY);
+          // }
+        }
+      }
+      // Move first and last point a little down
+      newPos2 = coorToScreenCoor(firstFoundTimeHigh,0)
+      infXs.unshift(newPos2[0]);
+      infYs.unshift(infYs[0]);
+      infXs.unshift(newPos2[0])
+      infYs.unshift(pBot);
+
+      // Draw the shape
+      fill(255,255,0,50)
+      noStroke();
+      beginShape()
+      for (let k = 0; k < infXs.length; k++) {
+        const curNum1 = infXs[k];
+        const curNum2 = infYs[k];
+        vertex(curNum1,curNum2)
+      }
+      endShape(CLOSE);
+    }
+    
+    
+    // --- Show label ---
+    let HighStartCoor = coorToScreenCoor(firstFoundTimeHigh,HighSensThres);
+    let HighLabelOffset = 10;
+    stroke(0,0,100)
+    line(HighStartCoor[0],HighStartCoor[1],HighStartCoor[0]-HighLabelOffset,HighStartCoor[1]-HighLabelOffset)
+    strokeWeight(0);
+    fill(0);
+    textSize(12);
+    textAlign(RIGHT,CENTER);
+    push();
+    translate(HighStartCoor[0]-HighLabelOffset*1.25,HighStartCoor[1]-HighLabelOffset*1.25)
+    rotate(PI/4)
+    text('Positiv test, isolation',0,0)
+    pop();
+  }
+
+
+
   // Plot viral load curve
   // let prevT = plotTimeArray[0] + InfectionInit;
   let prevT = plotTimeArray[0];
@@ -490,7 +766,9 @@ function draw() {
     const curV = viralLoadArray[t];
     [curX,curY] = coorToScreenCoor(curT,curV);
     // point(curX,curY)
+    fill(0)
     stroke(0)
+    strokeWeight(2)
 
     if (curX < pRight) {
       line(curX,curY,prevX,prevY)
