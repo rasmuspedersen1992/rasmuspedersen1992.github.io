@@ -32,6 +32,9 @@ let timeArray = [];
 let plotTimeArray = [];
 let viralLoadArray = [];
 
+let curX;
+let curY;
+
 let dayEnd = 30;
 let timeScale = 10; // Ten points per day
 let yMax  = 12;
@@ -79,6 +82,9 @@ let sliderHighOff;
 let sliderLowSens;
 let sliderHighSens;
 
+let buttonFlagDanish;
+let buttonFlagEnglish;
+
 let checkIsoSymp;
 let checkIsoLow;
 let checkIsoHigh;
@@ -105,18 +111,98 @@ textIsoBarSymp = 'Symptomstart \nSelv-isolation';
 textIsoBarLow  = 'Positiv test \nIsolation';
 textIsoBarHigh = 'Positiv test \nIsolation';
 
+let textXAxis;
+let textYAxis;
+textXAxis = 'Tid [dage]';
+textYAxis = 'Log10 Viral load';
+
+let textIsoSymp;
+let textIsoLow;
+let textIsoHigh;
+let textTestInterval;
+let textSens;
+textIsoSymp = 'Symptomer';
+textIsoLow =  'Antigen-test';
+textIsoHigh = 'PCR-test';
+textTestInterval = 'Testinterval:';
+textSens = 'Sensitivitet:';
+
+let textInfInitPre;
+let textLowIntPre;
+let textHighIntPre;
+let textLowSensPre;
+let textHighSensPre;
+let textDaySin;
+let textDayPlu;
+let textCheckBox;
+textInfInitPre = 'Infektionstart: Dag ';
+textLowIntPre = 'Antigen-test: \nHver ';
+textHighIntPre = 'PCR-test: \nHver ';
+textLowSensPre = 'Antigen-test: 10^';
+textHighSensPre = 'PCR-test: 10^';
+textDaySin = ' dag'
+textDayPlu = ' dage'
+textCheckBox = 'Vis periode for isolation:';
+
 // let textIsoSymp = 'Vis periode for isolation, symptomer';
 // let textIsoLow =  'Vis periode for isolation, lavsensitivitetstest';
 // let textIsoHigh = 'Vis periode for isolation, højsensitivitetstest';
-let textIsoSymp = 'Symptomer';
 // let textIsoLow =  'Lavsensitivitetstest';
 // let textIsoHigh = 'Højsensitivitetstest';
-let textIsoLow =  'Antigen-test';
-let textIsoHigh = 'PCR-test';
 
 
-let curX;
-let curY;
+function setLanguageEnglish(){
+  textIsoBarInf = 'Infectious'
+  textIsoBarSymp = 'Symptom onset \nSelf-isolation';
+  textIsoBarLow  = 'Positiv test \nIsolation';
+  textIsoBarHigh = 'Positiv test \nIsolation';
+  
+  textXAxis = 'Time [days]';
+  textYAxis = 'Log10 Viral load';
+
+  textIsoSymp = 'Symptoms';
+  textIsoLow =  'Antigen-test';
+  textIsoHigh = 'PCR-test';
+
+  textTestInterval = 'Test interval:';
+  textSens = 'Sensitivity:';
+  
+  textInfInitPre = 'Infektion: Day ';
+  textLowIntPre = 'Antigen-test: \nEvery ';
+  textHighIntPre = 'PCR-test: \nEvery ';
+  textLowSensPre = 'Antigen-test: 10^';
+  textHighSensPre = 'PCR-test: 10^';
+  textDaySin = ' day'
+  textDayPlu = ' days'
+  textCheckBox = 'Show isolation-period:';
+}
+
+function setLanguageDanish(){
+  textIsoBarInf  = 'Smitsom';
+  textIsoBarSymp = 'Symptomstart \nSelv-isolation';
+  textIsoBarLow  = 'Positiv test \nIsolation';
+  textIsoBarHigh = 'Positiv test \nIsolation';
+  
+  textXAxis = 'Tid [dage]';
+  textYAxis = 'Log10 Viral load';
+
+  textIsoSymp = 'Symptomer';
+  textIsoLow =  'Antigen-test';
+  textIsoHigh = 'PCR-test';
+
+  textTestInterval = 'Testinterval:';
+  textSens = 'Sensitivitet:';
+  
+  textInfInitPre = 'Infektionstart: Dag ';
+  textLowIntPre = 'Antigen-test: \nHver ';
+  textHighIntPre = 'PCR-test: \nHver ';
+  textLowSensPre = 'Antigen-test: 10^';
+  textHighSensPre = 'PCR-test: 10^';
+  textDaySin = ' dag'
+  textDayPlu = ' dage'
+  textCheckBox = 'Vis periode for isolation:';
+}
+
 
 function calcTestPoint(){
   let dayEnd = 30;
@@ -186,7 +272,6 @@ function setup() {
   let roomForSliders = 600;
   createCanvas(1200, 500 + roomForSliders);
 
-
   // Set position of axes  
   axTop = axMargin;
   axLeft = axMargin;
@@ -197,6 +282,19 @@ function setup() {
   pRight= axLeft + axWidth;
   pBot  = axTop + axHeight;
   pTop  = axTop;
+  
+  // Language buttons
+  let flagWidth = 80;
+  let flagDist = 80;
+  buttonFlagDanish = createImg('DKflag.png');
+  buttonFlagDanish.position(pRight-flagWidth,pBot+3*axMargin);
+  buttonFlagDanish.style('width:'+flagWidth+'px');
+  buttonFlagDanish.mousePressed(setLanguageDanish);
+  buttonFlagEnglish = createImg('UKflag.png');
+  buttonFlagEnglish.position(pRight-flagWidth,pBot+3*axMargin+flagDist);
+  buttonFlagEnglish.mousePressed(setLanguageEnglish);
+  buttonFlagEnglish.style('width:'+flagWidth+'px');
+
 
   // Define colors
   clrBackground = color(230);
@@ -369,11 +467,11 @@ function draw() {
   slidersChanged();
 
   // Labels for sliders
-  textInfInit = 'Infektionstart: Dag '+(InfectionInit/timeScale);
-  textLowInt = 'Antigen-test: \nHver '+LowInterval;
-  textHighInt = 'PCR-test: \nHver '+HighInterval;
-  textLowSens = 'Antigen-test: 10^'+LowSensThres;
-  textHighSens = 'PCR-test: 10^'+HighSensThres;
+  textInfInit = textInfInitPre+(InfectionInit/timeScale);
+  textLowInt = textLowIntPre+LowInterval;
+  textHighInt = textHighIntPre+HighInterval;
+  textLowSens = textLowSensPre+LowSensThres;
+  textHighSens = textHighSensPre+HighSensThres;
   // textLowOff = 'Første test, lavsensitivitetstest: Dag '+LowOffset;
   // textHighOff = 'Første test, højsensitivitetstest: Dag '+HighOffset;
   // textLowInt = 'Lavsensitivitetstest: \nHver '+LowInterval;
@@ -383,14 +481,14 @@ function draw() {
   // textLowInt = 'Testinterval\nLavsensitivitetstest: '+LowInterval;
   // textHighInt = 'Testinterval\nHøjsensitivitetstest: '+HighInterval;
   if (LowInterval == 1){
-    textLowInt = textLowInt + ' dag'
+    textLowInt = textLowInt + textDaySin
   } else {
-    textLowInt = textLowInt + ' dage'
+    textLowInt = textLowInt + textDayPlu
   }
   if (HighInterval == 1){
-    textHighInt = textHighInt + ' dag'
+    textHighInt = textHighInt + textDaySin
   } else {
-    textHighInt = textHighInt + ' dage'
+    textHighInt = textHighInt + textDayPlu
   }
 
   textAlign(LEFT,TOP);
@@ -400,17 +498,17 @@ function draw() {
   strokeWeight(0);
   let sliderLabelLeft = pLeft+sliderWidth*0.9+axMargin;
   text(textInfInit,sliderLabelLeft,sliderTop);
-  text('Testinterval:',pLeft,sliderTop + sliderDist);
+  text(textTestInterval,pLeft,sliderTop + sliderDist);
   text(textLowInt,sliderLabelLeft,sliderTop + 1.4*sliderDist);
   text(textHighInt,sliderLabelLeft,sliderTop + 2.4*sliderDist);
-  text('Sensitivitet:',pLeft,sliderTop + 3.5*sliderDist);
+  text(textSens,pLeft,sliderTop + 3.5*sliderDist);
   text(textLowSens,sliderLabelLeft,sliderTop + 4*sliderDist);
   text(textHighSens,sliderLabelLeft,sliderTop + 5*sliderDist);
   // text(textLowOff,sliderLabelLeft,sliderTop + 3*sliderDist);
   // text(textHighOff,sliderLabelLeft,sliderTop + 4*sliderDist);
 
   // Checkbox text
-  text('Vis periode for isolation:',checkboxX,checkboxY);
+  text(textCheckBox,checkboxX,checkboxY);
 
 
   // Draw background and axes
@@ -430,8 +528,6 @@ function draw() {
   line(axLeft,axTop,axLeft-axSize,axTop+3*axSize);
   line(axLeft,axTop,axLeft+axSize,axTop+3*axSize);
 
-  let textXAxis = 'Tid [dage]';
-  let textYAxis = 'Log10 Viral load';
   textAlign(RIGHT,TOP);
   strokeWeight(0.1);
   textSize(16);
@@ -589,14 +685,15 @@ function draw() {
     // Draw on isolation-bar
     fill(clrSelfIsoLgt)
     noStroke();
-    let selfIsoEndTime = symptomDay + isolationPeriod*timeScale;
+    let selfIsoEndTime = symptomDay +InfectionInit+ isolationPeriod*timeScale;
+    // let selfIsoEndTime = isolationPeriod*timeScale;
     [curX,curY] = coorToScreenCoor(selfIsoEndTime,0);
-    rect(sympStartCoor[0],isoBarTop,curX,isoBarHeight);
+    rect(sympStartCoor[0],isoBarTop,curX-sympStartCoor[0],isoBarHeight);
 
     // Label the isolation-bar
     strokeWeight(0);
     fill(0);
-    textSize(14);
+    textSize(13);
     textAlign(CENTER,TOP);
     push();
     translate(sympStartCoor[0]+2,isoBarTop+isoBarHeight/2);
@@ -829,7 +926,10 @@ function draw() {
       // Draw on isolation-bar
       fill(clrHighSensLgt)
       noStroke();
-      rect(infXs[0],isoBarTop,infXs[infXs.length-1]-infXs[0],isoBarHeight);
+      let IsoEndTime = firstFoundTimeHigh + isolationPeriod*timeScale;
+      [curX,curY] = coorToScreenCoor(IsoEndTime,0);
+      rect(infXs[0],isoBarTop,curX-infXs[0],isoBarHeight);
+      // rect(infXs[0],isoBarTop,infXs[infXs.length-1]-infXs[0],isoBarHeight);
       // --- Show label ---
       fill(0);
       textSize(14);
