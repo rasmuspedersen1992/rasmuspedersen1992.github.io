@@ -230,11 +230,11 @@ function setup() {
   // sliderHighOff.position(pLeft, pBot + axMargin + 4*sliderDist);
   // sliderHighOff.changed(slidersChanged)
   // sliderHighOff.style('width',sliderWidth+'px');
-  sliderLowSens = createSlider(0,10,5);
+  sliderLowSens = createSlider(0,10,LowSensThres);
   sliderLowSens.position(pLeft, pBot + axMargin + 4*sliderDist);
   sliderLowSens.changed(slidersChanged)
   sliderLowSens.style('width',sliderWidth+'px');
-  sliderHighSens = createSlider(0,10,3);
+  sliderHighSens = createSlider(0,10,HighSensThres);
   sliderHighSens.position(pLeft, pBot + axMargin + 5*sliderDist);
   sliderHighSens.changed(slidersChanged)
   sliderHighSens.style('width',sliderWidth+'px');
@@ -301,10 +301,10 @@ function calcDetectableAndTimeArray(){
   }
 
   // Calculate the (relative) time-points at which the thresholds are exceeded.
-  lastDetectableLow = dayEnd;
-  firstDetectableLow = dayEnd;
-  lastDetectableHigh = dayEnd;
-  firstDetectableHigh = dayEnd;
+  lastDetectableLow = dayEnd*timeScale;
+  firstDetectableLow = dayEnd*timeScale;
+  lastDetectableHigh = dayEnd*timeScale;
+  firstDetectableHigh = dayEnd*timeScale;
 
   for (let k = 0; k < viralLoadArray.length; k++) {
     const curV = viralLoadArray[k];
@@ -567,6 +567,7 @@ function draw() {
   
   // Low sensitivity test-points
   // fill(0,0,255)
+  
   let anyFoundLow = false;
   let firstFoundTimeLow = 30;
   for (let k = 0; k < LowPoints.length; k++) {
@@ -574,6 +575,7 @@ function draw() {
     let pointFound = false;
     if (curT >= firstDetectableLow){
       if (curT <= lastDetectableLow){
+        // console.log(curT);
         pointFound = true;
         if (anyFoundLow == false){
           firstFoundTimeLow = curT;
@@ -588,7 +590,6 @@ function draw() {
       fill(0,0,155);
       testRadiusToShow = testRadius;
     }
-
     [curX,curY] = coorToScreenCoor(curT,LowSensThres);
     circle(curX,curY,testRadiusToShow)
   }
@@ -601,7 +602,7 @@ function draw() {
   for (let k = 0; k < HighPoints.length; k++) {
     const curT = (HighOffset + HighPoints[k])*timeScale;
     let pointFound = false;
-    if (curT >= firstDetectableHigh){
+    if (curT > firstDetectableHigh){
       if (curT <= lastDetectableHigh){
         pointFound = true;
         if (anyFoundHigh == false){
