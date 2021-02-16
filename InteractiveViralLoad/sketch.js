@@ -168,7 +168,7 @@ function setLanguageEnglish(){
   textTestInterval = 'Test interval:';
   textSens = 'Sensitivity:';
   
-  textInfInitPre = 'Infektion: Day ';
+  textInfInitPre = 'Infection: Day ';
   textLowIntPre = 'Antigen-test: \nEvery ';
   textHighIntPre = 'PCR-test: \nEvery ';
   textLowSensPre = 'Antigen-test: 10^';
