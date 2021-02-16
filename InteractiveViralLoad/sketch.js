@@ -92,6 +92,7 @@ let checkIsoHigh;
 let checkboxX;
 let checkboxY;
 let checkboxDist;
+let checkboxTextX;
 
 let textInfInit = 'textInfInit';
 let textLowInt = 'textLowInt';
@@ -366,16 +367,23 @@ function setup() {
   checkboxX = pLeft + sliderWidth*1.75;
   checkboxY = sliderTop;
   checkboxDist = sliderDist/2;
-  checkIsoSymp = createCheckbox(textIsoSymp); 
+  checkboxTextX = checkboxX + checkboxDist;
+  // checkIsoSymp = createCheckbox(textIsoSymp);
+  // checkIsoLow = createCheckbox(textIsoLow);
+  // checkIsoHigh = createCheckbox(textIsoHigh);
+
+  checkIsoSymp = createCheckbox(); 
   checkIsoSymp.changed(funcIsoSymp);
   checkIsoSymp.position(checkboxX,checkboxY +  checkboxDist);
-  checkIsoLow = createCheckbox(textIsoLow);
+  checkIsoLow = createCheckbox();
   checkIsoLow.changed(funcIsoLow);
   checkIsoLow.position(checkboxX,checkboxY + 2*checkboxDist);
-  checkIsoHigh = createCheckbox(textIsoHigh);
+  checkIsoHigh = createCheckbox();
   checkIsoHigh.changed(funcIsoHigh);
   checkIsoHigh.position(checkboxX,checkboxY+ 3*checkboxDist);
-}
+
+
+} // ------------ End setup ------------ 
 
 function funcIsoSymp(){
   if (this.checked()){
@@ -509,6 +517,9 @@ function draw() {
 
   // Checkbox text
   text(textCheckBox,checkboxX,checkboxY);
+  text(textIsoSymp,checkboxTextX,checkboxY+checkboxDist)
+  text(textIsoLow,checkboxTextX,checkboxY+2*checkboxDist)
+  text(textIsoHigh,checkboxTextX,checkboxY+3*checkboxDist)
 
 
   // Draw background and axes
