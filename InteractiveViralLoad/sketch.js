@@ -39,14 +39,20 @@ let dayEnd = 30;
 let timeScale = 10; // Ten points per day
 let yMax  = 12;
 
+let testRadius = 10;
+let testRadiusLarge = 15;
+
 let isolationPeriod = 14;
 
 let InfectionInit = 0;
+
+let timeDelay = 1;
 
 let showInfectiousPeriod = true;
 let showIsolationSelf = false;
 let showIsolationLow = false;
 let showIsolationHigh = false;
+let showIsolationHighLate = false;
 let showPeriodsOnPlot = false;
 
 let isoBarHeight;
@@ -88,6 +94,7 @@ let buttonFlagEnglish;
 let checkIsoSymp;
 let checkIsoLow;
 let checkIsoHigh;
+let checkIsoHighLate;
 
 let checkboxX;
 let checkboxY;
@@ -107,26 +114,28 @@ let textIsoBarInf;
 let textIsoBarSymp;
 let textIsoBarLow;
 let textIsoBarHigh;
-textIsoBarInf  = 'Smitsom';
-textIsoBarSymp = 'Symptomstart \nSelv-isolation';
-textIsoBarLow  = 'Positiv test \nIsolation';
-textIsoBarHigh = 'Positiv test \nIsolation';
+// textIsoBarInf  = 'Smitsom';
+// textIsoBarSymp = 'Symptomstart \nSelv-isolation';
+// textIsoBarLow  = 'Positiv test \nIsolation';
+// textIsoBarHigh = 'Positiv test \nIsolation';
 
 let textXAxis;
 let textYAxis;
-textXAxis = 'Tid [dage]';
-textYAxis = 'Log10 Viral load';
+// textXAxis = 'Tid [dage]';
+// textYAxis = 'Log10 Viral load';
 
 let textIsoSymp;
 let textIsoLow;
 let textIsoHigh;
+let textIsoHighLate;
 let textTestInterval;
 let textSens;
-textIsoSymp = 'Symptomer';
-textIsoLow =  'Antigen-test';
-textIsoHigh = 'PCR-test';
-textTestInterval = 'Testinterval:';
-textSens = 'Sensitivitet:';
+// textIsoSymp = 'Symptomer';
+// textIsoLow =  'Antigen-test';
+// textIsoHigh = 'PCR-test';
+// textIsoHighLate = 'PCR-test, forsinket svar';
+// textTestInterval = 'Testinterval:';
+// textSens = 'Sensitivitet:';
 
 let textInfInitPre;
 let textLowIntPre;
@@ -136,14 +145,14 @@ let textHighSensPre;
 let textDaySin;
 let textDayPlu;
 let textCheckBox;
-textInfInitPre = 'Infektionstart: Dag ';
-textLowIntPre = 'Antigen-test: \nHver ';
-textHighIntPre = 'PCR-test: \nHver ';
-textLowSensPre = 'Antigen-test: 10^';
-textHighSensPre = 'PCR-test: 10^';
-textDaySin = ' dag'
-textDayPlu = ' dage'
-textCheckBox = 'Vis periode for isolation:';
+// textInfInitPre = 'Infektionstart: Dag ';
+// textLowIntPre = 'Antigen-test: \nHver ';
+// textHighIntPre = 'PCR-test: \nHver ';
+// textLowSensPre = 'Antigen-test: 10^';
+// textHighSensPre = 'PCR-test: 10^';
+// textDaySin = ' dag'
+// textDayPlu = ' dage'
+// textCheckBox = 'Vis periode for isolation:';
 
 // let textIsoSymp = 'Vis periode for isolation, symptomer';
 // let textIsoLow =  'Vis periode for isolation, lavsensitivitetstest';
@@ -157,6 +166,9 @@ function setLanguageEnglish(){
   textIsoBarSymp = 'Symptom onset \nSelf-isolation';
   textIsoBarLow  = 'Positiv test \nIsolation';
   textIsoBarHigh = 'Positiv test \nIsolation';
+  // textIsoBarHighLate = 'Positiv test \nIsolation \n(1 day later)';
+  textIsoBarHighLate = 'Positiv test \nIsolation';
+  
   
   textXAxis = 'Time [days]';
   textYAxis = 'Log10 Viral load';
@@ -164,6 +176,7 @@ function setLanguageEnglish(){
   textIsoSymp = 'Symptoms';
   textIsoLow =  'Antigen-test';
   textIsoHigh = 'PCR-test';
+  textIsoHighLate = 'PCR-test, delayed result'
 
   textTestInterval = 'Test interval:';
   textSens = 'Sensitivity:';
@@ -183,6 +196,8 @@ function setLanguageDanish(){
   textIsoBarSymp = 'Symptomstart \nSelv-isolation';
   textIsoBarLow  = 'Positiv test \nIsolation';
   textIsoBarHigh = 'Positiv test \nIsolation';
+  // textIsoBarHighLate = 'Positiv test \nIsolation \n(1 dag senere)';
+  textIsoBarHighLate = 'Positiv test \nIsolation';
   
   textXAxis = 'Tid [dage]';
   textYAxis = 'Log10 Viral load';
@@ -190,6 +205,7 @@ function setLanguageDanish(){
   textIsoSymp = 'Symptomer';
   textIsoLow =  'Antigen-test';
   textIsoHigh = 'PCR-test';
+  textIsoHighLate = 'PCR-test, forsinket svar'
 
   textTestInterval = 'Testinterval:';
   textSens = 'Sensitivitet:';
@@ -231,7 +247,8 @@ function calcViralLoad(){
 
 
   let maxViral = 10;
-  let growthRate = 0.2;
+  // let growthRate = 0.2;
+  let growthRate = 1.9/timeScale;
   let v0 = 0.05;
   let finalViral;
   for (let k = 0; k < tIniPhase.length; k++) {
@@ -242,8 +259,10 @@ function calcViralLoad(){
     finalViral = newViral;
   }
   
-  let decayRate1 = 0.03;
-  let decayRate2 = 0.06;
+  // let decayRate1 = 0.03;
+  // let decayRate2 = 0.06;
+  let decayRate1 = 0.295/timeScale;
+  let decayRate2 = 0.6/timeScale;
   let factor1 = 2;
   let factor2 = factor1-1;
 
@@ -295,6 +314,8 @@ function setup() {
   buttonFlagEnglish.position(pRight-flagWidth,pBot+3*axMargin+flagDist);
   buttonFlagEnglish.mousePressed(setLanguageEnglish);
   buttonFlagEnglish.style('width:'+flagWidth+'px');
+
+  setLanguageDanish();
 
 
   // Define colors
@@ -381,6 +402,9 @@ function setup() {
   checkIsoHigh = createCheckbox();
   checkIsoHigh.changed(funcIsoHigh);
   checkIsoHigh.position(checkboxX,checkboxY+ 3*checkboxDist);
+  checkIsoHighLate = createCheckbox();
+  checkIsoHighLate.changed(funcIsoHighLate);
+  checkIsoHighLate.position(checkboxX,checkboxY+ 4*checkboxDist);
 
 
 } // ------------ End setup ------------ 
@@ -406,23 +430,28 @@ function funcIsoHigh(){
     showIsolationHigh = false;
   }
 }
-
+function funcIsoHighLate(){
+  if (this.checked()){
+    showIsolationHighLate = true;
+  } else {
+    showIsolationHighLate = false;
+  }
+}
 function slidersChanged(){
   // Read values from sliders
   InfectionInit = sliderInfInit.value()*timeScale;
   LowInterval = sliderLowInt.value();
   HighInterval = sliderHighInt.value();
-  // LowOffset = sliderLowOff.value();
-  // HighOffset = sliderHighOff.value();
   LowSensThres = sliderLowSens.value();
   HighSensThres = sliderHighSens.value();
+  // LowOffset = sliderLowOff.value();
+  // HighOffset = sliderHighOff.value();
 
   // calcViralLoad()
   calcTestPoint()
   calcDetectableAndTimeArray();
 
 }
-
 function calcDetectableAndTimeArray(){
 
   // Calculate the time array used for plotting
@@ -469,7 +498,6 @@ function calcDetectableAndTimeArray(){
   // firstDetectableHigh = firstDetectableHigh;
 
 }
-
 function draw() {
   background(255);
   slidersChanged();
@@ -488,6 +516,7 @@ function draw() {
   // textHighSens = 'Højsensitivitetstest: 10^'+HighSensThres;
   // textLowInt = 'Testinterval\nLavsensitivitetstest: '+LowInterval;
   // textHighInt = 'Testinterval\nHøjsensitivitetstest: '+HighInterval;
+
   if (LowInterval == 1){
     textLowInt = textLowInt + textDaySin
   } else {
@@ -520,6 +549,7 @@ function draw() {
   text(textIsoSymp,checkboxTextX,checkboxY+checkboxDist)
   text(textIsoLow,checkboxTextX,checkboxY+2*checkboxDist)
   text(textIsoHigh,checkboxTextX,checkboxY+3*checkboxDist)
+  text(textIsoHighLate,checkboxTextX,checkboxY+4*checkboxDist)
 
 
   // Draw background and axes
@@ -716,7 +746,6 @@ function draw() {
 
 
   // ---  Plot test points ---
-  let testRadius = 10;
   strokeWeight(2);
   stroke(0)
   
@@ -741,7 +770,7 @@ function draw() {
     if (pointFound){
       // fill(200,200,255);
       fill(clrLowSensLgt);
-      testRadiusToShow = 1.3*testRadius;
+      testRadiusToShow = testRadiusLarge;
     } else {
       fill(0,0,155);
       // fill(clrLowSensDrk)
@@ -769,7 +798,7 @@ function draw() {
       }
     }
     if (pointFound){
-      testRadiusToShow = 1.3*testRadius;
+      testRadiusToShow = testRadiusLarge;
       fill(255,255,200);
     } else {
       testRadiusToShow = testRadius;
@@ -783,18 +812,30 @@ function draw() {
   let newPos;
   let newPos2;
 
-  if (anyFoundLow){ 
-    stroke(0,100) 
-    newPos = coorToScreenCoor(firstFoundTimeLow,LowSensThres)
-    newPos2 = coorToScreenCoor(firstFoundTimeLow,0)
-    line(newPos[0],newPos[1],newPos2[0],newPos2[1])
+  if (showIsolationLow){
+    if (anyFoundLow){ 
+      stroke(0,100) 
+      newPos = coorToScreenCoor(firstFoundTimeLow,LowSensThres)
+      newPos2 = coorToScreenCoor(firstFoundTimeLow,0)
+      line(newPos[0],newPos[1],newPos2[0],newPos2[1])
+    }
   }
-  if (anyFoundHigh){  
-    // stroke(255,255,0)
-    stroke(0,100)
-    newPos = coorToScreenCoor(firstFoundTimeHigh,HighSensThres)
-    newPos2 = coorToScreenCoor(firstFoundTimeHigh,0)
-    line(newPos[0],newPos[1],newPos2[0],newPos2[1])
+  if (showIsolationHigh){
+    if (anyFoundHigh){  
+      // stroke(255,255,0)
+      stroke(0,100)
+      newPos = coorToScreenCoor(firstFoundTimeHigh,HighSensThres)
+      newPos2 = coorToScreenCoor(firstFoundTimeHigh,0)
+      line(newPos[0],newPos[1],newPos2[0],newPos2[1])
+    }
+  }
+  if (showIsolationHighLate){
+    if (anyFoundHigh){  
+      stroke(0,100)
+      newPos = coorToScreenCoor(firstFoundTimeHigh,HighSensThres)
+      newPos2 = coorToScreenCoor(firstFoundTimeHigh+timeDelay*timeScale,0)
+      line(newPos[0],newPos[1],newPos2[0],newPos2[1])
+    }
   }
 
 
@@ -881,7 +922,6 @@ function draw() {
 
   // --- Show isolation-period due to high sensitivity test  ---
   if (showIsolationHigh){
-    
     if (anyFoundHigh){ 
       let infXs =[];
       let infYs =[];
@@ -949,6 +989,31 @@ function draw() {
       translate(infXs[0]+2,isoBarTop + isoBarHeight/2);
       rotate(-PI/2)
       text(textIsoBarHigh,0,0)
+      pop();
+    }
+    
+    
+  }
+  
+  if (showIsolationHighLate){
+    if (anyFoundHigh){ 
+      // Find the coordinate for the first time found, plus the timedelay
+      firstFoundCoor = coorToScreenCoor(firstFoundTimeHigh+timeDelay*timeScale,0)
+
+      // Draw on isolation-bar
+      fill(clrHighSensLgt)
+      noStroke();
+      let IsoEndTime = firstFoundTimeHigh + isolationPeriod*timeScale ;
+      [curX,curY] = coorToScreenCoor(IsoEndTime+timeDelay*timeScale,0);
+      rect(firstFoundCoor[0],isoBarTop,curX-firstFoundCoor[0],isoBarHeight);
+      // --- Show label ---
+      fill(0);
+      textSize(14);
+      textAlign(CENTER,TOP);
+      push();
+      translate(firstFoundCoor[0]+2,isoBarTop + isoBarHeight/2);
+      rotate(-PI/2)
+      text(textIsoBarHighLate,0,0)
       pop();
     }
     
