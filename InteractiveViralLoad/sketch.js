@@ -48,15 +48,27 @@ let InfectionInit = 0;
 
 let timeDelay = 1;
 
+let countSmitte;
+let countSmitteInit;
+let countSmitteEnd;
+let countReduLow;
+let countReduHighLate;
+
+
+
+let showSettings = false;
 let showInfectiousPeriod = true;
 let showIsolationSelf = false;
-let showIsolationLow = false;
+let showIsolationLow = true;
 let showIsolationHigh = false;
-let showIsolationHighLate = false;
+let showIsolationHighLate = true;
 let showPeriodsOnPlot = false;
 
 let isoBarHeight;
 let isoBarTop;
+let isoBarMid;
+let textIsoBarFontSize = 20;
+let IsoBarSmallMargin = 5;
 
 // Define color-names
 let clrBackground;
@@ -90,6 +102,7 @@ let sliderHighSens;
 
 let buttonFlagDanish;
 let buttonFlagEnglish;
+let buttonSettings;
 
 let checkIsoSymp;
 let checkIsoLow;
@@ -163,11 +176,12 @@ let textCheckBox;
 
 function setLanguageEnglish(){
   textIsoBarInf = 'Infectious'
-  textIsoBarSymp = 'Symptom onset \nSelf-isolation';
-  textIsoBarLow  = 'Positiv test \nIsolation';
-  textIsoBarHigh = 'Positiv test \nIsolation';
+  // textIsoBarSymp = 'Symptom onset \nSelf-isolation';
+  textIsoBarSymp = '';
+  textIsoBarLow  = '+';
+  textIsoBarHigh = '+';
   // textIsoBarHighLate = 'Positiv test \nIsolation \n(1 day later)';
-  textIsoBarHighLate = 'Positiv test \nIsolation';
+  textIsoBarHighLate = '+';
   
   
   textXAxis = 'Time [days]';
@@ -176,6 +190,7 @@ function setLanguageEnglish(){
   textIsoSymp = 'Symptoms';
   textIsoLow =  'Antigen-test';
   textIsoHigh = 'PCR-test';
+  textIsoHigh = 'PCR-test, immediate result';
   textIsoHighLate = 'PCR-test, delayed result'
 
   textTestInterval = 'Test interval:';
@@ -193,18 +208,19 @@ function setLanguageEnglish(){
 
 function setLanguageDanish(){
   textIsoBarInf  = 'Smitsom';
-  textIsoBarSymp = 'Symptomstart \nSelv-isolation';
-  textIsoBarLow  = 'Positiv test \nIsolation';
-  textIsoBarHigh = 'Positiv test \nIsolation';
+  // textIsoBarSymp = 'Symptomstart \nSelv-isolation';
+  textIsoBarSymp = '';
+  textIsoBarLow  = '+';
+  textIsoBarHigh = '+';
   // textIsoBarHighLate = 'Positiv test \nIsolation \n(1 dag senere)';
-  textIsoBarHighLate = 'Positiv test \nIsolation';
+  textIsoBarHighLate = '+';
   
   textXAxis = 'Tid [dage]';
   textYAxis = 'Log10 Viral load';
 
   textIsoSymp = 'Symptomer';
   textIsoLow =  'Antigen-test';
-  textIsoHigh = 'PCR-test';
+  textIsoHigh = 'PCR-test, øjeblikkeligt svar';
   textIsoHighLate = 'PCR-test, forsinket svar'
 
   textTestInterval = 'Testinterval:';
@@ -261,8 +277,10 @@ function calcViralLoad(){
   
   // let decayRate1 = 0.03;
   // let decayRate2 = 0.06;
-  let decayRate1 = 0.295/timeScale;
-  let decayRate2 = 0.6/timeScale;
+  // let decayRate1 = 0.295/timeScale;
+  // let decayRate2 = 0.6/timeScale;
+  let decayRate1 = 0.245/timeScale;
+  let decayRate2 = 0.5/timeScale;
   let factor1 = 2;
   let factor2 = factor1-1;
 
@@ -285,6 +303,14 @@ function coorToScreenCoor(t,v){
   let y = lerp(pBot,pTop,v/yMax)
 
   return [x,y]
+}
+
+function toggleSettings(){
+  if (showSettings){
+    showSettings = false;
+  } else {
+    showSettings = true;
+  }
 }
 
 function setup() {
@@ -314,6 +340,12 @@ function setup() {
   buttonFlagEnglish.position(pRight-flagWidth,pBot+3*axMargin+flagDist);
   buttonFlagEnglish.mousePressed(setLanguageEnglish);
   buttonFlagEnglish.style('width:'+flagWidth+'px');
+
+  // Settings button
+  buttonSettings = createImg('gear.png');
+  buttonSettings.position(pRight-flagWidth,pBot+ 3*axMargin + 2 * flagDist);
+  buttonSettings.style('width:'+flagWidth+'px');
+  buttonSettings.mousePressed(toggleSettings);
 
   setLanguageDanish();
 
@@ -354,6 +386,7 @@ function setup() {
   sliderDist = axMargin;
   isoBarHeight = 100;
   isoBarTop = pBot + axMargin;
+  isoBarMid = pBot + axMargin + isoBarHeight/2;
   sliderTop = isoBarTop + sliderDist + isoBarHeight;
   sliderInfInit = createSlider(0,30,0);
   sliderInfInit.position(pLeft, sliderTop);
@@ -385,7 +418,8 @@ function setup() {
   sliderHighSens.style('width',sliderWidth+'px');
 
   // Create checkboxes
-  checkboxX = pLeft + sliderWidth*1.75;
+  // checkboxX = pLeft + sliderWidth*1.75; 
+  checkboxX = pRight - sliderWidth*1.1; 
   checkboxY = sliderTop;
   checkboxDist = sliderDist/2;
   checkboxTextX = checkboxX + checkboxDist;
@@ -393,16 +427,16 @@ function setup() {
   // checkIsoLow = createCheckbox(textIsoLow);
   // checkIsoHigh = createCheckbox(textIsoHigh);
 
-  checkIsoSymp = createCheckbox(); 
+  checkIsoSymp = createCheckbox('',showIsolationSelf); 
   checkIsoSymp.changed(funcIsoSymp);
   checkIsoSymp.position(checkboxX,checkboxY +  checkboxDist);
-  checkIsoLow = createCheckbox();
+  checkIsoLow = createCheckbox('',showIsolationLow);
   checkIsoLow.changed(funcIsoLow);
   checkIsoLow.position(checkboxX,checkboxY + 2*checkboxDist);
-  checkIsoHigh = createCheckbox();
+  checkIsoHigh = createCheckbox('',showIsolationHigh);
   checkIsoHigh.changed(funcIsoHigh);
   checkIsoHigh.position(checkboxX,checkboxY+ 3*checkboxDist);
-  checkIsoHighLate = createCheckbox();
+  checkIsoHighLate = createCheckbox('',showIsolationHighLate);
   checkIsoHighLate.changed(funcIsoHighLate);
   checkIsoHighLate.position(checkboxX,checkboxY+ 4*checkboxDist);
 
@@ -538,18 +572,45 @@ function draw() {
   text(textTestInterval,pLeft,sliderTop + sliderDist);
   text(textLowInt,sliderLabelLeft,sliderTop + 1.4*sliderDist);
   text(textHighInt,sliderLabelLeft,sliderTop + 2.4*sliderDist);
-  text(textSens,pLeft,sliderTop + 3.5*sliderDist);
-  text(textLowSens,sliderLabelLeft,sliderTop + 4*sliderDist);
-  text(textHighSens,sliderLabelLeft,sliderTop + 5*sliderDist);
-  // text(textLowOff,sliderLabelLeft,sliderTop + 3*sliderDist);
-  // text(textHighOff,sliderLabelLeft,sliderTop + 4*sliderDist);
 
-  // Checkbox text
-  text(textCheckBox,checkboxX,checkboxY);
-  text(textIsoSymp,checkboxTextX,checkboxY+checkboxDist)
-  text(textIsoLow,checkboxTextX,checkboxY+2*checkboxDist)
-  text(textIsoHigh,checkboxTextX,checkboxY+3*checkboxDist)
-  text(textIsoHighLate,checkboxTextX,checkboxY+4*checkboxDist)
+  // Additional settings that are initially hidden
+  if (showSettings) {
+    // Checkbox text
+    text(textCheckBox,checkboxX,checkboxY);
+    text(textIsoSymp,checkboxTextX,checkboxY+checkboxDist)
+    text(textIsoLow,checkboxTextX,checkboxY+2*checkboxDist)
+    text(textIsoHigh,checkboxTextX,checkboxY+3*checkboxDist)
+    text(textIsoHighLate,checkboxTextX,checkboxY+4*checkboxDist)
+
+    // Checkboxes for isolation period
+    checkIsoSymp.show();
+    checkIsoLow.show();
+    checkIsoHigh.show();
+    checkIsoHighLate.show();
+
+    // Sensitivity sliders
+    sliderLowSens.show();
+    sliderHighSens.show();
+    // Sensitivity sliders labels
+    text(textSens,pLeft,sliderTop + 3.5*sliderDist);
+    text(textLowSens,sliderLabelLeft,sliderTop + 4*sliderDist);
+    text(textHighSens,sliderLabelLeft,sliderTop + 5*sliderDist);
+    
+    // text(textLowOff,sliderLabelLeft,sliderTop + 3*sliderDist);
+    // text(textHighOff,sliderLabelLeft,sliderTop + 4*sliderDist);
+
+  } else {
+    // Checkboxes
+    checkIsoSymp.hide();
+    checkIsoLow.hide();
+    checkIsoHigh.hide();
+    checkIsoHighLate.hide();
+
+    // Sensitivity sliders
+    sliderLowSens.hide();
+    sliderHighSens.hide();
+  }
+
 
 
   // Draw background and axes
@@ -600,7 +661,7 @@ function draw() {
       textAlign(RIGHT,CENTER);
       strokeWeight(0);
       textSize(10);
-      fill(0);
+      fill(0,150);
       text(curY,pLeft-2*axSize,thisViral[1])
     }
   }
@@ -628,6 +689,11 @@ function draw() {
   if (showInfectiousPeriod){
     let infXs =[];
     let infYs =[];
+
+    // For determining the infectious period 
+    let firstTimeInf = 10000;
+    let lastTimeInf = 0;
+
     // Go through the times
     for (let k = 0; k < plotTimeArray.length; k++) {
       const curT = plotTimeArray[k];
@@ -637,12 +703,25 @@ function draw() {
         [curX,curY] = coorToScreenCoor(curT,curV);
         infXs.push(curX);
         infYs.push(curY);
+
+        // For determining the infectious period 
+        if (curT > lastTimeInf){
+          lastTimeInf = curT;
+        }
+        if (curT < firstTimeInf){
+          firstTimeInf = curT;
+        }
       }
     }
     // Move first and last point a little down
     let InfectThresCoor = coorToScreenCoor(0,InfectThres);
     infYs[0] = InfectThresCoor[1];
     infYs[infYs.length-1] = InfectThresCoor[1];
+
+    // Determine the infectious period (Should be always 6 days here)
+    countSmitte = (lastTimeInf-firstTimeInf)/timeScale;
+    countSmitteInit = firstTimeInf;
+    countSmitteEnd  = lastTimeInf;
     
     // Draw the shape below the curve
     fill(clrInfectiousLgt)
@@ -660,15 +739,15 @@ function draw() {
     noStroke();
     rect(infXs[0],isoBarTop,infXs[infXs.length-1]-infXs[0],isoBarHeight);
     
-    strokeWeight(0);
-    fill(0);
-    textSize(14);
-    textAlign(CENTER,TOP);
-    push();
-    translate(infXs[0]+5,isoBarTop+isoBarHeight/2);
-    rotate(-PI/2);
-    text(textIsoBarInf,0,0);
-    pop();
+    // strokeWeight(0);
+    // fill(0);
+    // textSize(14);
+    // textAlign(CENTER,TOP);
+    // push();
+    // translate(infXs[0]+5,isoBarTop+isoBarHeight/2);
+    // rotate(-PI/2);
+    // text(textIsoBarInf,0,0);
+    // pop();
   }
 
   // --- Show Self-isolation period ---
@@ -808,7 +887,10 @@ function draw() {
     circle(curX,curY,testRadiusToShow)
   }
 
-  // Show the isolation curves
+  // --- Calculate the reduced infectious periods ---
+  
+
+  // --- Show the isolation periods ---
   let newPos;
   let newPos2;
 
@@ -901,15 +983,16 @@ function draw() {
       // rect(infXs[0],isoBarTop,infXs[infXs.length-1]-infXs[0],isoBarHeight);
       let IsoEndTime = firstFoundTimeLow + isolationPeriod*timeScale;
       [curX,curY] = coorToScreenCoor(IsoEndTime,0);
-      rect(infXs[0],isoBarTop,curX-infXs[0],isoBarHeight);
+      // rect(infXs[0],isoBarTop,curX-infXs[0],isoBarHeight);
+      rect(infXs[0],isoBarTop+IsoBarSmallMargin,curX-infXs[0],isoBarHeight/2-IsoBarSmallMargin*1.5);
       
 
       // --- Show label on isolation-bar ---
       fill(0);
-      textSize(14);
+      textSize(textIsoBarFontSize);
       textAlign(CENTER,TOP);
       push();
-      translate(infXs[0]+2,isoBarTop + isoBarHeight/2);
+      translate(infXs[0]+2,isoBarTop + isoBarHeight/4);
       rotate(-PI/2)
       text(textIsoBarLow,0,0)
       pop();
@@ -979,14 +1062,15 @@ function draw() {
       noStroke();
       let IsoEndTime = firstFoundTimeHigh + isolationPeriod*timeScale;
       [curX,curY] = coorToScreenCoor(IsoEndTime,0);
-      rect(infXs[0],isoBarTop,curX-infXs[0],isoBarHeight);
+      // rect(infXs[0],isoBarMid,curX-infXs[0],isoBarHeight/2);
+      rect(infXs[0],isoBarMid+IsoBarSmallMargin,curX-infXs[0],isoBarHeight/2-IsoBarSmallMargin*2);
       // rect(infXs[0],isoBarTop,infXs[infXs.length-1]-infXs[0],isoBarHeight);
       // --- Show label ---
       fill(0);
-      textSize(14);
+      textSize(textIsoBarFontSize);
       textAlign(CENTER,TOP);
       push();
-      translate(infXs[0]+2,isoBarTop + isoBarHeight/2);
+      translate(infXs[0]+2,isoBarTop + 3* isoBarHeight/4);
       rotate(-PI/2)
       text(textIsoBarHigh,0,0)
       pop();
@@ -1005,13 +1089,16 @@ function draw() {
       noStroke();
       let IsoEndTime = firstFoundTimeHigh + isolationPeriod*timeScale ;
       [curX,curY] = coorToScreenCoor(IsoEndTime+timeDelay*timeScale,0);
-      rect(firstFoundCoor[0],isoBarTop,curX-firstFoundCoor[0],isoBarHeight);
+      // rect(firstFoundCoor[0],isoBarTop,curX-firstFoundCoor[0],isoBarHeight);
+      // rect(firstFoundCoor[0],isoBarMid,curX-firstFoundCoor[0],isoBarHeight/2);
+      rect(firstFoundCoor[0],isoBarMid+IsoBarSmallMargin*0.5,curX-firstFoundCoor[0],isoBarHeight/2-IsoBarSmallMargin*1.5);
       // --- Show label ---
       fill(0);
-      textSize(14);
+      textSize(textIsoBarFontSize);
       textAlign(CENTER,TOP);
       push();
-      translate(firstFoundCoor[0]+2,isoBarTop + isoBarHeight/2);
+      // translate(firstFoundCoor[0]+2,isoBarTop + isoBarHeight/2);
+      translate(firstFoundCoor[0]+2,isoBarTop + 3*isoBarHeight/4);
       rotate(-PI/2)
       text(textIsoBarHighLate,0,0)
       pop();
@@ -1060,7 +1147,7 @@ function draw() {
       textAlign(CENTER,TOP);
       strokeWeight(0);
       textSize(12);
-      fill(0);
+      fill(0,150);
       text(Math.floor(curT/timeScale),thisTime[0],pBot+2*axSize);
 
       // Also draw a thin line on isolation-bar
