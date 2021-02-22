@@ -114,6 +114,11 @@ let checkboxY;
 let checkboxDist;
 let checkboxTextX;
 
+let tableX;
+let tableY;
+let tableDist = 30
+
+
 let textInfInit = 'textInfInit';
 let textLowInt = 'textLowInt';
 let textLowOff = 'textLowOff';
@@ -121,6 +126,10 @@ let textHighInt = 'textHighInt';
 let textHighOff = 'textHighOff';
 let textLowSens = 'textLowSens';
 let textHighSens = 'textHighSens';
+
+let textTableSmitte = 'textTableSmitte';
+let textTableLow = 'textTableLow';
+let textTableHigh = 'textTableHigh';
 
 
 let textIsoBarInf;
@@ -158,6 +167,7 @@ let textHighSensPre;
 let textDaySin;
 let textDayPlu;
 let textCheckBox;
+let textTableBest;
 // textInfInitPre = 'Infektionstart: Dag ';
 // textLowIntPre = 'Antigen-test: \nHver ';
 // textHighIntPre = 'PCR-test: \nHver ';
@@ -197,13 +207,21 @@ function setLanguageEnglish(){
   textSens = 'Sensitivity:';
   
   textInfInitPre = 'Infection: Day ';
-  textLowIntPre = 'Antigen-test: \nEvery ';
-  textHighIntPre = 'PCR-test: \nEvery ';
-  textLowSensPre = 'Antigen-test: 10^';
-  textHighSensPre = 'PCR-test: 10^';
-  textDaySin = ' day'
+  // textLowIntPre = 'Antigen-test: \nEvery ';
+  // textHighIntPre = 'PCR-test: \nEvery ';
+  textLowIntPre = 'Antigen-test: Every ';
+  textHighIntPre = 'PCR-test: Every ';
+  textLowSensPre = 'Antigen-test sensitivity: 10^';
+  textHighSensPre = 'PCR-test sensitivity: 10^';
+  textDaySin = 'day'
   textDayPlu = ' days'
   textCheckBox = 'Show isolation-period:';
+
+  textTableSmitte = 'Infectious days: ';
+  textTableLow = 'With antigen-test: ';
+  textTableHigh = 'With PCR-test: ';
+  textTableBest = 'Best reduction: ';
+  
 }
 
 function setLanguageDanish(){
@@ -227,13 +245,20 @@ function setLanguageDanish(){
   textSens = 'Sensitivitet:';
   
   textInfInitPre = 'Infektionstart: Dag ';
-  textLowIntPre = 'Antigen-test: \nHver ';
-  textHighIntPre = 'PCR-test: \nHver ';
-  textLowSensPre = 'Antigen-test: 10^';
-  textHighSensPre = 'PCR-test: 10^';
-  textDaySin = ' dag'
+  // textLowIntPre = 'Antigen-test: \nHver ';
+  // textHighIntPre = 'PCR-test: \nHver ';
+  textLowIntPre = 'Antigen-test: Hver ';
+  textHighIntPre = 'PCR-test: Hver ';
+  textLowSensPre = 'Antigen-test sensitivitet: 10^';
+  textHighSensPre = 'PCR-test sensitivitet: 10^';
+  textDaySin = 'dag'
   textDayPlu = ' dage'
   textCheckBox = 'Vis periode for isolation:';
+  
+  textTableSmitte = 'Smitsomme dage: ';
+  textTableLow = 'Med antigen-test: ';
+  textTableHigh = 'Med PCR-test: ';
+  textTableBest = 'Bedste reduktion: ';
 }
 
 
@@ -383,21 +408,25 @@ function setup() {
   calcDetectableAndTimeArray();
 
   // Create sliders
-  sliderDist = axMargin;
+  sliderDist = axMargin*1.2;
   isoBarHeight = 100;
   isoBarTop = pBot + axMargin;
   isoBarMid = pBot + axMargin + isoBarHeight/2;
-  sliderTop = isoBarTop + sliderDist + isoBarHeight;
+  sliderTop = isoBarTop + axMargin + isoBarHeight;
+  
+  tableX = pLeft + sliderWidth*2;
+  tableY = sliderTop;
+
   sliderInfInit = createSlider(0,30,0);
   sliderInfInit.position(pLeft, sliderTop);
   sliderInfInit.changed(slidersChanged)
   sliderInfInit.style('width',sliderWidth+'px');
   sliderLowInt = createSlider(1,21,3);
-  sliderLowInt.position(pLeft, sliderTop+ 1.5*sliderDist);
+  sliderLowInt.position(pLeft, sliderTop+ 1.3*sliderDist);
   sliderLowInt.changed(slidersChanged)
   sliderLowInt.style('width',sliderWidth+'px');
   sliderHighInt = createSlider(1,21,7);
-  sliderHighInt.position(pLeft, sliderTop+ 2.5*sliderDist);
+  sliderHighInt.position(pLeft, sliderTop+ 2.3*sliderDist);
   sliderHighInt.changed(slidersChanged)
   sliderHighInt.style('width',sliderWidth+'px');
   // sliderLowOff = createSlider(0,10,0);
@@ -409,11 +438,11 @@ function setup() {
   // sliderHighOff.changed(slidersChanged)
   // sliderHighOff.style('width',sliderWidth+'px');
   sliderLowSens = createSlider(0,10,LowSensThres);
-  sliderLowSens.position(pLeft, sliderTop+ 4*sliderDist);
+  sliderLowSens.position(pLeft, sliderTop+ 3.6*sliderDist);
   sliderLowSens.changed(slidersChanged)
   sliderLowSens.style('width',sliderWidth+'px');
   sliderHighSens = createSlider(0,10,HighSensThres);
-  sliderHighSens.position(pLeft, sliderTop+ 5*sliderDist);
+  sliderHighSens.position(pLeft, sliderTop+ 4.6*sliderDist);
   sliderHighSens.changed(slidersChanged)
   sliderHighSens.style('width',sliderWidth+'px');
 
@@ -552,12 +581,12 @@ function draw() {
   // textHighInt = 'Testinterval\nHøjsensitivitetstest: '+HighInterval;
 
   if (LowInterval == 1){
-    textLowInt = textLowInt + textDaySin
+    textLowInt = textLowIntPre + textDaySin
   } else {
     textLowInt = textLowInt + textDayPlu
   }
   if (HighInterval == 1){
-    textHighInt = textHighInt + textDaySin
+    textHighInt = textHighIntPre + textDaySin
   } else {
     textHighInt = textHighInt + textDayPlu
   }
@@ -567,11 +596,12 @@ function draw() {
   stroke(0);
   fill(0);
   strokeWeight(0);
-  let sliderLabelLeft = pLeft+sliderWidth*0.9+axMargin;
-  text(textInfInit,sliderLabelLeft,sliderTop);
-  text(textTestInterval,pLeft,sliderTop + sliderDist);
-  text(textLowInt,sliderLabelLeft,sliderTop + 1.4*sliderDist);
-  text(textHighInt,sliderLabelLeft,sliderTop + 2.4*sliderDist);
+  // let sliderLabelLeft = pLeft+sliderWidth*0.9+axMargin;
+  let sliderLabelLeft = pLeft;
+  text(textInfInit,sliderLabelLeft,sliderTop+sliderDist/2.5);
+  // text(textTestInterval,pLeft,sliderTop + 1.5* sliderDist);
+  text(textLowInt,sliderLabelLeft,sliderTop + 1.3*sliderDist+sliderDist/2.5);
+  text(textHighInt,sliderLabelLeft,sliderTop +2.3*sliderDist+sliderDist/2.5);
 
   // Additional settings that are initially hidden
   if (showSettings) {
@@ -592,9 +622,9 @@ function draw() {
     sliderLowSens.show();
     sliderHighSens.show();
     // Sensitivity sliders labels
-    text(textSens,pLeft,sliderTop + 3.5*sliderDist);
-    text(textLowSens,sliderLabelLeft,sliderTop + 4*sliderDist);
-    text(textHighSens,sliderLabelLeft,sliderTop + 5*sliderDist);
+    // text(textSens,pLeft,sliderTop + 3.5*sliderDist);
+    text(textLowSens,sliderLabelLeft,sliderTop + 3.6*sliderDist+sliderDist/2.5);
+    text(textHighSens,sliderLabelLeft,sliderTop + 4.6*sliderDist+sliderDist/2.5);
     
     // text(textLowOff,sliderLabelLeft,sliderTop + 3*sliderDist);
     // text(textHighOff,sliderLabelLeft,sliderTop + 4*sliderDist);
@@ -888,6 +918,59 @@ function draw() {
   }
 
   // --- Calculate the reduced infectious periods ---
+  if (anyFoundLow){
+    countReduLow = (countSmitteEnd/timeScale) - (firstFoundTimeLow/timeScale);
+  } else {
+    countReduLow = 0;
+  }
+  if (countReduLow < 0){
+    countReduLow = 0;
+  }
+  if (anyFoundHigh){
+    // countReduHighLate = (firstFoundTimeHigh/timeScale) - (countSmitteInit/timeScale) + timeDelay;
+    countReduHighLate = (countSmitteEnd/timeScale) - (firstFoundTimeHigh/timeScale) - timeDelay;
+  } else {
+    countReduHighLate = 0;
+  }
+  if (countReduHighLate < 0){
+    countReduHighLate = 0;
+  }
+
+  let bestTest;
+  if (countReduHighLate > countReduLow){
+    bestTest = 'PCR';
+  } else {
+    bestTest = 'Antigen';
+  } 
+  if (countReduHighLate == countReduLow){
+    bestTest = '';
+  }
+  
+  push();
+  translate(tableX,tableY);
+  fill(clrBackground)
+  rect(axMargin*1.8,-axMargin/4,-axMargin*5.8,tableDist*4+axMargin/4);
+
+  textSize(18);
+  noStroke();
+  fill(0)
+
+  textAlign(LEFT,TOP);
+  // text(countReduLow,pLeft + sliderWidth*2,pBot+isoBarHeight*2)
+  // text(countReduHighLate,pLeft + sliderWidth*2,pBot+isoBarHeight*2.5)
+  text(countSmitte,0,0)
+  text(countSmitte-countReduLow,0,tableDist)
+  text(countSmitte-countReduHighLate,0,tableDist*2)
+  
+  text(bestTest,0,tableDist*3)
+
+  // textSize(16);
+  textAlign(RIGHT,TOP);
+  text(textTableSmitte,0,0);
+  text(textTableLow,0,tableDist);
+  text(textTableHigh,0,tableDist*2);
+  text(textTableBest,0,tableDist*3);
+  pop();
   
 
   // --- Show the isolation periods ---
