@@ -104,6 +104,10 @@ let buttonFlagDanish;
 let buttonFlagEnglish;
 let buttonSettings;
 
+let flagWidth = 80;
+let flagDist = 80;
+let flagTop;
+
 let checkIsoSymp;
 let checkIsoLow;
 let checkIsoHigh;
@@ -214,10 +218,10 @@ function setLanguageEnglish(){
   textLowSensPre = 'Antigen-test sensitivity: 10^';
   textHighSensPre = 'PCR-test sensitivity: 10^';
   textDaySin = 'day'
-  textDayPlu = ' days'
+  textDayPlu = 'days'
   textCheckBox = 'Show isolation-period:';
 
-  textTableSmitte = 'Infectious days: ';
+  textTableSmitte = 'Infectious days';
   textTableLow = 'With antigen-test: ';
   textTableHigh = 'With PCR-test: ';
   textTableBest = 'Best reduction: ';
@@ -252,10 +256,10 @@ function setLanguageDanish(){
   textLowSensPre = 'Antigen-test sensitivitet: 10^';
   textHighSensPre = 'PCR-test sensitivitet: 10^';
   textDaySin = 'dag'
-  textDayPlu = ' dage'
+  textDayPlu = 'dage'
   textCheckBox = 'Vis periode for isolation:';
   
-  textTableSmitte = 'Smitsomme dage: ';
+  textTableSmitte = 'Smitsomme dage';
   textTableLow = 'Med antigen-test: ';
   textTableHigh = 'Med PCR-test: ';
   textTableBest = 'Bedste reduktion: ';
@@ -354,26 +358,6 @@ function setup() {
   pBot  = axTop + axHeight;
   pTop  = axTop;
   
-  // Language buttons
-  let flagWidth = 80;
-  let flagDist = 80;
-  buttonFlagDanish = createImg('DKflag.png');
-  buttonFlagDanish.position(pRight-flagWidth,pBot+3*axMargin);
-  buttonFlagDanish.style('width:'+flagWidth+'px');
-  buttonFlagDanish.mousePressed(setLanguageDanish);
-  buttonFlagEnglish = createImg('UKflag.png');
-  buttonFlagEnglish.position(pRight-flagWidth,pBot+3*axMargin+flagDist);
-  buttonFlagEnglish.mousePressed(setLanguageEnglish);
-  buttonFlagEnglish.style('width:'+flagWidth+'px');
-
-  // Settings button
-  buttonSettings = createImg('gear.png');
-  buttonSettings.position(pRight-flagWidth,pBot+ 3*axMargin + 2 * flagDist);
-  buttonSettings.style('width:'+flagWidth+'px');
-  buttonSettings.mousePressed(toggleSettings);
-
-  setLanguageDanish();
-
 
   // Define colors
   clrBackground = color(230);
@@ -413,36 +397,38 @@ function setup() {
   isoBarTop = pBot + axMargin;
   isoBarMid = pBot + axMargin + isoBarHeight/2;
   sliderTop = isoBarTop + axMargin + isoBarHeight;
+
+  let sliderLeft = pLeft + axMargin/4;
   
   tableX = pLeft + sliderWidth*2;
-  tableY = sliderTop;
+  tableY = sliderTop-axMargin/2;
 
   sliderInfInit = createSlider(0,30,0);
-  sliderInfInit.position(pLeft, sliderTop);
+  sliderInfInit.position(sliderLeft, sliderTop);
   sliderInfInit.changed(slidersChanged)
   sliderInfInit.style('width',sliderWidth+'px');
   sliderLowInt = createSlider(1,21,3);
-  sliderLowInt.position(pLeft, sliderTop+ 1.3*sliderDist);
+  sliderLowInt.position(sliderLeft, sliderTop+ 1.3*sliderDist);
   sliderLowInt.changed(slidersChanged)
   sliderLowInt.style('width',sliderWidth+'px');
   sliderHighInt = createSlider(1,21,7);
-  sliderHighInt.position(pLeft, sliderTop+ 2.3*sliderDist);
+  sliderHighInt.position(sliderLeft, sliderTop+ 2.3*sliderDist);
   sliderHighInt.changed(slidersChanged)
   sliderHighInt.style('width',sliderWidth+'px');
   // sliderLowOff = createSlider(0,10,0);
-  // sliderLowOff.position(pLeft, sliderTop+ 3*sliderDist);
+  // sliderLowOff.position(sliderLeft, sliderTop+ 3*sliderDist);
   // sliderLowOff.changed(slidersChanged)
   // sliderLowOff.style('width',sliderWidth+'px');
   // sliderHighOff = createSlider(0,10,0);
-  // sliderHighOff.position(pLeft, sliderTop+ 4*sliderDist);
+  // sliderHighOff.position(sliderLeft, sliderTop+ 4*sliderDist);
   // sliderHighOff.changed(slidersChanged)
   // sliderHighOff.style('width',sliderWidth+'px');
   sliderLowSens = createSlider(0,10,LowSensThres);
-  sliderLowSens.position(pLeft, sliderTop+ 3.6*sliderDist);
+  sliderLowSens.position(sliderLeft, sliderTop+ 3.6*sliderDist);
   sliderLowSens.changed(slidersChanged)
   sliderLowSens.style('width',sliderWidth+'px');
   sliderHighSens = createSlider(0,10,HighSensThres);
-  sliderHighSens.position(pLeft, sliderTop+ 4.6*sliderDist);
+  sliderHighSens.position(sliderLeft, sliderTop+ 4.6*sliderDist);
   sliderHighSens.changed(slidersChanged)
   sliderHighSens.style('width',sliderWidth+'px');
 
@@ -468,6 +454,26 @@ function setup() {
   checkIsoHighLate = createCheckbox('',showIsolationHighLate);
   checkIsoHighLate.changed(funcIsoHighLate);
   checkIsoHighLate.position(checkboxX,checkboxY+ 4*checkboxDist);
+
+  // Settings button
+  flagTop = sliderTop-axMargin/2;
+  buttonSettings = createImg('gear.png');
+  buttonSettings.position(pRight-flagWidth,flagTop);
+  buttonSettings.style('width:'+flagWidth+'px');
+  buttonSettings.mousePressed(toggleSettings);
+
+  // Language buttons
+  buttonFlagDanish = createImg('DKflag.png');
+  buttonFlagDanish.position(pRight-flagWidth,flagTop + flagDist);
+  buttonFlagDanish.style('width:'+flagWidth+'px');
+  buttonFlagDanish.mousePressed(setLanguageDanish);
+  buttonFlagEnglish = createImg('UKflag.png');
+  buttonFlagEnglish.position(pRight-flagWidth,flagTop+2*flagDist);
+  buttonFlagEnglish.mousePressed(setLanguageEnglish);
+  buttonFlagEnglish.style('width:'+flagWidth+'px');
+
+
+  setLanguageDanish();
 
 
 } // ------------ End setup ------------ 
@@ -565,6 +571,8 @@ function draw() {
   background(255);
   slidersChanged();
 
+  let sliderLabelLeft = pLeft+axMargin/4;
+
   // Labels for sliders
   textInfInit = textInfInitPre+(InfectionInit/timeScale);
   textLowInt = textLowIntPre+LowInterval;
@@ -583,29 +591,30 @@ function draw() {
   if (LowInterval == 1){
     textLowInt = textLowIntPre + textDaySin
   } else {
-    textLowInt = textLowInt + textDayPlu
+    textLowInt = textLowInt + ' ' + textDayPlu
   }
   if (HighInterval == 1){
     textHighInt = textHighIntPre + textDaySin
   } else {
-    textHighInt = textHighInt + textDayPlu
+    textHighInt = textHighInt + ' ' + textDayPlu
   }
-
-  textAlign(LEFT,TOP);
-  textSize(16);
-  stroke(0);
-  fill(0);
-  strokeWeight(0);
-  // let sliderLabelLeft = pLeft+sliderWidth*0.9+axMargin;
-  let sliderLabelLeft = pLeft;
-  text(textInfInit,sliderLabelLeft,sliderTop+sliderDist/2.5);
-  // text(textTestInterval,pLeft,sliderTop + 1.5* sliderDist);
-  text(textLowInt,sliderLabelLeft,sliderTop + 1.3*sliderDist+sliderDist/2.5);
-  text(textHighInt,sliderLabelLeft,sliderTop +2.3*sliderDist+sliderDist/2.5);
-
+  
   // Additional settings that are initially hidden
   if (showSettings) {
+    // Box behind settings
+    fill(clrBackground);
+    noStroke();
+    strokeWeight(2);
+    rect(pRight,flagTop,-0.95*axWidth/3,flagDist*3)
+    
+    // Box behind all sliders
+    rect(pLeft,flagTop,sliderWidth+axMargin/2,sliderDist*6)
+
     // Checkbox text
+    fill(0)
+    noStroke();
+    textAlign(LEFT,TOP);
+    textSize(16);
     text(textCheckBox,checkboxX,checkboxY);
     text(textIsoSymp,checkboxTextX,checkboxY+checkboxDist)
     text(textIsoLow,checkboxTextX,checkboxY+2*checkboxDist)
@@ -623,13 +632,26 @@ function draw() {
     sliderHighSens.show();
     // Sensitivity sliders labels
     // text(textSens,pLeft,sliderTop + 3.5*sliderDist);
+    textAlign(LEFT,TOP);
+    textSize(16);
     text(textLowSens,sliderLabelLeft,sliderTop + 3.6*sliderDist+sliderDist/2.5);
     text(textHighSens,sliderLabelLeft,sliderTop + 4.6*sliderDist+sliderDist/2.5);
     
     // text(textLowOff,sliderLabelLeft,sliderTop + 3*sliderDist);
     // text(textHighOff,sliderLabelLeft,sliderTop + 4*sliderDist);
 
+    // Flags
+    buttonFlagDanish.show();
+    buttonFlagEnglish.show();
+    
   } else {
+
+    // Box behind top sliders
+    fill(clrBackground);
+    noStroke();
+    strokeWeight(2);
+    rect(pLeft,flagTop,sliderWidth+axMargin/2,sliderDist*4)
+
     // Checkboxes
     checkIsoSymp.hide();
     checkIsoLow.hide();
@@ -639,8 +661,24 @@ function draw() {
     // Sensitivity sliders
     sliderLowSens.hide();
     sliderHighSens.hide();
+
+    // Flags
+    buttonFlagDanish.hide();
+    buttonFlagEnglish.hide();
   }
 
+
+
+  textAlign(LEFT,TOP);
+  textSize(16);
+  stroke(0);
+  fill(0);
+  strokeWeight(0);
+  // let sliderLabelLeft = pLeft+sliderWidth*0.9+axMargin;
+  text(textInfInit,sliderLabelLeft,sliderTop+sliderDist/2.5);
+  // text(textTestInterval,pLeft,sliderTop + 1.5* sliderDist);
+  text(textLowInt,sliderLabelLeft,sliderTop + 1.3*sliderDist+sliderDist/2.5);
+  text(textHighInt,sliderLabelLeft,sliderTop +2.3*sliderDist+sliderDist/2.5);
 
 
   // Draw background and axes
@@ -949,24 +987,47 @@ function draw() {
   push();
   translate(tableX,tableY);
   fill(clrBackground)
-  rect(axMargin*1.8,-axMargin/4,-axMargin*5.8,tableDist*4+axMargin/4);
+  noStroke();
+  // rect(axMargin*1.8,-axMargin/4,-axMargin*5.8,tableDist*4+axMargin/4);
+  rect(axMargin*1.8,0,-axMargin*5.8,tableDist*4.5);
+  translate(0,tableDist/2);
 
   textSize(18);
   noStroke();
   fill(0)
 
   textAlign(LEFT,TOP);
+  // let countTextSmitte;
+  // if (countSmitte == 1) {
+  //   countTextSmitte = countSmitte + ' ' + textDaySin
+  // } else {
+  //   countTextSmitte = countSmitte + ' ' + textDayPlu
+  // }
+  let countTextLow;
+  if ((countSmitte-countReduLow) == 1) {
+    countTextLow = (countSmitte-countReduLow) + ' ' + textDaySin
+  } else {
+    countTextLow = (countSmitte-countReduLow) + ' ' + textDayPlu
+  }
+  let countTextHigh; 
+  if ((countSmitte-countReduHighLate) == 1) {
+    countTextHigh = (countSmitte-countReduHighLate) + ' ' + textDaySin
+  } else {
+    countTextHigh = (countSmitte-countReduHighLate) + ' ' + textDayPlu
+  }
   // text(countReduLow,pLeft + sliderWidth*2,pBot+isoBarHeight*2)
   // text(countReduHighLate,pLeft + sliderWidth*2,pBot+isoBarHeight*2.5)
-  text(countSmitte,0,0)
-  text(countSmitte-countReduLow,0,tableDist)
-  text(countSmitte-countReduHighLate,0,tableDist*2)
+  // text(countTextSmitte,0,0)
+  text(countTextLow,0,tableDist)
+  text(countTextHigh,0,tableDist*2)
   
   text(bestTest,0,tableDist*3)
 
   // textSize(16);
   textAlign(RIGHT,TOP);
+  textStyle(BOLD)
   text(textTableSmitte,0,0);
+  textStyle(NORMAL)
   text(textTableLow,0,tableDist);
   text(textTableHigh,0,tableDist*2);
   text(textTableBest,0,tableDist*3);
@@ -1146,7 +1207,8 @@ function draw() {
       let IsoEndTime = firstFoundTimeHigh + isolationPeriod*timeScale;
       [curX,curY] = coorToScreenCoor(IsoEndTime,0);
       // rect(infXs[0],isoBarMid,curX-infXs[0],isoBarHeight/2);
-      rect(infXs[0],isoBarMid+IsoBarSmallMargin,curX-infXs[0],isoBarHeight/2-IsoBarSmallMargin*2);
+      // rect(infXs[0],isoBarMid+IsoBarSmallMargin,curX-infXs[0],isoBarHeight/2-IsoBarSmallMargin*2);
+      rect(infXs[0],isoBarMid+IsoBarSmallMargin*0.5,curX-infXs[0],isoBarHeight/2-IsoBarSmallMargin*1.5);
       // rect(infXs[0],isoBarTop,infXs[infXs.length-1]-infXs[0],isoBarHeight);
       // --- Show label ---
       fill(0);
@@ -1267,9 +1329,9 @@ function draw() {
 
   // Draw line on top of isolation-bar-background
   noFill();
-  stroke(0)
-  strokeWeight(axSize);
-  rect(axLeft,isoBarTop,axWidth,isoBarHeight);
+  // stroke(0)
+  // strokeWeight(axSize);
+  // rect(axLeft,isoBarTop,axWidth,isoBarHeight);
 
   // Draw infection on top, so its also shown in the left side of infection bar
   stroke(clrInfection)
