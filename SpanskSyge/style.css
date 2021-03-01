@@ -1,0 +1,25 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+.slider {
+  width:90%;
+}
+canvas {
+  display: block;
+  margin: auto;
+}
+.flex-item {
+  flex-grow: 1;
+  text-align: center;
+}
+.flex-item-checkboxes {
+  flex-grow: 1;
+  flex-direction: column;
+  text-align: center;
+}
+.slider-container{
+  display:flex;
+  width: 70%;
+  margin: auto;
+}
