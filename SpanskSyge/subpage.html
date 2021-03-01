@@ -40,33 +40,54 @@
       <p id="xlim2Label">Sidste dag</p>
       </div>
      </div>
-     <div class="slider-container">
-      <div class="flex-item">
-        <input id="Checkbox0" type="checkbox" >
-        <p>0 til 1 årige</p>
-      </div>
-      <div class="flex-item">
-        <input id="Checkbox1" type="checkbox"  >
-        <p>1 til 4 årige</p>
-      </div>
-      <div class="flex-item">
-        <input id="Checkbox5" type="checkbox"  >
-        <p>5 til 14 årige</p>
-      </div>
-      <div class="flex-item">
-        <input id="Checkbox15" type="checkbox"  >
-        <p>15 til 65 årige</p>
-      </div>
-      <div class="flex-item">
-        <input id="Checkbox65" type="checkbox"  >
-        <p>65+ årige</p>
-      </div>
-      <div class="flex-item">
-        <input id="CheckboxSum" type="checkbox" checked >
-        <p>Vis sum</p>
-      </div>
-    </div> 
+    <table class ="center"> <td>
+      <fieldset>      
+          <legend>Aldergrupper</legend>
+            <input id="Checkbox0" type="checkbox"  > 0 til 1 årige <br>
+            <input id="Checkbox1" type="checkbox"  > 1 til 4 årige <br> 
+            <input id="Checkbox5" type="checkbox"  > 5 til 14 årige <br>
+            <input id="Checkbox15" type="checkbox" > 15 til 65 årige  <br>
+            <input id="Checkbox65" type="checkbox" > 65+ årige <br>
+            <input id="CheckboxSum" type="checkbox" checked > Total <br>
+
+      </fieldset> </td> <td> 
+      <fieldset>      
+          <legend>Normering </legend>
+          <div>
+          <input type="radio" id="antal" name="norm" value="antal" onclick="handleClick(this);"  checked> 
+          <label for ="antal"> Antal </label>
+        </div> <div>
+          <input type="radio" id="ratio" name="norm" value="ratioK" onclick="handleClick(this);" >
+          <label for ="ratio"> Per 1000 </label>
+        </div>
+      </fieldset></td></table>.
     <br>
+    <!-- <div class="slider-container">
+     <div class="flex-item">
+       <input id="Checkbox0" type="checkbox" >
+       <p>0 til 1 årige</p>
+     </div>
+     <div class="flex-item">
+       <input id="Checkbox1" type="checkbox"  >
+       <p>1 til 4 årige</p>
+     </div>
+     <div class="flex-item">
+       <input id="Checkbox5" type="checkbox"  >
+       <p>5 til 14 årige</p>
+     </div>
+     <div class="flex-item">
+       <input id="Checkbox15" type="checkbox"  >
+       <p>15 til 65 årige</p>
+     </div> -->
+     <!-- <div class="flex-item">
+       <input id="Checkbox65" type="checkbox"  >
+       <p>65+ årige</p>
+     </div> -->
+     <!-- <div class="flex-item">
+       <input id="CheckboxSum" type="checkbox" checked >
+       <p>Vis sum</p>
+     </div> -->        
+   <!-- </div>  -->
     
     <script src="chartScript.js"></script>
   </body>

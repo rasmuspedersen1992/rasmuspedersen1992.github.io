@@ -1,3 +1,6 @@
+// Initialize flags
+var showRatioK = false;
+
 // --- Load data from csv ---
 // Initialize arrays for all data
 var allDatesRaw = []
@@ -8,6 +11,12 @@ var cases5_14 = []
 var cases15_64 = []
 var cases65 = []
 var casesSum = []
+var ratioK0_1 = []
+var ratioK1_4 = []
+var ratioK5_14 = []
+var ratioK15_64 = []
+var ratioK65 = []
+var ratioKSum = []
 
 doneLoading = false;
 var curMinDate = new Date('1915-01-01');
@@ -22,6 +31,12 @@ d3.csv("Spansk_Syge_I_Cph.csv").then(function(data) {
         cases15_64.push(curRow.cases15_65);
         cases65.push(curRow.cases65);
         casesSum.push(curRow.casesSum);
+        ratioK0_1.push(curRow.ratioK0_1);
+        ratioK1_4.push(curRow.ratioK1_4);
+        ratioK5_14.push(curRow.ratioK5_14);
+        ratioK15_64.push(curRow.ratioK15_64);
+        ratioK65.push(curRow.ratioK65);
+        ratioKSum.push(curRow.ratioKAll);
         allDatesRaw.push(curRow.date);
     }
     
@@ -29,6 +44,7 @@ d3.csv("Spansk_Syge_I_Cph.csv").then(function(data) {
     interpretDate();
 
     updateChart();
+
 
     // Update the sliders, to ensure label is correct
     xlim1_slider.onchange();
@@ -73,11 +89,17 @@ var chartConfig = {
                 type: 'time',
                     time: {
                         unit: 'month',
+                        stepSize: 1,
+                        // unit: 'week',
                         // tooltipFormat:'MM/DD/YYYY', 
                         // tooltipFormat:'DD/MM - YYYY', 
                         tooltipFormat:'[Uge ]w[, ] DD[.] MMMM - YYYY', 
                         // min: new Date('1917-01-01'), 
                         // max: curMaxDate
+                        displayFormats: {
+                            week: '[Uge ]w[, ]YYYY', 
+                            month: 'MMMM YYYY'
+                        }
                 },
                 display: true,
                 scaleLabel: {
@@ -92,15 +114,14 @@ var chartConfig = {
             yAxes: [{
                 display: true,
                 scaleLabel: {
-                fontSize: 20,
-                display: true,
-                labelString: 'Antal'
+                    fontSize: 20,
+                    display: true,
+                    labelString: 'Antal'
                 }
             }]
         }
     }
     };
-
 let xlim1_slider = document.getElementById('xlim1');
 let xlim1Label = document.getElementById('xlim1Label');
 let xlim2_slider = document.getElementById('xlim2');
@@ -117,6 +138,8 @@ let show5 = Checkbox5.checked;
 let show15 = Checkbox15.checked;
 let show65 = Checkbox65.checked;
 let showSum = CheckboxSum.checked;
+
+let radioNorm = document.getElementsByName('norm');
 
 // function addData(chart, label, data) {
 //     chart.data.labels.push(label);
@@ -160,15 +183,48 @@ var updateChart = function(){
     window.mainChart.options.scales.xAxes[0].time.min = curMinDate;
     window.mainChart.options.scales.xAxes[0].time.max = curMaxDate;
 
+    if (showRatioK){
+        window.mainChart.options.scales.yAxes[0].scaleLabel.labelString = 'Tilfælde per 1000';
+    } else {
+        window.mainChart.options.scales.yAxes[0].scaleLabel.labelString = 'Antal tilfælde';
+    }
+
     // Update chart
     window.mainChart.update();
 }
 
+// currentValue = 0
+function handleClick(myRadio) {
+    if (myRadio.value == 'ratioK'){
+        showRatioK = true;
+    } else {
+        showRatioK = false;
+    }
+    
+    // Clear all datasets
+    for (let k = chartConfig.data.datasets.length ; k > 0; k--) {
+        chartConfig.data.datasets.pop()   
+    }
+    // Add them again
+    Checkbox0.onchange();
+    Checkbox1.onchange();
+    Checkbox5.onchange();
+    Checkbox15.onchange();
+    Checkbox65.onchange();
+    CheckboxSum.onchange();
+    
+    
+    updateChart();
+}
+
+
 xlim1_slider.onchange = function(){
     curMinDate = numToDate(xlim1_slider.value);
 
-    xlim1Label.innerHTML ='Første dag: '+curMinDate.getDate()+'/'+curMinDate.getMonth()+' - 19'+curMinDate.getYear();
-
+    // xlim1Label.innerHTML ='Første dag: '+curMinDate.getDate()+'/'+curMinDate.getMonth()+' - 19'+curMinDate.getYear();
+    var minDateMoment = moment(curMinDate)
+    xlim1Label.innerHTML ='Første dag: '+minDateMoment.format('DD[. ]MMM[ - ]YYYY');
+    
     // Set the minimum of xlim2 slider
     var minOnMax = parseInt(xlim1_slider.value)
     xlim2_slider.setAttribute("min", minOnMax+1);
@@ -180,7 +236,9 @@ xlim1_slider.onchange = function(){
 xlim2_slider.onchange = function(){
     curMaxDate = numToDate(xlim2_slider.value);
 
-    xlim2Label.innerHTML ='Sidste dag: '+curMaxDate.getDate()+'/'+curMaxDate.getMonth()+' - 19'+curMaxDate.getYear();
+    // xlim2Label.innerHTML ='Sidste dag: '+curMaxDate.getDate()+'/'+curMaxDate.getMonth()+' - 19'+curMaxDate.getYear();
+    var maxDateMoment = moment(curMaxDate)
+    xlim2Label.innerHTML ='Sidste dag: '+maxDateMoment.format('DD[. ]MMM[ - ]YYYY');
     
     // Set the maximum of xlim2 slider
     var maxOnMin = parseInt(xlim2_slider.value)
@@ -193,12 +251,21 @@ xlim2_slider.onchange = function(){
 
 CheckboxSum.onchange = function(){
     showSum = CheckboxSum.checked;
+
+    var curData;
+    if (showRatioK){
+        curData = ratioKSum
+    } else {
+        curData = casesSum
+    }
+
     // Summed data
     if (showSum){
         // Define the data
         var sumData =     {
             label: 'Alle aldersgrupper',
-            data: casesSum,
+            data: curData,
+            // data: casesSum,
             borderColor: window.chartColors.black,
             backgroundColor:  window.chartColors.black,
             fill: false,
@@ -228,12 +295,19 @@ CheckboxSum.onchange = function(){
 Checkbox0.onchange = function(){
     show0 = Checkbox0.checked;
     
+    var curData;
+    if (showRatioK){
+        curData = ratioK0_1
+    } else {
+        curData = cases0_1
+    }
+
     // 0 - 1 årige
     if (show0){
         // Define the data
         var data0 =     {
             label: '< 1 år',
-            data: cases0_1,
+            data: curData,
             borderColor: window.chartColors.blue,
             backgroundColor:  window.chartColors.blue,
             fill: false,
@@ -261,12 +335,19 @@ Checkbox0.onchange = function(){
 Checkbox1.onchange = function(){
     show1 = Checkbox1.checked;
         
+    var curData;
+    if (showRatioK){
+        curData = ratioK1_4
+    } else {
+        curData = cases1_4
+    }
+
     // 1 - 4 årige
     if (show1){
         // Define the data
         var data1 =     {
             label: '1 - 4 år',
-            data: cases1_4,
+            data: curData,
             borderColor: window.chartColors.green,
             backgroundColor:  window.chartColors.green,
             fill: false,
@@ -295,12 +376,19 @@ Checkbox1.onchange = function(){
 Checkbox5.onchange = function(){
     show5 = Checkbox5.checked;
         
+    var curData;
+    if (showRatioK){
+        curData = ratioK5_14
+    } else {
+        curData = cases5_14
+    }
+
     // 5 - 14 årige
     if (show5){
         // Define the data
         var data5 =     {
             label: '5 - 14 år',
-            data: cases5_14,
+            data: curData,
             borderColor: window.chartColors.yellow,
             backgroundColor:  window.chartColors.yellow,
             fill: false,
@@ -329,12 +417,19 @@ Checkbox5.onchange = function(){
 Checkbox15.onchange = function(){
     show15 = Checkbox15.checked;
         
+    var curData;
+    if (showRatioK){
+        curData = ratioK15_64
+    } else {
+        curData = cases15_64
+    }
+
     // 15 - 64 årige
     if (show15){
         // Define the data
         var data15 =     {
             label: '15 - 64 år',
-            data: cases15_64,
+            data: curData,
             borderColor: window.chartColors.purple,
             backgroundColor:  window.chartColors.purple,
             fill: false,
@@ -363,12 +458,19 @@ Checkbox15.onchange = function(){
 Checkbox65.onchange = function(){
     show65 = Checkbox65.checked;
         
+    var curData;
+    if (showRatioK){
+        curData = ratioK65
+    } else {
+        curData = cases65
+    }
+
     // 65+ årige
     if (show65){
         // Define the data
         var data65 =     {
             label: '65+ år',
-            data: cases65,
+            data: curData,
             borderColor: window.chartColors.red,
             backgroundColor:  window.chartColors.red,
             fill: false,
