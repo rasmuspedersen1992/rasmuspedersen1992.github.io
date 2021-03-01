@@ -30,28 +30,38 @@ let uge2Index = 3;
 // Hardcoded data from SSI numbers
 // data_count[0] = 21804/tScale // Uge 50
 // data_count[0] = 24425/tScale // Uge 51
-data_count[0] = 16928/tScale
-data_count[1] = 14533/tScale
-data_count[2] = 11288/tScale
-data_count[3] =  6986/tScale
-data_count[4] =  5315/tScale
-data_count[5] =  3611/tScale
+data_count[0] = 16930/tScale // Uge 52
+data_count[1] = 14535/tScale // Uge 53
+data_count[2] = 11289/tScale // Uge 1 
+data_count[3] =  6988/tScale // Uge 2
+data_count[4] =  5315/tScale // Uge 3
+data_count[5] =  3611/tScale // Uge 4
+data_count[6] =  3084/tScale // Uge 5
+data_count[7] =  2707/tScale // Uge 6
+data_count[8] =  3326/tScale // Uge 7
 
 // data_ratio[0] = 0.8 
-data_ratio[0] = 2.0;
-data_ratio[1] = 2.3; 
-data_ratio[2] = 4.0;
-data_ratio[3] = 7.5;
-data_ratio[4] = 12.8;
-data_ratio[5] = 19.1;
+data_ratio[0] = 1.8; // Uge 52
+data_ratio[1] = 2.0; // Uge 53
+data_ratio[2] = 3.7; // Uge 1
+data_ratio[3] = 7.1; // Uge 2 
+data_ratio[4] = 12.8; // Uge 3
+data_ratio[5] = 19.5; // Uge 4
+data_ratio[6] = 29.6; // Uge 5
+data_ratio[7] = 47.3; // Uge 6
+data_ratio[8] = 65.7; // Uge 7
 
 
 data_kontakt[0] = 0.9;  // Uge 52 (24/12)
 data_kontakt[1] = 0.8; // Uge 53 (31/12)
 data_kontakt[2] = 0.7; // Uge 1 (7/01-2021)
-// data_kontakt[3] = 0.8; // Uge 2 (14/01-2021) OBS: GAMMELT TAL! Blev opdateret i seneste datasamling fra SSI
-data_kontakt[3] = 0.7; // Uge 2 (14/01-2021), Nyt tal
-data_kontakt[4] = 0.7; // Uge 3 (21/01-2021), 
+data_kontakt[3] = 0.8; // Uge 2 (14/01-2021) OBS: GAMMELT TAL! Blev opdateret i seneste datasamling fra SSI
+// data_kontakt[3] = 0.7; // Uge 2 (14/01-2021), Nyt tal. UPDATE 01/03: Tallet er ændret tilbage igen...
+data_kontakt[4] = 0.8; // Uge 3 (21/01-2021), 
+data_kontakt[5] = 0.9; // Uge 4 (28/01-2021), 
+data_kontakt[6] = 1; // Uge 5 (04/02-2021), 
+data_kontakt[7] = 1; // Uge 6 (11/02-2021), 
+
 
 // data_kontakt[0] = 0.9; 
 // data_kontakt[1] = 0.85; 
