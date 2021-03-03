@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script src="./Chart.min.js"></script>
+    <script src="./utils.js"></script>
+    <style>
+    canvas{
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
+    </style>
+    </head>
+
+  <body>
+    <!-- <div style="position:relative; width:80vw; margin: auto;"> -->
+    <div style="width:100%;margin: auto;">
+      <canvas id="canvas"></canvas>
+      <canvas id="canvas2"></canvas>
+      <canvas id="canvasR"></canvas>
+    </div>
+    <br>
+    <div class="slider-container">
+      <div class="flex-item"> 
+        <input type="range" min="0.6" max="1.2" value="0.9" step="0.01" class="slider" id="RW_range_2">
+      <p id="RW_Label_2">RW_Text_2</p>
+      </div>
+      <div class="flex-item"> 
+        <input type="range" min="30" max="75" value="55" step="5" class="slider" id="RM_range">
+      <p id="RM_Label">RM_Text</p>
+      </div>
+      <div class="flex-item">
+        <input id="VariantCheckbox" type="checkbox" checked >
+        <p>Med B117 variant</p>
+      </div>
+    </div>
+    <br>
+    
+    <script src="chartScript.js"></script>
+  </body>
+</html>
