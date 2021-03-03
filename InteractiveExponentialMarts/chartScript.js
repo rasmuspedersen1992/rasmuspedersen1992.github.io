@@ -1,7 +1,7 @@
 let genTid = 4.7;
 let tScale = 7;
 // let tEnd = 120;
-let tEnd = 91;
+let tEnd = 92;
 tEnd = Math.floor(tEnd/tScale);
 let tRange = [];
 let tRangePlot = [];
@@ -98,14 +98,30 @@ let RM_List = [];
 let RT_List = [];
 
 // Objects for referencing inputs
-let RW_slider_2 = document.getElementById('RW_range_2');
-let RM_slider = document.getElementById('RM_range');
+let slider_uge4 = document.getElementById('uge4slider');
+let slider_uge5 = document.getElementById('uge5slider');
+let slider_uge6 = document.getElementById('uge6slider');
+let slider_uge7 = document.getElementById('uge7slider');
+let slider_uge8 = document.getElementById('uge8slider');
 
-let RW_Label_2 = document.getElementById('RW_Label_2');
-let RM_Label = document.getElementById('RM_Label');
+let label_uge4 = document.getElementById('uge4num');
+let label_uge5 = document.getElementById('uge5num');
+let label_uge6 = document.getElementById('uge6num');
+let label_uge7 = document.getElementById('uge7num');
+let label_uge8 = document.getElementById('uge8num');
 
-let VariantCheckbox = document.getElementById('VariantCheckbox');
-let withMutation = false;
+
+console.log(slider_uge8)
+
+// let RW_slider_2 = document.getElementById('RW_range_2');
+// let RM_slider = document.getElementById('RM_range');
+
+// let RW_Label_2 = document.getElementById('RW_Label_2');
+// let RM_Label = document.getElementById('RM_Label');
+
+// let VariantCheckbox = document.getElementById('VariantCheckbox');¨
+
+let withMutation = true;
 
 // Model parameters
 let RW;
@@ -117,28 +133,66 @@ let RM_2;
 var calcValues = function(){
 
     // Get variable values from inputs
-    RW_2 = RW_slider_2.value;
-    RM = RW*(1+(RM_slider.value/100));
-    RM_2 = RW_2*(1+(RM_slider.value/100));
-    withMutation = VariantCheckbox.checked;
+    // RW_2 = RW_slider_2.value;
+    // RM = RW*(1+(RM_slider.value/100));
+    // RM_2 = RW_2*(1+(RM_slider.value/100));
+    // withMutation = VariantCheckbox.checked;
+    let RW_4 = slider_uge4.value/100;
+    let RW_5 = slider_uge5.value/100;
+    let RW_6 = slider_uge6.value/100;
+    let RW_7 = slider_uge7.value/100;
+    let RW_8 = slider_uge8.value/100;
+
+    console.log(RW_8)
+
+    let RM_4 = RW_4 * 1.55;
+    let RM_5 = RW_5 * 1.55;
+    let RM_6 = RW_6 * 1.55;
+    let RM_7 = RW_7 * 1.55;
+    let RM_8 = RW_8 * 1.55;
 
     // Set the initial values 
     curW = ini_W;
     curM = ini_M;
 
+
+    // let i_uge4 = 0;
+    let i_uge5 = 1;
+    let i_uge6 = 2;
+    let i_uge7 = 3;
+    let i_uge8 = 4;
     // Go through all time-steps
     for (var i = 0, len = tRange.length; i < len; ++i) {
         
-        // Use data from kontakttal until week 2
-        if (i < indexForControl){
-            // curRW = data_kontakt[i];
-            // curRM = data_kontakt[i]*(1+(RM_slider.value/100));
-            curRW = data_kontakt_ref[i];
-            curRM = data_kontakt_ref[i]*(1+(RM_slider.value/100));
-        } else {
-            curRW = RW_2;
-            curRM = RM_2;
+        curRW = RW_8;
+        curRM = RM_8;
+        if (i < i_uge8){
+            curRW = RW_7;
+            curRM = RM_7;
         }
+        if (i < i_uge7){
+            curRW = RW_6;
+            curRM = RM_6;
+        }
+        if (i < i_uge6){
+            curRW = RW_5;
+            curRM = RM_5;
+        }
+        if (i < i_uge5){
+            curRW = RW_4;
+            curRM = RM_4;
+        }
+
+        // // Use data from kontakttal until week 2
+        // if (i < indexForControl){
+        //     // curRW = data_kontakt[i];
+        //     // curRM = data_kontakt[i]*(1+(RM_slider.value/100));
+        //     curRW = data_kontakt_ref[i];
+        //     curRM = data_kontakt_ref[i]*(1+(RM_slider.value/100));
+        // } else {
+        //     curRW = RW_2;
+        //     curRM = RM_2;
+        // }
         // Save the kontakttal
         RW_List[i] = curRW;
         RM_List[i] = curRM;
@@ -181,8 +235,13 @@ var calcValues = function(){
     window.linesR.update();
 
     // Update text below sliders
-    RW_Label_2.innerHTML = 'Reference-kontakttal efter uge 7: '+RW_2;
-    RM_Label.innerHTML = 'B117 variant: '+RM_slider.value + "% højere";
+    label_uge4.innerHTML = slider_uge4.value  + "%"
+    label_uge5.innerHTML = slider_uge5.value  + "%"
+    label_uge6.innerHTML = slider_uge6.value  + "%"
+    label_uge7.innerHTML = slider_uge7.value  + "%"
+    label_uge8.innerHTML = slider_uge8.value  + "%"
+    // RW_Label_2.innerHTML = 'Reference-kontakttal efter uge 7: '+RW_2;
+    // RM_Label.innerHTML = 'B117 variant: '+RM_slider.value + "% højere";
 
 }
 
@@ -234,6 +293,7 @@ var config = {
     },
     options: {
         responsive: true,
+        aspectRatio: 2.5,
         legend: {
             position: 'top',
             labels: {
@@ -306,6 +366,7 @@ var config2 = {
     options: {
         
         responsive: true,
+        aspectRatio: 2.5,
         tooltips: {
         mode: 'index'
         },
@@ -394,6 +455,7 @@ var configR = {
     },
     options: {
         responsive: true,
+        aspectRatio: 2.5,
         tooltips: {
         mode: 'index'
         },        
@@ -440,12 +502,27 @@ calcValues();
 };
 
 // Check for changes to inputs, re-calculate data if anything changes
-RW_slider_2.onchange = function(){
-    calcValues()
+slider_uge4.onchange = function(){
+    calcValues();
 }
-RM_slider.onchange = function(){
-    calcValues()
+slider_uge5.onchange = function(){
+    calcValues();
 }
-VariantCheckbox.onchange = function(){
-    calcValues()
+slider_uge6.onchange = function(){
+    calcValues();
 }
+slider_uge7.onchange = function(){
+    calcValues();
+}
+slider_uge8.onchange = function(){
+    calcValues();
+}
+// RW_slider_2.onchange = function(){
+//     calcValues()
+// }
+// RM_slider.onchange = function(){
+//     calcValues()
+// }
+// VariantCheckbox.onchange = function(){
+//     calcValues()
+// }

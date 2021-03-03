@@ -24,6 +24,18 @@ canvas {
 }
 .slider-container{
   display:flex;
+  float:left;
   width: 70%;
   margin: auto;
+}
+
+input[type=range][orient=vertical]
+{
+    writing-mode: bt-lr; /* IE */
+    -webkit-appearance: slider-vertical; /* WebKit */
+    width: 14px;
+    height: 100px;
+    /* width: 8px;
+    height: 175px; */
+    padding: 0 5px;
 }
