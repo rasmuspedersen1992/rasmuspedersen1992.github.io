@@ -137,11 +137,11 @@ var calcValues = function(){
     // RM = RW*(1+(RM_slider.value/100));
     // RM_2 = RW_2*(1+(RM_slider.value/100));
     // withMutation = VariantCheckbox.checked;
-    let RW_4 = slider_uge4.value/100;
-    let RW_5 = slider_uge5.value/100;
-    let RW_6 = slider_uge6.value/100;
-    let RW_7 = slider_uge7.value/100;
-    let RW_8 = slider_uge8.value/100;
+    let RW_4 = slider_uge4.value;
+    let RW_5 = slider_uge5.value;
+    let RW_6 = slider_uge6.value;
+    let RW_7 = slider_uge7.value;
+    let RW_8 = slider_uge8.value;
 
     console.log(RW_8)
 
@@ -235,11 +235,11 @@ var calcValues = function(){
     window.linesR.update();
 
     // Update text below sliders
-    label_uge4.innerHTML = slider_uge4.value  + "%"
-    label_uge5.innerHTML = slider_uge5.value  + "%"
-    label_uge6.innerHTML = slider_uge6.value  + "%"
-    label_uge7.innerHTML = slider_uge7.value  + "%"
-    label_uge8.innerHTML = slider_uge8.value  + "%"
+    label_uge4.innerHTML = slider_uge4.value 
+    label_uge5.innerHTML = slider_uge5.value
+    label_uge6.innerHTML = slider_uge6.value
+    label_uge7.innerHTML = slider_uge7.value 
+    label_uge8.innerHTML = slider_uge8.value 
     // RW_Label_2.innerHTML = 'Reference-kontakttal efter uge 7: '+RW_2;
     // RM_Label.innerHTML = 'B117 variant: '+RM_slider.value + "% højere";
 
@@ -389,7 +389,7 @@ var config2 = {
             // fontSize: 18,
             fontSize: 20,
             display: true,
-            labelString: 'Fordeling af typer i procent'
+            labelString: 'Fordeling af typer [%]'
             },
             ticks: {
             min: 0,
