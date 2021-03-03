@@ -52,12 +52,39 @@ d3.csv("Spansk_Syge_I_Cph.csv").then(function(data) {
     
 });
 
+// Load deaths
+var allDatesDeathRaw = [];
+var allDatesDeath = [];
+var allDeath = [];
+d3.csv("Spansk_Syge_Cph_Doedsfald.csv").then(function(data) {
+    for (let k = 0; k < data.length; k++) {
+        const curRow = data[k];
+        allDatesDeathRaw.push(curRow.Date);
+        allDeath.push(curRow.Deaths);
+    }
+    
+    doneLoading = true;
+    interpretDate();
+    updateChart();
+
+
+    // // Update the sliders, to ensure label is correct
+    // xlim1_slider.onchange();
+    // xlim2_slider.onchange();
+    
+});
+
 // Function for converting date-string into date format
 var interpretDate = function(){
     for (let d = 0; d < allDatesRaw.length; d++) {
         const curDateRaw = allDatesRaw[d];
         const curDate = new Date(curDateRaw);
         allDates.push(curDate)
+    }
+    for (let d = 0; d < allDatesDeathRaw.length; d++) {
+        const curDateRaw = allDatesDeathRaw[d];
+        const curDate = new Date(curDateRaw);
+        allDatesDeath.push(curDate)
     }
 }
 
@@ -78,6 +105,7 @@ var chartConfig = {
     },
     options: {
         responsive: true,
+        aspectRatio: 3,
         legend: {
             position: 'top',
             labels: {
@@ -121,7 +149,78 @@ var chartConfig = {
             }]
         }
     }
-    };
+};
+
+var chartDeathConfig = {
+    type: 'line',
+    data: {
+        labels: allDatesDeath,
+        datasets: [ 
+            {
+                    label: 'Alle aldersgrupper',
+                    data: allDeath,
+                    // data: casesSum,
+                    borderColor: window.chartColors.black,
+                    backgroundColor:  window.chartColors.lightgrey,
+                    fill: true,
+                    showLine: true,
+                    lineTension: 0,
+                    borderWidth: 1,
+                    pointRadius: 2,
+                    pointHoverRadius: 5,
+                    id: 'sumDeath',
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        aspectRatio: 3,
+        legend: {
+            position: 'top',
+            labels: {
+            usePointStyle: true,
+            }
+        },
+        scales: {
+            xAxes: [{
+                type: 'time',
+                    time: {
+                        unit: 'month',
+                        stepSize: 1,
+                        // unit: 'week',
+                        // tooltipFormat:'MM/DD/YYYY', 
+                        // tooltipFormat:'DD/MM - YYYY', 
+                        tooltipFormat:'[Uge ]w[, ] DD[.] MMMM - YYYY', 
+                        // min: new Date('1917-01-01'), 
+                        // max: curMaxDate
+                        displayFormats: {
+                            week: '[Uge ]w[, ]YYYY', 
+                            month: 'MMMM YYYY'
+                        }
+                },
+                display: true,
+                scaleLabel: {
+                display: true
+                },            
+                // ticks: {
+                //     // min: curMinDate,
+                //     min: new Date('1917-01-01'),
+                //     max: curMaxDate
+                // }
+            }],
+            yAxes: [{
+                display: true,
+                scaleLabel: {
+                    fontSize: 20,
+                    display: true,
+                    labelString: 'Dødsfald'
+                }
+            }]
+        }
+    }
+};
+    
+let saveButton = document.getElementById('saveButton');
 let xlim1_slider = document.getElementById('xlim1');
 let xlim1Label = document.getElementById('xlim1Label');
 let xlim2_slider = document.getElementById('xlim2');
@@ -161,7 +260,26 @@ let radioNorm = document.getElementsByName('norm');
 window.onload = function() {
     var ctx = document.getElementById('canvas').getContext('2d');
     window.mainChart = new Chart(ctx, chartConfig);
+    var ctxDeath = document.getElementById('canvasDeath').getContext('2d');
+    window.DeathChart = new Chart(ctxDeath, chartDeathConfig);
     updateChart();
+
+    // // Define the data
+    // var sumDeath = {
+    //     label: 'Alle aldersgrupper',
+    //     data: allDeath,
+    //     // data: casesSum,
+    //     borderColor: window.chartColors.black,
+    //     backgroundColor:  window.chartColors.black,
+    //     fill: false,
+    //     showLine: true,
+    //     lineTension: 0,
+    //     pointRadius: 2,
+    //     pointHoverRadius: 5,
+    //     id: 'sumDeath',
+    // };
+    // // Add to chart
+    // chartDeathConfig.data.datasets.push(sumDeath);
 
     // Initialize according to defaults set in html document
     Checkbox0.onchange();
@@ -182,6 +300,8 @@ var updateChart = function(){
     
     window.mainChart.options.scales.xAxes[0].time.min = curMinDate;
     window.mainChart.options.scales.xAxes[0].time.max = curMaxDate;
+    window.DeathChart.options.scales.xAxes[0].time.min = curMinDate;
+    window.DeathChart.options.scales.xAxes[0].time.max = curMaxDate;
 
     if (showRatioK){
         window.mainChart.options.scales.yAxes[0].scaleLabel.labelString = 'Tilfælde per 1000';
@@ -191,7 +311,28 @@ var updateChart = function(){
 
     // Update chart
     window.mainChart.update();
+    window.DeathChart.update();
 }
+
+// function addAllDeathData(){
+//     // Define the data
+//     var sumDeath = {
+//         label: 'Alle aldersgrupper',
+//         data: allDeath,
+//         // data: casesSum,
+//         borderColor: window.chartColors.black,
+//         backgroundColor:  window.chartColors.black,
+//         fill: false,
+//         showLine: true,
+//         lineTension: 0,
+//         pointRadius: 2,
+//         pointHoverRadius: 5,
+//         id: 'sumDeath',
+//     };
+//     // Add to chart
+//     chartDeathConfig.data.datasets.push(sumDeath);
+
+// }
 
 // currentValue = 0
 function handleClick(myRadio) {
@@ -216,7 +357,58 @@ function handleClick(myRadio) {
     
     updateChart();
 }
+function fillCanvasBackgroundWithColor(canvas, color) {
+    // From https://stackoverflow.com/questions/50104437/set-background-color-to-save-canvas-chart/50126796#50126796
 
+    // Get the 2D drawing context from the provided canvas.
+    const context = canvas.getContext('2d');
+  
+    // We're going to modify the context state, so it's
+    // good practice to save the current state first.
+    context.save();
+  
+    // Normally when you draw on a canvas, the new drawing
+    // covers up any previous drawing it overlaps. This is
+    // because the default `globalCompositeOperation` is
+    // 'source-over'. By changing this to 'destination-over',
+    // our new drawing goes behind the existing drawing. This
+    // is desirable so we can fill the background, while leaving
+    // the chart and any other existing drawing intact.
+    // Learn more about `globalCompositeOperation` here:
+    // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
+    context.globalCompositeOperation = 'destination-over';
+  
+    // Fill in the background. We do this by drawing a rectangle
+    // filling the entire canvas, using the provided color.
+    context.fillStyle = color;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+  
+    // Restore the original context state from `context.save()`
+    context.restore();
+  }
+
+saveButton.onclick = function(){
+    // Hacked together way for saving the figure using just javascript
+
+    // Set the background color 
+    // (From https://stackoverflow.com/questions/50104437/set-background-color-to-save-canvas-chart/50126796#50126796 )
+    const canvas = document.getElementById('canvas');
+    fillCanvasBackgroundWithColor(canvas, 'white');
+
+    // Convert to image
+    var url=window.mainChart.toBase64Image();
+
+    // Make a link element for download, click it, delete it again
+    // (From second answer of https://stackoverflow.com/questions/17311645/download-image-with-javascript )
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = "SpanskSygeFigur.png";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    // console.log('Done saving');
+}
 
 xlim1_slider.onchange = function(){
     curMinDate = numToDate(xlim1_slider.value);
@@ -248,6 +440,8 @@ xlim2_slider.onchange = function(){
     updateChart();
 
 }
+
+
 
 CheckboxSum.onchange = function(){
     showSum = CheckboxSum.checked;

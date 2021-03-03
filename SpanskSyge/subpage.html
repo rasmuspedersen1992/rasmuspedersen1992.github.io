@@ -26,6 +26,7 @@
     <!-- <div style="position:relative; width:80vw; margin: auto;"> -->
     <div style="width:100%;margin: auto;">
       <canvas id="canvas"></canvas>
+      <canvas id="canvasDeath"></canvas>
       <!-- <canvas id="canvas2"></canvas>
       <canvas id="canvasR"></canvas> -->
     </div>
@@ -60,8 +61,15 @@
           <input type="radio" id="ratio" name="norm" value="ratioK" onclick="handleClick(this);" >
           <label for ="ratio"> Per 1000 </label>
         </div>
-      </fieldset></td></table>.
+      </fieldset>
+    
+      <td>
+        <button type="button" id="saveButton">Gem billede</button>
+      </td>
+    </td></table>
+      
     <br>
+    <img id="url" />
     <!-- <div class="slider-container">
      <div class="flex-item">
        <input id="Checkbox0" type="checkbox" >
