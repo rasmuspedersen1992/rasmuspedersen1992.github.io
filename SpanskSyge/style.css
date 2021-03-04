@@ -27,3 +27,9 @@ canvas {
   margin-left: auto;
   margin-right: auto;
 }
+.IntroText {
+  padding: 50px;
+}
+.DownloadLinks {
+  padding: 50px;
+}
