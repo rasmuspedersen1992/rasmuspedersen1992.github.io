@@ -403,18 +403,18 @@ function setup() {
   tableX = pLeft + sliderWidth*2;
   tableY = sliderTop-axMargin/2;
 
-  sliderInfInit = createSlider(0,30,0);
-  sliderInfInit.position(sliderLeft, sliderTop);
-  sliderInfInit.changed(slidersChanged)
-  sliderInfInit.style('width',sliderWidth+'px');
   sliderLowInt = createSlider(1,21,3);
-  sliderLowInt.position(sliderLeft, sliderTop+ 1.3*sliderDist);
+  sliderLowInt.position(sliderLeft, sliderTop);
   sliderLowInt.changed(slidersChanged)
   sliderLowInt.style('width',sliderWidth+'px');
   sliderHighInt = createSlider(1,21,7);
-  sliderHighInt.position(sliderLeft, sliderTop+ 2.3*sliderDist);
+  sliderHighInt.position(sliderLeft, sliderTop+ 1*sliderDist);
   sliderHighInt.changed(slidersChanged)
   sliderHighInt.style('width',sliderWidth+'px');
+  sliderInfInit = createSlider(0,30,0);
+  sliderInfInit.position(sliderLeft, sliderTop+ 2.3* sliderDist);
+  sliderInfInit.changed(slidersChanged)
+  sliderInfInit.style('width',sliderWidth+'px');
   // sliderLowOff = createSlider(0,10,0);
   // sliderLowOff.position(sliderLeft, sliderTop+ 3*sliderDist);
   // sliderLowOff.changed(slidersChanged)
@@ -627,6 +627,10 @@ function draw() {
     checkIsoHigh.show();
     checkIsoHighLate.show();
 
+    // Interval slider
+    sliderInfInit.show();
+    text(textInfInit,sliderLabelLeft,sliderTop+2.3*sliderDist + sliderDist/2.5);
+
     // Sensitivity sliders
     sliderLowSens.show();
     sliderHighSens.show();
@@ -650,7 +654,7 @@ function draw() {
     fill(clrBackground);
     noStroke();
     strokeWeight(2);
-    rect(pLeft,flagTop,sliderWidth+axMargin/2,sliderDist*4)
+    rect(pLeft,flagTop,sliderWidth+axMargin/2,sliderDist*2.5)
 
     // Checkboxes
     checkIsoSymp.hide();
@@ -659,6 +663,7 @@ function draw() {
     checkIsoHighLate.hide();
 
     // Sensitivity sliders
+    sliderInfInit.hide();
     sliderLowSens.hide();
     sliderHighSens.hide();
 
@@ -675,10 +680,10 @@ function draw() {
   fill(0);
   strokeWeight(0);
   // let sliderLabelLeft = pLeft+sliderWidth*0.9+axMargin;
-  text(textInfInit,sliderLabelLeft,sliderTop+sliderDist/2.5);
   // text(textTestInterval,pLeft,sliderTop + 1.5* sliderDist);
-  text(textLowInt,sliderLabelLeft,sliderTop + 1.3*sliderDist+sliderDist/2.5);
-  text(textHighInt,sliderLabelLeft,sliderTop +2.3*sliderDist+sliderDist/2.5);
+  text(textLowInt,sliderLabelLeft,sliderTop + sliderDist/2.5);
+  text(textHighInt,sliderLabelLeft,sliderTop +sliderDist+sliderDist/2.5);
+
 
 
   // Draw background and axes
@@ -975,13 +980,17 @@ function draw() {
   }
 
   let bestTest;
+  let bestTestColor;
   if (countReduHighLate > countReduLow){
     bestTest = 'PCR';
+    bestTestColor = color(150,180,0);
   } else {
     bestTest = 'Antigen';
+    bestTestColor = color(0,100,230);
   } 
   if (countReduHighLate == countReduLow){
     bestTest = '';
+    bestTestColor = color(0);
   }
   
   push();
@@ -1021,7 +1030,10 @@ function draw() {
   text(countTextLow,0,tableDist)
   text(countTextHigh,0,tableDist*2)
   
+  textStyle(BOLD)
+  fill(bestTestColor);
   text(bestTest,0,tableDist*3)
+  fill(0);
 
   // textSize(16);
   textAlign(RIGHT,TOP);
