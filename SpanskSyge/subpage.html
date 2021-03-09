@@ -26,8 +26,8 @@
     <!-- <div style="position:relative; width:80vw; margin: auto;"> -->
     <div style="width:100%;margin: auto;">
       <canvas id="canvas"></canvas>
-      <!-- <canvas id="canvas2"></canvas>
-      <canvas id="canvasR"></canvas> -->
+      <canvas id="canvasDeath2"></canvas>
+      <canvas id="canvasDeath"></canvas>
     </div>
     <br>
      <div class="slider-container">
@@ -42,7 +42,7 @@
      </div>
     <table class ="center"> <td>
       <fieldset>      
-          <legend>Aldergrupper</legend>
+          <legend>Aldergrupper, tilfælde</legend>
             <input id="Checkbox0" type="checkbox"  > 0 til 1 årige <br>
             <input id="Checkbox1" type="checkbox"  > 1 til 4 årige <br> 
             <input id="Checkbox5" type="checkbox"  > 5 til 14 årige <br>
@@ -50,7 +50,18 @@
             <input id="Checkbox65" type="checkbox" > 65+ årige <br>
             <input id="CheckboxSum" type="checkbox" checked > Total <br>
 
-      </fieldset> </td> <td> 
+      </fieldset> </td> 
+      <td>       
+      <fieldset>      
+        <legend>Aldergrupper, dødsfald</legend>
+          <input id="CheckboxDeaths0" type="checkbox"  > 0 til 4 årige <br> 
+          <input id="CheckboxDeaths5" type="checkbox"  > 5 til 14 årige <br>
+          <input id="CheckboxDeaths15" type="checkbox" > 15 til 65 årige  <br>
+          <input id="CheckboxDeaths65" type="checkbox" > 65+ årige <br>
+          <input id="CheckboxDeathsSum" type="checkbox" checked > Total <br>
+        </fieldset> 
+      </td> 
+      <td> 
       <fieldset>      
           <legend>Normering </legend>
           <div>
@@ -60,15 +71,17 @@
           <input type="radio" id="ratio" name="norm" value="ratioK" onclick="handleClick(this);" >
           <label for ="ratio"> Per 1000 </label>
         </div>
-      </fieldset>
+      </fieldset> </td> 
     
       <td>
-        <button type="button" id="saveButton">Gem billede</button>
+        <button type="button" id="saveButton">Gem billede af figur 1</button> <br>
+        <button type="button" id="saveButton2">Gem billede af figur 2</button> <br>
+        <button type="button" id="saveButton3">Gem billede af figur 3</button> <br>
       </td>
     </td></table>
       
     <br>
-    <canvas id="canvasDeath"></canvas>
+    
     <img id="url" />
     <!-- <div class="slider-container">
      <div class="flex-item">
