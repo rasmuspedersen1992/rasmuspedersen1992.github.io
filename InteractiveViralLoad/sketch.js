@@ -88,7 +88,7 @@ let clrSelfIsoTrans;
 
 // Initialize interactive stuff
 let sliderDist;
-let sliderWidth = 300; 
+let sliderWidth = 200; 
 let sliderTop;
 
 let sliderInfInit;
@@ -353,7 +353,7 @@ function setup() {
   createCanvas(windowWidth, 500 + roomForSliders);
 
   // amountToScale = windowWidth/1200;
-
+  // console.log(windowWidth)
 
   // Set position of axes  
   axTop = axMargin;
@@ -408,7 +408,11 @@ function setup() {
 
   let sliderLeft = pLeft + axMargin/4;
   
-  tableX = pLeft + sliderWidth*2;
+  tableX = pLeft + sliderWidth + axMargin/2 + axMargin*4.2;
+  
+  // rect(tableX+axMargin*1.8,flagTop,-axMargin*5.8,tableDist*10);
+  // rect(pLeft,flagTop,sliderWidth+axMargin/2,sliderDist*2.5)
+  // tableX = pRight - flagWidth *3;
   tableY = sliderTop-axMargin/2;
 
   sliderLowInt = createSlider(1,21,3);
@@ -467,20 +471,25 @@ function setup() {
 
 
   // Settings button
-  flagTop = sliderTop-axMargin/2;
-  flagLeft = pRight-flagWidth*1.1;
+  // flagLeft = pRight-flagWidth*1.1;
+  flagLeft = tableX;
+  flagTop = sliderTop-axMargin/2 ;
+  flagTopFlag = sliderTop-axMargin/2 + tableDist*10;
+  settingsTop = sliderTop-axMargin/2 + tableDist*5;
   buttonSettings = createImg('gear.png');
-  buttonSettings.position(flagLeft,flagTop);
+  buttonSettings.position(flagLeft,settingsTop);
   buttonSettings.style('width:'+flagWidth+'px');
   buttonSettings.mousePressed(toggleSettings);
 
   // Language buttons
   buttonFlagDanish = createImg('DKflag.png');
-  buttonFlagDanish.position(flagLeft,flagTop + flagDist);
+  // buttonFlagDanish.position(flagLeft,flagTopFlag +flagDist);
+  buttonFlagDanish.position(flagLeft,flagTopFlag );
   buttonFlagDanish.style('width:'+flagWidth+'px');
   buttonFlagDanish.mousePressed(setLanguageDanish);
   buttonFlagEnglish = createImg('UKflag.png');
-  buttonFlagEnglish.position(flagLeft,flagTop+2*flagDist);
+  // buttonFlagEnglish.position(flagLeft,flagTopFlag+2*flagDist);
+  buttonFlagEnglish.position(flagLeft - flagDist,flagTopFlag);
   buttonFlagEnglish.mousePressed(setLanguageEnglish);
   buttonFlagEnglish.style('width:'+flagWidth+'px');
 
@@ -629,7 +638,7 @@ function draw() {
     rect(pLeft,flagTop,sliderWidth+axMargin/2,sliderDist*6)
 
     
-    rect(tableX+axMargin*1.8,flagTop,-axMargin*5.8,tableDist*10);
+    rect(tableX+axMargin*1.8,flagTop,-axMargin*5.8,tableDist*13);
 
     // Checkbox text
     fill(0)
