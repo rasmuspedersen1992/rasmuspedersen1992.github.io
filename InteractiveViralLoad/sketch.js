@@ -106,6 +106,7 @@ let buttonSettings;
 
 let flagWidth = 80;
 let flagDist = 80;
+let flagLeft;
 let flagTop;
 
 let checkIsoSymp;
@@ -464,20 +465,22 @@ function setup() {
   checkIsoHighLate.changed(funcIsoHighLate);
   checkIsoHighLate.position(checkboxX,checkboxY+ 4*checkboxDist);
 
+
   // Settings button
   flagTop = sliderTop-axMargin/2;
+  flagLeft = pRight-flagWidth*1.1;
   buttonSettings = createImg('gear.png');
-  buttonSettings.position(pRight-flagWidth,flagTop);
+  buttonSettings.position(flagLeft,flagTop);
   buttonSettings.style('width:'+flagWidth+'px');
   buttonSettings.mousePressed(toggleSettings);
 
   // Language buttons
   buttonFlagDanish = createImg('DKflag.png');
-  buttonFlagDanish.position(pRight-flagWidth,flagTop + flagDist);
+  buttonFlagDanish.position(flagLeft,flagTop + flagDist);
   buttonFlagDanish.style('width:'+flagWidth+'px');
   buttonFlagDanish.mousePressed(setLanguageDanish);
   buttonFlagEnglish = createImg('UKflag.png');
-  buttonFlagEnglish.position(pRight-flagWidth,flagTop+2*flagDist);
+  buttonFlagEnglish.position(flagLeft,flagTop+2*flagDist);
   buttonFlagEnglish.mousePressed(setLanguageEnglish);
   buttonFlagEnglish.style('width:'+flagWidth+'px');
 
@@ -618,13 +621,15 @@ function draw() {
     noStroke();
     strokeWeight(2);
     // rect(pRight,flagTop,-0.95*axWidth/3,flagDist*3)
-    rect(pRight,flagTop,-flagDist,flagDist*3)
+    rect(flagLeft-flagDist*0.1,flagTop,flagDist*1.2,flagDist*3)
+    
+    // flagLeft = pRight-flagWidth*1.2;
     
     // Box behind all sliders
     rect(pLeft,flagTop,sliderWidth+axMargin/2,sliderDist*6)
 
     
-    // rect(axMargin*1.8,0,-axMargin*5.8,tableDist*8.5);
+    rect(tableX+axMargin*1.8,flagTop,-axMargin*5.8,tableDist*10);
 
     // Checkbox text
     fill(0)
