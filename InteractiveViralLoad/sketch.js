@@ -342,10 +342,17 @@ function toggleSettings(){
   }
 }
 
+let amountToScale = 1;
+
 function setup() {
   // createCanvas(800, 400);
   let roomForSliders = 600;
-  createCanvas(1200, 500 + roomForSliders);
+
+  // createCanvas(1200, 500 + roomForSliders);
+  createCanvas(windowWidth, 500 + roomForSliders);
+
+  // amountToScale = windowWidth/1200;
+
 
   // Set position of axes  
   axTop = axMargin;
@@ -434,8 +441,10 @@ function setup() {
 
   // Create checkboxes
   // checkboxX = pLeft + sliderWidth*1.75; 
-  checkboxX = pRight - sliderWidth*1.1; 
-  checkboxY = sliderTop;
+  // checkboxX = pRight - sliderWidth*1.1; 
+  // checkboxY = sliderTop;
+  checkboxX = tableX - tableDist*6; 
+  checkboxY = tableY + tableDist*5;
   checkboxDist = sliderDist/2;
   checkboxTextX = checkboxX + checkboxDist;
   // checkIsoSymp = createCheckbox(textIsoSymp);
@@ -569,6 +578,9 @@ function calcDetectableAndTimeArray(){
 }
 function draw() {
   background(255);
+
+  scale(amountToScale);
+
   slidersChanged();
 
   let sliderLabelLeft = pLeft+axMargin/4;
@@ -605,10 +617,14 @@ function draw() {
     fill(clrBackground);
     noStroke();
     strokeWeight(2);
-    rect(pRight,flagTop,-0.95*axWidth/3,flagDist*3)
+    // rect(pRight,flagTop,-0.95*axWidth/3,flagDist*3)
+    rect(pRight,flagTop,-flagDist,flagDist*3)
     
     // Box behind all sliders
     rect(pLeft,flagTop,sliderWidth+axMargin/2,sliderDist*6)
+
+    
+    // rect(axMargin*1.8,0,-axMargin*5.8,tableDist*8.5);
 
     // Checkbox text
     fill(0)
