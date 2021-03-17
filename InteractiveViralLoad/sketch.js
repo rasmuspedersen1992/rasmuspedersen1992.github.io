@@ -74,6 +74,8 @@ let IsoBarSmallMargin = 5;
 let clrBackground;
 let clrLines;
 let clrInfectiousLgt;
+let clrInfectiousLgter;
+let clrInfectiousLgterMore;
 let clrInfectiousDrk;
 let clrLowSensLgt;
 let clrLowSensDrk;
@@ -222,7 +224,7 @@ function setLanguageEnglish(){
   textDayPlu = 'days'
   textCheckBox = 'Show isolation-period:';
 
-  textTableSmitte = 'Infectious days';
+  textTableSmitte = 'Very infectious days';
   textTableLow = 'With antigen-test: ';
   textTableHigh = 'With PCR-test: ';
   textTableBest = 'Best reduction: ';
@@ -260,7 +262,7 @@ function setLanguageDanish(){
   textDayPlu = 'dage'
   textCheckBox = 'Vis periode for isolation:';
   
-  textTableSmitte = 'Smitsomme dage';
+  textTableSmitte = 'Meget smitsomme dage';
   textTableLow = 'Med antigen-test: ';
   textTableHigh = 'Med PCR-test: ';
   textTableBest = 'Bedste reduktion: ';
@@ -371,7 +373,9 @@ function setup() {
   clrBackground = color(230);
   clrLines      = color(0);
   clrInfectiousLgt = color(255,150,150);
-  clrInfectiousDrk = color(255,0,0);
+  clrInfectiousLgter = color(255,200,200);
+  clrInfectiousLgterMore = color(255,220,220);
+  clrInfectiousDrk = color(255,100,100);
   clrLowSensLgt    = color(180,180,255);
   clrLowSensDrk    = color(120,120,255);
   clrHighSensLgt   = color(255,255,155);
@@ -838,8 +842,17 @@ function draw() {
     endShape(CLOSE);
 
     // Draw on isolation-bar
-    fill(clrInfectiousLgt)
     noStroke();
+    fill(clrInfectiousLgterMore)
+    let LastMinorInfection = coorToScreenCoor(plotTimeArray[0]+21*timeScale);
+    LastMinorInfectionX = LastMinorInfection[0];
+    rect(infXs[0],isoBarTop,LastMinorInfectionX-infXs[0],isoBarHeight);
+    fill(clrInfectiousLgter)
+    LastMinorInfection = coorToScreenCoor(plotTimeArray[0]+18*timeScale);
+    LastMinorInfectionX = LastMinorInfection[0];
+    rect(infXs[0],isoBarTop,LastMinorInfectionX-infXs[0],isoBarHeight);
+
+    fill(clrInfectiousDrk)
     rect(infXs[0],isoBarTop,infXs[infXs.length-1]-infXs[0],isoBarHeight);
     
     // strokeWeight(0);
@@ -1068,7 +1081,7 @@ function draw() {
   // textSize(16);
   textAlign(RIGHT,TOP);
   textStyle(BOLD)
-  text(textTableSmitte,0,0);
+  text(textTableSmitte,tableDist*1.5,0);
   textStyle(NORMAL)
   text(textTableLow,0,tableDist);
   text(textTableHigh,0,tableDist*2);
