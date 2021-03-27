@@ -14,8 +14,6 @@ let pnProb;
 let pnPV;
 let pnPV_inci;
 
-let falskNeg;
-
 let posTest;
 let opspor;
 let sandPos;
@@ -124,15 +122,7 @@ function updateAll(){
     stopSpor = opspor - sandPos;
     isoVent = pnProb * test;
     senSpor = isoVent * pnPV;
-    // If divide by zero, just show 0
-    if (isNaN(senSpor)){
-        senSpor = 0;
-    }
     ratioDelay = senSpor / (sandPos + senSpor);
-
-    falskNeg = (1-spec)*test;
-
-    // console.log(falskNeg);
 
     // console.log(pProb);
     // console.log(pPV);
@@ -175,8 +165,8 @@ let clrAg2_N;
 let clrPCR_P;
 let clrPCR_N;
 
-let boxH = 100;
-let boxW = 150;
+let boxH = 80;
+let boxW = 200;
 
 let conSize = 3;
 let symbolSize = 8;
@@ -192,51 +182,48 @@ class GroupBox {
             if (this.type == 'ini'){
                 fill(clrBox);   
                 stroke(clrBoxStroke); 
-                this.label = test+' personer'
-                this.label2 = 'testes med \n antigentest'
-                // this.label = test+' personer\n testes'
-                // this.label2 = 'hvoraf '+round(inci*test/1000)+'\n er smittet'
+                this.label = test+' personer testes '
+                this.label2 = ''
             } else if (this.type == 'p'){
                 fill(clrBox);  
                 stroke(clrBoxStroke);  
-                this.label = round(posTest)+' testes\n positive '
-                this.label2 = 'Testes med \nny antigen-test'
+                this.label = round(posTest)+' testes positive '
+                this.label2 = 'Testes med ny antigen-test'
             } else if (this.type == 'pp'){
                 fill(clrBox);    
                 stroke(clrBoxStroke);
-                this.label = round(opspor)+' testes \npositive igen'
-                this.label2 = 'Smitteopsporing \n Opfølgende PCR-test'
+                this.label = round(opspor)+' testes positive igen '
+                this.label2 = 'Smitteopsporing påbegyndes \n Opfølgende PCR-test'
             } else if (this.type == 'ppP'){
                 fill(clrBox);  
                 stroke(clrBoxStroke);  
-                this.label = round(sandPos)+' testes \nPCR-positive'
-                this.label2 = 'Smitteopsporing og \nisolation forsættes'
+                this.label = round(sandPos)+' er PCR-positive'
+                this.label2 = 'Smitteopsporing og isolation \n forsætter'
             } else if (this.type == 'pn'){
                 fill(clrBox);  
                 stroke(clrBoxStroke);  
-                this.label = round(isoVent)+' testes \n negative'
-                this.label2 = 'Isoleres og afventer \nopfølgende PCR-test'
+                this.label = round(isoVent)+' isoleres '
+                this.label2 = 'Opfølgende PCR-test'
             } else if (this.type == 'pnP'){
                 fill(clrBox);    
                 stroke(clrBoxStroke);
-                this.label = round(senSpor)+' testes \nPCR-positive'
-                this.label2 = 'Smitteopsporing, \n forsinket af PCR'
+                this.label = round(senSpor)+' er PCR-positive '
+                this.label2 = 'Smitteopsporing påbegyndes, \n dog forsinket af PCR'
             } else if (this.type == 'n'){
                 fill(255);
                 noStroke();
-                this.label = round(test-posTest)+' testes \nnegative'
+                this.label = round(test-posTest)+' tester negative'
                 this.label2 = ''
-                // this.label2 = 'hvoraf ' +round(falskNeg)+'\n er falsk negative'
             } else if (this.type == 'pnN'){
                 fill(255);
                 noStroke();
-                this.label = round(isoVent-senSpor)+' testes \nPCR-negative'
-                this.label2 = ' og kan bryde \nisolationen'
+                this.label = round(isoVent-senSpor)+' tester PCR-negative '
+                this.label2 = ' og kan bryde isolationen'
             } else if (this.type == 'ppN'){
                 fill(255);
                 noStroke();
-                this.label = round(opspor-sandPos)+' testes \nPCR-negative'
-                this.label2 = ' Smitteopsporing \nafbrydes'
+                this.label = round(opspor-sandPos)+' tester PCR-negative '
+                this.label2 = ' Smitteopsporing skal afbrydes'
             }
 
             rect(this.x,this.y,boxW,boxH);
@@ -247,7 +234,7 @@ class GroupBox {
             text(this.label,this.x+boxW/2,this.y+boxH/2-boxH/4)
             textStyle(NORMAL);
             textSize(14)
-            text(this.label2,this.x+boxW/2,this.y+boxH/2 + boxH/6)
+            text(this.label2,this.x+boxW/2,this.y+boxH/2 + boxH/8)
     }
 
     
@@ -301,22 +288,6 @@ class Connector {
                 
                 pop();
             } 
-            
-        } else if (this.ori == 'l'){
-            line(this.box1.x,this.box1.y+boxH/2,this.box2.x + boxW,this.box2.y+boxH/2);
-            line(this.box2.x + boxW,this.box2.y+boxH/2,this.box2.x + boxW+conSize,this.box2.y+boxH/2-conSize);
-            line(this.box2.x + boxW,this.box2.y+boxH/2,this.box2.x + boxW+conSize,this.box2.y+boxH/2+conSize);
-            // Show test result
-            if (this.res == 'n'){
-                push()
-                translate(this.box1.x, this.box1.y + boxH/2); // Right hand side, start of arrow
-                translate(-symbolSize*2,-symbolSize*2); // Offset
-                line(-symbolSize,0,symbolSize,0);
-                point(0,-symbolSize);
-                point(0,symbolSize);
-                
-                pop();
-            } 
         }
 
     }
@@ -332,7 +303,7 @@ function drawConnect(x,y){
 // let boxTest;
 // let boxPos1;
 
-let curLeft = 200;
+let curLeft = 25;
 let curTop = 50;
 let curH = boxH*1.6;
 let curW = boxW*1.4;
@@ -340,7 +311,7 @@ let curW = boxW*1.4;
 let allp5Objects = [];
 
 function setup() {
-    var curCanves = createCanvas(800, 720);
+    var curCanves = createCanvas(800, 550);
     curCanves.parent("p5Div");
 
     clrBackground = color(255);
@@ -373,9 +344,9 @@ function setup() {
     allp5Objects.push(boxLate);
 
     // Define invisible boxes
-    boxNeg1 = new GroupBox(curLeft - curW,curTop,'n');
+    boxNeg1 = new GroupBox(curLeft + curW,curTop,'n');
     boxNeg2 = new GroupBox(curLeft + curW * 2,curTop + curH * 1,'pnN');
-    boxNeg3 = new GroupBox(curLeft - curW,curTop + curH * 2,'ppN');
+    boxNeg3 = new GroupBox(curLeft + curW * 2,curTop + curH * 2,'ppN');
 
     allp5Objects.push(boxNeg1);
     allp5Objects.push(boxNeg2);
@@ -386,9 +357,9 @@ function setup() {
     let conP2 = new Connector(boxPos1,boxPos2,'p','d',clrAg2_P);
     let conP3 = new Connector(boxPos2,boxPos3,'p','d',clrPCR_P);
     let conLate=new Connector(boxIsol,boxLate,'p','d',clrPCR_P);
-    let conN1 = new Connector(boxTest,boxNeg1,'n','l',clrAg1_N);
+    let conN1 = new Connector(boxTest,boxNeg1,'n','r',clrAg1_N);
     let conN2 = new Connector(boxPos1,boxIsol,'n','r',clrAg2_N);
-    let conN3 = new Connector(boxPos2,boxNeg3,'n','l',clrPCR_N);
+    let conN3 = new Connector(boxPos2,boxNeg3,'n','r',clrPCR_N);
     let conN4 = new Connector(boxIsol,boxNeg2,'n','r',clrPCR_N);
 
     allp5Objects.push(conP1);
@@ -404,36 +375,19 @@ function setup() {
 function draw() {
 
 
-    let clrIso = color(230,200,200);
-    let clrIsoStroke = color(220,200,200);
-    fill(clrIso);
-    stroke(clrIsoStroke);
-    rect(curLeft-boxW*0.3,curTop+curH*0.9,boxW*0.35+curW*1.9,curH*2.9)
-    
-    push();
-    translate(curLeft-boxW*0.2,curTop+curH*(0.9+0.4));
-    fill(clrText);
-    stroke(clrText);
-    strokeWeight(0.25);
-    // noStroke()
-    textStyle(BOLD)
-    rotate(-PI/2);
-    text('Isolation',0,0);
-    pop();
-
-    let clrSpor = color(220,200);
-    let clrSporStroke = color(200,200);
+    let clrSpor = color(220);
+    let clrSporStroke = color(200);
     fill(clrSpor);
     stroke(clrSporStroke);
-    rect(curLeft-boxW*0.225,curTop+curH*1.9,boxW*0.2+curW*1.9,curH*1.82)
+    rect(0,curTop+curH*1.9,curLeft/2+curW*1.8,curH*1.8)
 
     push();
-    translate(curLeft-boxW*0.125,curTop+curH*(1.9+0.9));
+    translate(curLeft/2,curTop+curH*(1.9+0.9));
     fill(clrText);
     stroke(clrText);
     strokeWeight(0.25);
     // noStroke()
-    textStyle(BOLD)
+    // textStyle(BOLD)
     rotate(-PI/2);
     text('Smitteopsporing',0,0);
     pop();
