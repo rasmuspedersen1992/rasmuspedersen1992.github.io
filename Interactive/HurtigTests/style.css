@@ -12,6 +12,7 @@ canvas {
 .flex-item {
   flex-grow: 1;
   text-align: center;
+  flex-basis: 200px;
 }
 .flex-item-checkboxes {
   flex-grow: 1;

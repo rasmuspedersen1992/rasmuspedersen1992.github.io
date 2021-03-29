@@ -46,8 +46,8 @@ function getAllValues(){
 function updateAllLabels(){
     test_label.innerHTML ='Antal Tests: '+ test;
     // inci_label.innerHTML ='Incidens: ' + (inci/10000);
-    inci_label.innerHTML ='Prævalens: ' + (inci/100) + '%';
-    // inci_label.innerHTML ='Prævalens i testgruppe: ' + (inci/100) + '%';
+    // inci_label.innerHTML ='Prævalens: ' + (inci/100) + '%';
+    inci_label.innerHTML ='Prævalens i testgruppe: ' + (inci/100) + '%';
     // inci_label.innerHTML ='Testgruppeprævalens: ' + (inci/100) + '%';
     let sensToShow = (sens*10000)/100
     sens_label.innerHTML ='Sensitivitet: '+ (sensToShow) + '%';
@@ -362,15 +362,15 @@ class Connector {
                 translate(this.box1.x + boxW/2, this.box1.y + boxH); // Bottom, start of arrow
 
                 translate(symbolSize,symbolSize); // Offset
-                strokeWeight(symbolWeight);
+                strokeWeight(symbolWeight/2);
                 noFill();
                 circle(circSize/2,circSize/2,circSize)
 
                 translate(symbolSize*2,symbolSize*2); // Offset
-
-
+                strokeWeight(symbolWeight/2);
                 line(-symbolSize,0,symbolSize,0);
                 line(0,-symbolSize,0,symbolSize);
+
                 pop();
 
                 if (this.typ == 'PCR'){
@@ -397,11 +397,12 @@ class Connector {
                 translate(this.box1.x + boxW, this.box1.y + boxH/2); // Right hand side, start of arrow
 
                 translate(symbolSize,-symbolSize-circSize); // Offset
-                strokeWeight(symbolWeight);
+                strokeWeight(symbolWeight/2);
                 noFill();
                 circle(circSize/2,circSize/2,circSize)
 
                 translate(symbolSize*2,-symbolSize*2+circSize); // Offset
+                strokeWeight(symbolWeight);
                 line(-symbolSize,0,symbolSize,0);
                 // point(0,-symbolSize);
                 // point(0,symbolSize);
