@@ -209,6 +209,7 @@ class GroupBox {
             fill(clrBox);    
             stroke(clrBoxStroke);
             this.label = round(opspor)
+            // this.label = floor(opspor)
             // this.label = opspor
             // this.label2 = 'Positive svar\n Smitteopsporing \n Opfølgende PCR-test'
             // this.label2 = 'Positive svar\nEventuelt \nVariantbestemmelse'
@@ -222,8 +223,9 @@ class GroupBox {
             fill(clrBox);  
             stroke(clrBoxStroke);  
             this.label = round(isoVent)
-            this.label = isoVent
-            this.label = round(posTest) - round(opspor);
+            // this.label = floor(isoVent)
+            // this.label = isoVent
+            // this.label = round(posTest) - round(opspor);
             this.label2 = 'Ag+ Ag-\n Isoleres og afventer \nopfølgende PCR-test'
         } else if (this.type == 'pnP'){
             fill(clrBox);    
@@ -243,7 +245,7 @@ class GroupBox {
             // this.label = round(isoVent-senSpor)
             this.label = round(isoVent-senSpor)
             // this.label = isoVent-senSpor
-            this.label = round(posTest) - round(opspor) - round(senSpor);
+            // this.label = round(posTest) - round(opspor) - round(senSpor);
             this.label2 = 'Ag+ Ag- PCR-\n  Kan bryde isolationen \n'
         } else if (this.type == 'ppN'){
             fill(255);
