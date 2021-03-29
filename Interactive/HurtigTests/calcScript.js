@@ -180,7 +180,9 @@ let boxH = 100;
 let boxW = 150;
 
 let conSize = 5;
-let symbolSize = 8;
+let symbolSize = 6;
+let circSize = symbolSize*4; 
+let symbolWeight = 2.5;
 
 class GroupBox {
     constructor(x,y,type){
@@ -358,7 +360,15 @@ class Connector {
             if (this.res == 'p'){
                 push()
                 translate(this.box1.x + boxW/2, this.box1.y + boxH); // Bottom, start of arrow
+
+                translate(symbolSize,symbolSize); // Offset
+                strokeWeight(symbolWeight);
+                noFill();
+                circle(circSize/2,circSize/2,circSize)
+
                 translate(symbolSize*2,symbolSize*2); // Offset
+
+
                 line(-symbolSize,0,symbolSize,0);
                 line(0,-symbolSize,0,symbolSize);
                 pop();
@@ -385,10 +395,16 @@ class Connector {
             if (this.res == 'n'){
                 push()
                 translate(this.box1.x + boxW, this.box1.y + boxH/2); // Right hand side, start of arrow
-                translate(symbolSize*2,-symbolSize*2); // Offset
+
+                translate(symbolSize,-symbolSize-circSize); // Offset
+                strokeWeight(symbolWeight);
+                noFill();
+                circle(circSize/2,circSize/2,circSize)
+
+                translate(symbolSize*2,-symbolSize*2+circSize); // Offset
                 line(-symbolSize,0,symbolSize,0);
-                point(0,-symbolSize);
-                point(0,symbolSize);
+                // point(0,-symbolSize);
+                // point(0,symbolSize);
                 pop();
 
                 if (this.typ == 'PCR'){

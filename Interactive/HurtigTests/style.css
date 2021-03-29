@@ -27,3 +27,38 @@ canvas {
   margin-left: auto;
   margin-right: auto;
 }
+
+
+input[type="range"] {
+  -webkit-appearance: none;
+ }
+ 
+ input[type="range"]:focus {
+  outline: none;
+ }
+ input[type="range"]::-webkit-slider-runnable-track {
+  background: rgb(220,220,255);
+  height: 8px;
+ }
+ 
+ input[type="range"]::-moz-range-track {
+  background: rgb(220,220,255);
+  height: 8px;
+ }
+ input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 20px;
+  width: 8px;
+  background: rgb(180,180,200);
+  margin-top: -6px;
+  border-radius: 10%;
+ }
+ 
+ input[type="range"]::-moz-range-thumb {
+  height: 20px;
+  width: 8px;
+  background: rgb(180,180,200);
+  margin-top: -6px;
+  border-radius: 10%;
+ }
+ 
