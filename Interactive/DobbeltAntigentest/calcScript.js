@@ -204,7 +204,7 @@ class GroupBox {
             stroke(clrBoxStroke);  
             this.label = round(posTest)
             // this.label = posTest
-            this.label2 = 'Ag+\n Testes med \nny antigen-test'
+            this.label2 = 'Ag+\n Testes med \nny antigentest'
         } else if (this.type == 'pp'){
             fill(clrBox);    
             stroke(clrBoxStroke);
