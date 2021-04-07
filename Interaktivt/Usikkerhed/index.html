@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sketch</title>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script src="libraries/p5.min.js"></script>
+    <!-- <script src="libraries/p5.sound.min.js"></script> -->
+  </head>
+
+  <body>
+    
+    <!-- "Niels Bohr" citat baggrund: https://quoteinvestigator.com/2013/10/20/no-predict/ -->
+    <!-- Husk reference til https://videnskab.dk/forskerzonen/krop-sundhed/hvorfor-er-det-svaert-at-forudsige-epidemier-lige-efter-de-er-gaaet-i-udbrud  -->
+    
+    <div style="width:80%;margin: 10%;">
+      <!-- <h1>Matematiske modeller og usikkerhed</h1> --> 
+      <h1>Usikkerhed i matematiske parametre kan give et væld af resultater</h1> 
+      <h3>Hvordan parameterusikkerhed kommer til udtryk i en matematisk model</h3>  
+      
+      
+      <div id="p5Div1" class='p5Canvas'> </div>
+      
+      <div class="slider-container">
+        <div class="flex-item"> 
+          <input type="range" min="0" max="10" value="2" step="1" class="slider" id="ini_slider">
+          <p id="ini_label">Antal i starten</p>
+        </div>
+        <div class="flex-item"> 
+          <input type="range" min="0" max="0.5" value="0.2" step="0.05" class="slider" id="grow_slider">
+          <p id="grow_label">Vækstrate</p>
+        </div>
+      </div>
+
+
+      <br>
+      <br>
+      <br>
+      <br>
+      
+      <div class='p5Canvas'>
+        <div id="p5DivDist" class='p5CanvasSmall'> </div>
+        <div id="p5DivDist2" class='p5CanvasSmall'> </div>
+      </div>
+  
+      <!-- <div style="width:90%;margin: 5%;">
+      </div>   -->
+      
+      <br>
+        
+      <div class="slider-container">
+        <div class="flex-item"> 
+          <input type="range" min="0" max="10" value="2" step="1" class="slider" id="ini_slider3">
+          <p id="ini_label3">Antal i starten, gennemsnit</p>
+        </div>
+        <div class="flex-item"> 
+          <input type="range" min="0" max="0.5" value="0.2" step="0.05" class="slider" id="grow_slider3">
+          <p id="grow_label3">Vækstrate, gennemsnit</p>
+        </div>
+      </div>
+      <div class="slider-container">
+        <div class="flex-item"> 
+          <input type="range" min="0" max="1" value="0.1" step="0.05" class="slider" id="ini_dist_slider2">
+          <p id="ini_dist_label2">Antal i starten, spredning</p>
+        </div>
+        <div class="flex-item"> 
+          <input type="range" min="0" max="0.25" value="0.04" step="0.01" class="slider" id="grow_dist_slider2">
+          <p id="grow_dist_label2">Vækstrate, spredning</p>
+        </div>
+      </div>
+      
+      <br>
+      <br>
+      <br>
+      <br>
+
+
+      <div id="p5Div2" class='p5Canvas'> </div>
+      
+      <div class="slider-container">
+        <div class="flex-item"> 
+          <input type="range" min="0" max="10" value="2" step="1" class="slider" id="ini_slider2">
+          <p id="ini_label2">Antal i starten, gennemsnit</p>
+        </div>
+        <div class="flex-item"> 
+          <input type="range" min="0" max="0.5" value="0.2" step="0.05" class="slider" id="grow_slider2">
+          <p id="grow_label2">Vækstrate, gennemsnit</p>
+        </div>
+      </div>
+      <div class="slider-container">
+        <div class="flex-item"> 
+          <input type="range" min="0" max="1" value="0.1" step="0.05" class="slider" id="ini_dist_slider">
+          <p id="ini_dist_label">Antal i starten, spredning</p>
+        </div>
+        <div class="flex-item"> 
+          <input type="range" min="0" max="0.25" value="0.04" step="0.01" class="slider" id="grow_dist_slider">
+          <p id="grow_dist_label">Vækstrate, spredning</p>
+        </div>
+      </div>
+    
+
+
+  </div>
+
+
+    <!-- <div style="width:100%;margin: auto;"> -->
+    <!-- <div style="width:80%;margin: 10%;">
+      <h1>Matematiske modeller og usikkerhed</h1>
+
+      <p> I en matematisk verden ville data ligne de bagvedliggende matematiske funktioner der dannede data. </p>
+      <p> Hvis noget vokser eksponetielt, så ville data-punkter ligge som snor på en kæde langs funktionen, som du kan se herunder.  </p>
+      
+      <div id="p5Div1" class='p5Canvas'> </div>
+
+      <p> 
+        Men sådan ser virkeligheden ikke altid ud. I stedet er data i den virkelige verden ofte fyldt med forskellig støj. 
+        Som en konsekvens vil nogle data-punkter være højere eller lavere end den "virkelige" matematiske funktion. 
+      </p>
+      
+      <div id="p5Div2" class='p5Canvas'> </div>
+      <input id="sketch2ShowRealFunc" type="button" value="Vis kun data"> 
+      <p> 
+        Der kan være mange grunde til at data er støj-fyldt. 
+        For en bakteriekultur i vækst kunne sollys have haft betydning, 
+        mens det for positive COVID-19 tests kunne afhænge af hvor mange blev testet en bestemt dag. 
+        Årsagen kan være vigtig at undersøge, men det ser vi bort fra nu. 
+      </p>
+      <input id="renewNoise" type="button" onclick="calcNoise()" value="Tryk her for at lave ny tilfældig støj"> 
+      <p>
+        Data repræsenterer altså ikke det matematiske system perfekt, 
+        og vi må derfor forsøge at se om vi kan "gætte" hvad der ligger bag data.  
+      </p>
+    </div> -->
+
+    <!-- --- SIR MODEL --- -->
+
+    
+    <!-- <div id="p5DivSIR" class='p5Canvas'> </div>
+    <div class='p5Canvas'>
+      <div id="p5DivDistSIR" class='p5CanvasSmall'> </div>
+      <div id="p5DivDistSIR2" class='p5CanvasSmall'> </div>
+    </div>
+
+    <br>
+      
+    <div class="slider-container">
+      <div class="flex-item"> 
+        <input type="range" min="0" max="10" value="2" step="1" class="slider" id="r0_slider">
+        <p id="r0_label">R0, gennemsnit</p>
+      </div>
+      <div class="flex-item"> 
+        <input type="range" min="0" max="0.5" value="0.2" step="0.05" class="slider" id="inf_slider">
+        <p id="inf_label">Infektionsperiode, gennemsnit</p>
+      </div>
+    </div>
+    <div class="slider-container">
+      <div class="flex-item"> 
+        <input type="range" min="0" max="1" value="0.05" step="0.05" class="slider" id="r0_dist_slider">
+        <p id="r0_dist_label">R0, spredning</p>
+      </div>
+      <div class="flex-item"> 
+        <input type="range" min="0" max="0.25" value="0.1" step="0.01" class="slider" id="inf_dist_slider">
+        <p id="inf_dist_label">Infektionsperiode, spredning</p>
+      </div>
+    </div> -->
+
+
+    <script src="sketch.js"></script>
+    <!-- <script src="SIRsketch.js"></script> -->
+  </body>
+</html>

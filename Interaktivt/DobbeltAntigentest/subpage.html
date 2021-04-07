@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="libraries/p5.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <style>
+    canvas{
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    </style>
+  </head>
+
+  <body>
+    
+    <div id="p5Div"> </div>
+
+    <br>
+    
+    <div class="slider-container">
+      <div class="flex-item"> 
+        <input type="range" min="0" max="100" value="10" step="1" class="slider" id="prae_slider">
+        <!-- <p id="prae_label">Prævalens</p> -->
+        <p id="prae_label">Prævalens i testpopulation</p>
+      </div>
+      <div class="flex-item"> 
+        <input type="range" min="10000" max="500000" value="100000" step="10000" class="slider" id="test_slider">
+        <p id="test_label">Antal Tests</p>
+      </div>
+    </div>
+    <div class="slider-container">      
+      <div class="flex-item"> 
+        <input type="range" min="0.5" max="1" value="0.50" step="0.05" class="slider" id="sens_slider">
+        <p id="sens_label">Sensitivitet</p>
+      </div>
+      <div class="flex-item"> 
+        <input type="range" min="0.9" max="1" value="0.998" step="0.001" class="slider" id="spec_slider">
+        <p id="spec_label">Specificitet</p>
+      </div>
+
+    </div>
+    <p><small>Bemærk at det viste antal af personer afrundes til heltal, og at der derfor i nogle tilfælde kan være en fejl på én person i enkelte grupper.</small></p>
+    <p><small><a href="./dobbelt_test.xlsx">Excel-regneark med beregninger er tilgængeligt her.</a></small></p>
+
+   <script src="calcScript.js"></script>
+  </body>
+
+</html>

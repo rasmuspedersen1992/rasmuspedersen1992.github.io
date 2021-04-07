@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="libraries/p5.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <!-- <script src="./Chart.min.js"></script> -->
+    <!-- <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/locale/da.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script> -->
+    <style>
+    canvas{
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    </style>
+    </head>
+
+  <body>
+    <!-- <div style="position:relative; width:80vw; margin: auto;"> -->
+    <!-- <div style="width:100%;margin: auto;">
+      <canvas id="canvas2"></canvas>
+    </div> -->
+      <!-- <canvas id="p5canvas"></canvas> -->
+    <div id="p5Div"> </div>
+    <br>
+    
+    <div class="slider-container">
+      <div class="flex-item"> 
+        <input type="range" min="0" max="100" value="10" step="1" class="slider" id="inci_slider">
+        <!-- <p id="inci_label">Prævalens</p> -->
+        <p id="inci_label">Prævalens i testgruppen</p>
+      </div>
+      <div class="flex-item"> 
+        <!-- <input type="range" min="10000" max="100000" value="100000" step="10000" class="slider" id="test_slider"> -->
+        <input type="range" min="10000" max="500000" value="100000" step="10000" class="slider" id="test_slider">
+        <p id="test_label">Antal Tests</p>
+      </div>
+    </div>
+    <div class="slider-container">      
+      <div class="flex-item"> 
+        <input type="range" min="0.5" max="1" value="0.50" step="0.05" class="slider" id="sens_slider">
+        <p id="sens_label">Sensitivitet</p>
+      </div>
+      <div class="flex-item"> 
+        <!-- <input type="range" min="0.6" max="1" value="0.99" step="0.01" class="slider" id="spec_slider"> -->
+        <input type="range" min="0.9" max="1" value="0.998" step="0.001" class="slider" id="spec_slider">
+        <p id="spec_label">Specificitet</p>
+      </div>
+
+    </div>
+    <p><small>Bemærk at det viste antal af personer afrundes til heltal, og at der derfor i nogle tilfælde kan være en fejl på én person i enkelte grupper.</small></p>
+
+    <!-- <p>Sande positive fundet og opsporet: <span id="sandPos_label"></span> </p>
+    <p>Personer i isolation 24 timer: <span id="isoVent_label"></span> </p>
+    <p>Sent opsporet: <span id="senSpor_label"></span>  </p> -->
+
+    
+    <!-- <p id="sandPos_label"></p> -->
+    <!-- <p id="isoVent_label"></p>
+    <p id="senSpor_label"></p> -->
+
+
+      <!-- <table class ="center"> 
+        <td> 
+          <fieldset>      
+            <legend>Vis </legend>
+            <div>
+              <input type="radio" id="antal" name="toShow_radio" value="admitted" onclick="handleClick(this);"  checked> 
+              <label for ="admitted"> Indlæggelser </label>
+            </div> 
+            <div>
+              <input type="radio" id="antal" name="toShow_radio" value="deaths" onclick="handleClick(this);"> 
+              <label for ="deaths"> Dødsfald </label>
+            </div> 
+            <div>
+              <input type="radio" id="ratio" name="toShow_radio" value="newInfect" onclick="handleClick(this);" >
+              <label for ="newInfect"> Nye smittede </label>
+            </div>
+          </fieldset> 
+        </td> 
+      </table> -->
+      
+      
+    <!-- </div> -->
+    
+   <!-- <script src="chartScript.js"></script> -->
+   <script src="calcScript.js"></script>
+  </body>
+</html>
