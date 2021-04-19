@@ -130,7 +130,8 @@ let calcData = () =>  {
   dataT = [];
   meanV = [];
   // Exponential
-  for (let t = 0; t < ax_NumTicks_X; t=t+dt_plot) {
+    // for (let t = 0; t < ax_NumTicks_X; t=t+dt_plot) {
+  for (let t = 0; t < xMax; t=t+dt_plot) {
     dataT.push(t);
     const curV = expInit * Math.exp((expGrowthRate) * t);
     meanV.push(curV);
