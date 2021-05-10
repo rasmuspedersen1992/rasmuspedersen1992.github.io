@@ -93,13 +93,21 @@ let ax_0_X = axMargin;
 let ax_0_Y = allH-axMargin;
 let ax_W = allW-axMargin*2;
 let ax_H = -allH + axMargin*2;
-let ax_NumTicks_X = 10;
+let ax_NumTicks_X = 5;
 let xTicksStep = Math.floor(ax_W / ax_NumTicks_X);
+let ax_NumTicks_Y = 4;
+let yTicksStep = Math.floor(ax_H / ax_NumTicks_Y);
 // let ax_NumTicks_Y = 10;
 
-let xMax  = ax_NumTicks_X;
-// let yMax  = 200;
-let yMax  = ini_slider.max  * 2;
+// let xMax  = ax_NumTicks_X;
+// // let yMax  = 200;
+// let yMax  = ini_slider.max  * 2;
+
+let xMax = 10;
+let yMax = 20;
+
+let xTicksDiff = xMax/ax_NumTicks_X
+let yTicksDiff = yMax/ax_NumTicks_Y
 
 
 // Colors
@@ -122,7 +130,8 @@ let calcData = () =>  {
   dataT = [];
   meanV = [];
   // Exponential
-  for (let t = 0; t < ax_NumTicks_X; t=t+dt_plot) {
+    // for (let t = 0; t < ax_NumTicks_X; t=t+dt_plot) {
+  for (let t = 0; t < xMax; t=t+dt_plot) {
     dataT.push(t);
     const curV = expInit * Math.exp((expGrowthRate) * t);
     meanV.push(curV);
@@ -170,6 +179,7 @@ let drawAxes = (sketch) => {
   sketch.fill(clrAxes);
   sketch.stroke(clrAxes);
   sketch.strokeWeight(3);
+  sketch.textAlign(sketch.CENTER,sketch.TOP);
 
   sketch.push()
   sketch.translate(ax_0_X,ax_0_Y);
@@ -183,11 +193,57 @@ let drawAxes = (sketch) => {
   sketch.line(0,ax_H,-arrowSize/2,ax_H+arrowSize);
 
   // Ticks
-  sketch.strokeWeight(2)
+  sketch.noStroke();
+  sketch.fill(0);
+  sketch.text(0,0,10)
+
+  sketch.push();
   for (let k = 1; k < ax_NumTicks_X; k++) {
-    sketch.line(k*xTicksStep,-arrowSize/3,k*xTicksStep,+arrowSize/3)    
+    
+    sketch.strokeWeight(2)
+    sketch.stroke(clrAxes);
+    sketch.translate(xTicksStep,0)
+    sketch.line(0,-arrowSize/3,0,+arrowSize/3)    
+
+    
+    sketch.noStroke();
+    sketch.fill(0);
+    sketch.text(xTicksDiff*k,0,10)
+  }
+  sketch.translate(xTicksStep,0)
+  sketch.noStroke();
+  sketch.fill(0);
+  sketch.text(xTicksDiff*ax_NumTicks_X,0,10)
+
+  sketch.pop();
+  // Y-Ticks
+  sketch.noStroke();
+  sketch.fill(0);
+  sketch.textAlign(sketch.RIGHT,sketch.CENTER);
+  sketch.text(0,-10,0)
+
+  sketch.push();
+  // ax_NumTicks_Y = 5;
+  // yTicksStep = xTicksStep/2;
+  for (let k = 1; k < ax_NumTicks_Y; k++) {
+    
+    sketch.strokeWeight(2)
+    sketch.stroke(clrAxes);
+    sketch.translate(0,yTicksStep)
+    sketch.line(-arrowSize/3,0,+arrowSize/3,0)
+
+    
+    sketch.noStroke();
+    sketch.fill(0);
+    sketch.text(yTicksDiff*k,-10,0)
 
   }
+  sketch.translate(0,yTicksStep)
+  sketch.noStroke();
+  sketch.fill(0);
+  sketch.text(yTicksDiff*ax_NumTicks_Y,-10,0)
+  sketch.pop();
+
   sketch.pop()
 }
 
