@@ -14,7 +14,8 @@
 
   <body>
     
-    <div style="width:80%;margin: 10%;">
+    <!-- <div style="width:100%;margin: 00%;"> style="width:600px;text-align: center">-->
+    <div class='mainDiv'> 
       <h1>Interaktiv SIR model</h1> 
       
       
@@ -22,6 +23,48 @@
 
 
       
+      <div class='p5Canvas'>
+        <div id="settingsBox" class='p5CanvasSmall'> 
+          <h2>Indstillinger</h2>
+          <div class="flex-item"> <form>
+            <input type="radio" id="visSIR" name="visSIRellerInf" value="visSIR">
+            <label for="visSIR">Vis hele simuleringen</label><br>
+            <input type="radio" id="visInf" name="visSIRellerInf" checked='true' value="visInf">
+            <label for="visInf">Vis kun nye tilfælde</label><br>
+          </form>
+          <br>
+            <form>
+              <input type="checkbox" id="checkRoed" name="checkRoed" value="checkRoed" checked='true'>
+              <label for="checkRoed"> Vis udæmpet epidemi (Rød kurve)</label><br>
+              <input type="checkbox" id="checkGroen" name="checkGroen" value="checkGroen">
+              <label for="checkGroen"> Vis dæmpet epidemi (Grøn kurve)</label><br>
+              <input type="checkbox" id="checkConf" name="checkConf" value="checkConf">
+              <label for="checkConf"> Vis konfidensinterval</label><br>
+              <input type="checkbox" id="checkAnim" name="checkAnim" value="checkAnim">
+              <label for="checkAnim"> Vis tilfældige eksempler</label><br>
+              <!-- <input type="checkbox" id="checkSliders" name="checkSliders" value="checkSliders">
+              <label for="checkSliders"> Vis parameter sliders</label> -->
+            </form>
+          </div>
+        </div>
+        <div id="p5DivDist3" class='p5CanvasSmall'> </div>
+        <div class="slider-container">
+          <div class="flex-item"> 
+          </div>
+          <div class="flex-item"> 
+            <input type="range" min="0" max="0.75" value="0.3" step="0.05" class="slider" id="redu_slider">
+            <p id="redu_label">Effekt af nedlukning</p>
+          </div>
+        </div>
+        <div class="slider-container">
+          <div class="flex-item"> 
+          </div>
+          <div class="flex-item"> 
+            <input type="range"  min="0" max="0.1" value="0.01" step="0.01" class="slider" id="redu_dist_slider">
+            <p id="redu_dist_label">Effekt af nedlukning, spredning</p>
+          </div>
+        </div>
+      </div>
       <div class='p5Canvas'>
         <div id="p5DivDist" class='p5CanvasSmall'> </div>
         <div id="p5DivDist2" class='p5CanvasSmall'> </div>
@@ -31,7 +74,7 @@
               
       <div class="slider-container">
         <div class="flex-item"> 
-          <input type="range" min="0" max="4" value="2" step="0.25" class="slider" id="R0_slider">
+          <input type="range" min="0" max="4" value="3" step="0.25" class="slider" id="R0_slider">
           <p id="R0_label">R0</p>
         </div>
         <div class="flex-item"> 
