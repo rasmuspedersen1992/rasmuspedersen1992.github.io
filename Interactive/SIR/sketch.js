@@ -741,7 +741,7 @@ let drawBackground = (sketch) => {
   sketch.fill(clrBackground);
   
   sketch.stroke(0,50)
-  sketch.strokeWeight(1)
+  sketch.strokeWeight(3)
 
   sketch.rect(backgroundMargin,backgroundMargin,sketch.width-backgroundMargin*2,sketch.height-backgroundMargin*2);
 }
@@ -1433,7 +1433,7 @@ class aniPoint {
         x2 = valueToScreenX(t2);
 
         sketch.strokeWeight(1);
-        const curAlpha = 255*(stepsToShow - k)/stepsToShow;
+        const curAlpha = 100*(stepsToShow - k)/stepsToShow;
 
         
         if (x < (ax_W+axMargin)){
@@ -1540,7 +1540,7 @@ class aniPoint {
           I = this.Is[this.aniID];
           R = this.Rs[this.aniID];
           y = valueToScreenY(S);
-            sketch.stroke(clrS_li);
+          sketch.stroke(clrS_li);
             sketch.point(x,y)
 
           y = valueToScreenY(I);
@@ -1586,6 +1586,9 @@ class aniPoint {
         }
 
       }
+    } else {
+      this.reset();
+      this.aniID = 0;
     }
 
     // Move one point forward
@@ -1593,10 +1596,10 @@ class aniPoint {
 
 
     // if (x > ax_W ){
-    if (x > (ax_W*1.5) ){
-      this.reset();
-      this.aniID = 0;
-    }
+    // // if (x > (ax_W*1.1) ){
+    //   this.reset();
+    //   this.aniID = 0;
+    // }
 
 
     // let maxAniID = this.ts.length - 1;
@@ -2072,7 +2075,8 @@ const sketchDist3 = ( sketch ) => {
     parMu = sirRedu;
     parSi = sirReduDist;
 
-    let curMaxT = parseFloat(redu_slider.max); 
+    // let curMaxT = parseFloat(redu_slider.max); 
+    let curMaxT = parseFloat(redu_slider.max*1.05); 
 
     let tRange = [];
     let numVals = 100;
