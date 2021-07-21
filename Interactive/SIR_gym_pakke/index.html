@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Interaktiv SIR model</title>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script src="libraries/p5.min.js"></script>
+    <!-- <script src="libraries/p5.sound.min.js"></script> -->
+  </head>
+
+  <body>
+    
+    <!-- <div style="width:100%;margin: 00%;"> style="width:600px;text-align: center">-->
+    <div class='mainDiv'> 
+      <h1>Interaktiv SIR model</h1> 
+      
+      
+      <div id="p5Div" class='p5Canvas'> </div>
+
+
+      <h2>Parameterværdier</h2>
+      
+        
+        <div class='p5Canvas'>
+          <div id="p5DivDist" class='p5CanvasSmall'> </div>
+          <div id="p5DivDist2" class='p5CanvasSmall'> </div>
+        </div>
+        <br>
+                  
+        <div class="slider-container">
+          <div class="flex-item"> 
+            <input type="range" min="0" max="2" value="0.8" step="0.1" class="slider" id="R0_slider">
+            <p id="R0_label">𝛃</p>
+          </div>
+          <div class="flex-item"> 
+            <input type="range" min="0" max="6" value="4" step="0.5" class="slider" id="tInf_slider">
+            <!-- <input type="range" min="0" max="0.5" value="0.2" step="0.05" class="slider" id="tInf_slider"> -->
+            <p id="tInf_label">Smitsom periode (1/𝛄)</p>
+          </div>
+        </div>
+        <div class="slider-container">
+          <div class="flex-item"> 
+            <input type="range" min="0" max="1" value="0" step="0.05" class="slider" id="R0_dist_slider">
+            <p id="R0_dist_label">𝛃, spredning</p>
+          </div>
+          <div class="flex-item"> 
+            <!-- <input type="range" min="0" max="0.25" value="0.04" step="0.01" class="slider" id="tInf_dist_slider"> -->
+            <input type="range" min="0" max="3" value="0" step="0.5" class="slider" id="tInf_dist_slider">
+            <p id="tInf_dist_label">Smitsom periode, spredning</p>
+          </div>
+        </div>
+    
+
+      <div class='p5Canvas'>
+        <div id="settingsBox" class='p5CanvasSmall'> 
+          <h3>Indstillinger</h3>
+          <div class="flex-item-settings"> 
+          <!-- <form>
+            <input type="radio" id="visSIR" name="visSIRellerInf" value="visSIR">
+            <label for="visSIR">Vis hele simuleringen</label><br>
+            <input type="radio" id="visInf" name="visSIRellerInf" checked='true' value="visInf">
+            <label for="visInf">Vis kun nye tilfælde</label><br>
+          </form> -->
+            <form>
+              <input type="checkbox" id="checkRoed" name="checkRoed" value="checkRoed" checked='true'>
+              <label for="checkRoed"> Vis udæmpet epidemi (Rød kurve)</label><br>
+              <input type="checkbox" id="checkGroen" name="checkGroen" value="checkGroen">
+              <label for="checkGroen"> Vis dæmpet epidemi (Grøn kurve)</label><br>
+              <input type="checkbox" id="checkConf" name="checkConf" value="checkConf">
+              <label for="checkConf"> Vis konfidensinterval</label><br>
+              <input type="checkbox" id="checkAnim" name="checkAnim" value="checkAnim">
+              <label for="checkAnim"> Vis tilfældige eksempler</label><br>
+              <!-- <input type="checkbox" id="checkSliders" name="checkSliders" value="checkSliders">
+              <label for="checkSliders"> Vis parameter sliders</label> -->
+            </form>
+          </div>
+        </div>
+
+        <div id="p5DivDist3" class='p5CanvasSmall'> </div>
+
+        <div class="slider-container">
+          <div class="flex-item"> 
+          </div>
+          <div class="flex-item"> 
+            <input type="range" min="0" max="0.75" value="0.3" step="0.05" class="slider" id="redu_slider">
+            <p id="redu_label">Effekt af nedlukning</p>
+          </div>
+        </div>
+        <div class="slider-container">
+          <div class="flex-item"> 
+          </div>
+          <div class="flex-item"> 
+            <input type="range"  min="0" max="0.1" value="0.01" step="0.01" class="slider" id="redu_dist_slider">
+            <p id="redu_dist_label">Effekt af nedlukning, spredning</p>
+          </div>
+        </div>
+      </div>
+  
+  </div>
+
+
+    <script src="sketch.js"></script>
+  </body>
+</html>

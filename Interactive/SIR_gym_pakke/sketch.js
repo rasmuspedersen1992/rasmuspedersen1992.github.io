@@ -12,8 +12,8 @@ let firstp5DivElement = document.getElementById('p5Div'); // For using CSS sizes
 let smallp5DivElement = document.getElementById('p5DivDist'); // For using CSS sizes
 
 // Flags for what to show
-let showNewInf = true;
-let showAllVar = false;
+let showNewInf = false;
+let showAllVar = true;
 let drawRandom = true;
 let maxAniPoints = 0;
 
@@ -44,21 +44,21 @@ let showRed = check_red.checked;
 let showGreen = check_gre.checked;
 let showConf = check_conf.checked;
 
-// Setup listener for radio button
-document.addEventListener('input',(e)=>{
-    if(e.target.getAttribute('name')=="visSIRellerInf"){
-      curChoice = e.target.value;
-      if (curChoice == 'visSIR'){
-        showNewInf = false;
-        showAllVar = true;
-      } else {
-        showNewInf = true;
-        showAllVar = false;
-      }
-      mainFunc()
-    }
-  }
-)
+// // Setup listener for radio button
+// document.addEventListener('input',(e)=>{
+//     if(e.target.getAttribute('name')=="visSIRellerInf"){
+//       curChoice = e.target.value;
+//       if (curChoice == 'visSIR'){
+//         showNewInf = false;
+//         showAllVar = true;
+//       } else {
+//         showNewInf = true;
+//         showAllVar = false;
+//       }
+//       mainFunc()
+//     }
+//   }
+// )
 
 // radio_show_SIR.onchange = function(){
 //   // Run main function 
@@ -169,9 +169,14 @@ let readInputs = function(){
 
 // --- Set labels beneath inputs --
 let setLabels = function(){
-  R0_label.innerHTML  = 'R0: '+sirR0;
-  tInf_label.innerHTML  = 'Smitsom periode: '+sirTInf + ' dage';
+  R0_label.innerHTML  = '𝛃: '+sirR0;
+  tInf_label.innerHTML  = 'Smitsom periode (1/𝛄): '+sirTInf + ' dage';
   redu_label.innerHTML  = 'Effekt af nedlukning: '+parseInt(100*sirRedu)+'%';
+
+  // Commas instead of dots:
+  R0_label.innerHTML = R0_label.innerHTML.replace('.',',')
+  tInf_label.innerHTML = tInf_label.innerHTML.replace('.',',')
+  redu_label.innerHTML = redu_label.innerHTML.replace('.',',')
 }
 
 // -- Functions for getting random values from distributions --
@@ -270,7 +275,8 @@ function calcSIRvalues(R0,tInf,redu){
 
 
   // gamma = 1/4.7;
-  beta = R0 * gamma / curN;
+  // beta = R0 * gamma / curN;
+  beta = R0;
   beta_redu = (1-redu) * beta; // Mitigated epidemic is simply just reduction of beta
 
   let tScaler = 10;
