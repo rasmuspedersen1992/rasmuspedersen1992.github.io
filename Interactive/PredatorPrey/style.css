@@ -1,0 +1,54 @@
+/* html, body {
+  margin: 0;
+  padding: 0;
+}
+
+canvas {
+  display: block;
+} */
+/* .mainDiv {  
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 600px;
+} */
+
+/* .p5Canvas {
+  margin: auto;
+  width: 100%;
+} */
+
+/* Styling of sliders  */
+input[type="range"] {
+  -webkit-appearance: none;
+ }
+ 
+ input[type="range"]:focus {
+  outline: none;
+ }
+ input[type="range"]::-webkit-slider-runnable-track {
+  background: rgb(0, 34, 15);
+  height: 16px;
+ }
+ 
+ input[type="range"]::-moz-range-track {
+  background: rgb(0, 34, 15);
+  height: 16px;
+ }
+ input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 30px;
+  width: 12px;
+  background: rgb(150,100,100);
+  margin-top: -6px;
+  border-radius: 10%;
+ }
+ 
+ input[type="range"]::-moz-range-thumb {
+  height: 30px;
+  width: 12px;
+  background: rgb(150,100,100);
+  margin-top: -6px;
+  border-radius: 10%;
+ }
+ 
