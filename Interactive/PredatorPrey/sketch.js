@@ -27,11 +27,19 @@ let preyMoveSpeed = 100;
 let predSize = 70;
 let predMoveDist = 250;
 let predMoveSpeed = 50;
+// let preySize = 40;
+// let preyMoveDist = 150;
+// let preyMoveSpeed = 50;
+// let predSize = 40;
+// let predMoveDist = 30;
+// let predMoveSpeed = 20;
 
 let eatDist = 1000;
 
 //
 let clrGrass = [55,155,55];
+let clrPrey = [0,255,0];
+let clrPred = [255,0,0];
 
 // Flags for turning of parts of simulations
 let flagBirth = true;
@@ -40,13 +48,27 @@ let flagEat = true;
 
 // More flags
 let flagSettings = false;
-let flagStats = false;
+let flagStats = true;
 let flagExamples = false;
 let flagRunning = true;
+let flagInfi = true;
 let flagOverExamplesButton = false;
 let flagOverSettingsButton = false;
 let flagOverStatsButton = false;
 let flagOverRestartButton = false;
+let flagOverInfinityButton = false;
+
+
+// --- Stats screen ---
+let statClr = [150,150,250];
+let statMargin = 60;
+let statX0 = statMargin;
+let statHeightRatio = 0.4;
+let statY0 = canvasHeight*(1-statHeightRatio);
+
+let statW = canvasWidth  - (statMargin*2)
+// let statH = (canvasHeight - (statMargin*2))*statHeightRatio
+let statH = (canvasHeight * statHeightRatio) - (statMargin*2);
 
 // --- Examples and settings screen ---
 let exaClr = [150,250,150];
@@ -72,11 +94,12 @@ let exaEatY = exampleH*2+exampleHDiff*3;
 let txtExaBirth_EN = 'Prey gives birth \nat random intervals.\nSet probability:';
 let txtExaDeath_EN = 'Predators die from starvation \nat random intervals.\nSet probability:';
 let txtExaEat_EN = 'When meeting, predators eat prey.\nWith a random probability, \na new predator is born.\nSet probability:';
-// let txtExaEat_EN = 'When meeting, predators eat prey \nNew predators are randomly\nborn at the same time.';
+let txtExaMore_EN = 'If a species goes extinct, one new creature will be added.\nCan be turned off using ∞ button below.';
 
 let txtExaBirth = txtExaBirth_EN;
 let txtExaDeath = txtExaDeath_EN;
 let txtExaEat = txtExaEat_EN;
+let txtExaMore = txtExaMore_EN;
 
 // Interactivity
 let sliderBirth;
@@ -86,8 +109,14 @@ let sliderEat;
 
 // For showing results
 let saveFreq = 30; // How long between frames to save
+let curTime = 0;
+let historyTime = [];
 let historyPrey = [];
 let historyPred = [];
+let maxHistSize = 10;
+// For keeping track of extinction events
+let extinctPrey = [];
+let extinctPred = [];
 
 
 // Define model-parameters
@@ -95,6 +124,11 @@ let alpha = 0.005;
 // let beta = 0.02;
 let gamma = 0.5;
 let delta = 0.0025;
+
+// let alpha = 0.004;
+// // let beta = 0.02;
+// let gamma = 0.5;
+// let delta = 0.001;
 
 let alphaMax = 0.01;
 let gammaMax = 1;
@@ -112,11 +146,14 @@ function setup() {
   imgPlant3 = loadImage('images/1F33C_color.png');
   imgPoof = loadImage('images/1F4A5_color.png');
   imgSkull = loadImage('images/2620_color.png');
+  imgSkullRed = loadImage('images/1F480_color_red.png');
+  imgSkullGreen = loadImage('images/1F480_color_green.png');
   imgSkull2 = loadImage('images/1F480_color.png');
   imgExamples = loadImage('images/2754_color.png');
   imgSettings = loadImage('images/2699_color.png');
   imgStats = loadImage('images/1F4CA_color.png');
   imgRestart = loadImage('images/1F504_color.png');
+  imgInfinity = loadImage('images/267E_color.png');
 
 
   // Setup sliders
@@ -132,6 +169,12 @@ function setup() {
   sliderEat.position(exaX2+exaMargin+sliderWidth/2,exaEatY+exaMargin*2.4);
   sliderEat.style('width',sliderWidth+'px');
 
+	// imgSkullRed = createGraphics(width, height);
+  // imgSkullRed.tint(100, 0, 0, 255);
+	// imgSkullRed.image(imgSkull, 0, 0, width, height);
+	// imgSkullGreen = createGraphics(width, height);
+  // imgSkullGreen.tint(0, 100, 0, 255);
+	// imgSkullGreen.image(imgSkull, 0, 0, width, height);
 
   // Start simulation
   startSimulation()
@@ -141,6 +184,11 @@ function startSimulation(){
   allPrey = [];
   allPred = [];
   allDeco = [];
+  historyTime = [];
+  historyPrey = [];
+  historyPred = [];
+  extinctPrey = [];
+  extinctPred = [];
 
   for (let k = 0; k < initPrey; k++) {
     allPrey.push(new Prey(random(canvasWidth),random(canvasHeight)))
@@ -168,10 +216,44 @@ function draw() {
   // Save results every X frames
   if (flagRunning) {
     if ((frameCount % saveFreq)==0){
+      
+      curTime += 1;
+      historyTime.push(curTime)
       historyPred.push(allPred.length)
       historyPrey.push(allPrey.length)
       // console.log([allPrey.length,allPred.length])
-      // console.log(historyPred)
+      // console.log(historyTime)
+      
+      // // If history is too long, remove first data point
+      // if (historyTime.length > maxHistSize){
+      //   historyTime.shift();
+      //   historyPred.shift();
+      //   historyPrey.shift();
+      //   // Remove extinction events that are too old
+      //   for (let k = extinctPrey.length-1; k>=0; k--) { 
+      //     if (extinctPrey[k] < historyTime[0] ) {
+      //       extinctPrey.shift();
+      //     }
+      //   }
+      //   for (let k = extinctPred.length-1; k>=0; k--) { 
+      //     if (extinctPred[k] < historyTime[0] ) {
+      //       extinctPred.shift();
+      //     }
+      //   }
+      // }
+      
+      // // If history is too long, remove half of the data points
+      // if (historyTime.length > maxHistSize){
+      //   historyTime = historyTime.filter((element,index) => {
+      //     return index % 2 === 0;
+      //   })
+      //   historyPred = historyPred.filter((element,index) => {
+      //     return index % 2 === 0;
+      //   })
+      //   historyPrey = historyPrey.filter((element,index) => {
+      //     return index % 2 === 0;
+      //   })
+      // }
     }
   }
 
@@ -234,30 +316,42 @@ function draw() {
       
     }
   }
-  // Restart simulation if one species dies out
-  if (allPrey.length == 0){
-    flagRunning = false;
-    // noLoop()
+  if (flagInfi) {
+    // Add one if a species dies out
+    if (allPrey.length == 0){
+      extinctPrey.push(curTime);
+      allPrey.push(new Prey(random(canvasWidth),random(canvasHeight)))
+    }
+    if (allPred.length == 0){
+      extinctPred.push(curTime);
+      allPred.push(new Predator(random(canvasWidth),random(canvasHeight)))
+    }
+  } else {
+    // Restart simulation if one species dies out
+    if (allPrey.length == 0){
+      flagRunning = false;
+      // noLoop()
 
-    fill(0);
-    noStroke();
-    textSize(32);
-    textAlign(CENTER, CENTER);
-    text('All prey got eaten', canvasWidth/2,canvasHeight/2)
+      fill(0);
+      noStroke();
+      textSize(32);
+      textAlign(CENTER, CENTER);
+      text('All prey got eaten', canvasWidth/2,canvasHeight/2)
 
-    // startSimulation();
-  }
-  if (allPred.length == 0){
-    flagRunning = false;
-    // noLoop()
+      // startSimulation();
+    }
+    if (allPred.length == 0){
+      flagRunning = false;
+      // noLoop()
 
-    fill(0);
-    noStroke();
-    textSize(32);
-    textAlign(CENTER, CENTER);
-    text('All predators died out', canvasWidth/2,canvasHeight/2)
+      fill(0);
+      noStroke();
+      textSize(32);
+      textAlign(CENTER, CENTER);
+      text('All predators died out', canvasWidth/2,canvasHeight/2)
 
-    // startSimulation();
+      // startSimulation();
+    }    
   }
 
   // Buttons
@@ -269,6 +363,7 @@ function draw() {
   let butSetX = canvasWidth-buttonSize - 5;
   let butStaX = butSetX - buttonSize - 10;
   let butResX = butStaX - buttonSize - 10;
+  let butInfX = butResX - buttonSize - 10;
   let buttonY = canvasHeight-buttonSize - 5;
   
   let buttonFill = [0,0,0,50];
@@ -350,17 +445,237 @@ function draw() {
     fill(buttonFill[0],buttonFill[1],buttonFill[2],buttonFill[3])
   }
   let buttonRestartBox = rect(butResX,buttonY,buttonSize,buttonSize,10);
+
+  // Infinity button detection
+  if (
+    mouseX > butInfX &&
+    mouseY > buttonY &&
+    mouseX < butInfX + buttonSize &&
+    mouseY < buttonY  + buttonSize 
+  ) {
+    flagOverInfinityButton = true;
+    fill(buttonFillMouseOver[0],buttonFillMouseOver[1],buttonFillMouseOver[2],buttonFillMouseOver[3])
+  } else {
+    flagOverInfinityButton = false;
+    fill(buttonFill[0],buttonFill[1],buttonFill[2],buttonFill[3])
+  }
+  if (flagInfi){
+    fill(buttonFillActive[0],buttonFillActive[1],buttonFillActive[2],buttonFillActive[3])    
+  }
+  let buttonInfinityBox = rect(butInfX,buttonY,buttonSize,buttonSize,10);
+
+
+  
   
   // Show symbols over buttons
   // let buttonExamples = image(imgExamples,butExaX,buttonY, buttonSize,buttonSize);
   let buttonSettings = image(imgSettings,butSetX,buttonY, buttonSize,buttonSize);
   let buttonStats = image(imgStats,butStaX,buttonY, buttonSize,buttonSize);
   let buttonRestart = image(imgRestart,butResX,buttonY, buttonSize,buttonSize);
+  let buttonInfinity = image(imgInfinity,butInfX,buttonY, buttonSize,buttonSize);
 
+  // --------------------------------------------------------------
+  // ------ Stats and figures screen ------
+  // --------------------------------------------------------------  
+  if (flagStats){
+    
+    push();
+    stroke(0)
+    strokeWeight(7)
+    fill(statClr)
+    // let yOffset = (statHeightRatio*canvasHeight)
+    // translate(statMargin,yOffset+statMargin)
+    translate(statX0,statY0)
+    rect(0,0,statW,statH,20)    
+    // rect(0,0,canvasWidth,canvasHeight)
+    
+    
+    let maxTime = curTime+1;
+  
+    let maxPrey = max(historyPrey);
+    let maxPred = max(historyPred);
+    
+    let maxMax = max([maxPrey,maxPred])*1.1;
+    
+    // let x0 = 100;
+    // let xMax = 300;
+    // let y0 = 50;
+    // let yMax = 200;
+    // let x0 = statMargin;
+    // let xMax = statW-statMargin;
+    // let y0 = statMargin;
+    // let yMax = statH-statMargin;
+    let x0 = statMargin;
+    let xMax = statW-statMargin;
+    let y0 = statMargin;
+    let yMax = statH-statMargin;
+    
+    let axW = xMax-x0;
+    let axH = yMax-y0;
+    
+    // let axMargin = 40;
+    
+    // noStroke();
+    // fill(255,255,255,150)
+    // // rect(x0,y0,axW,axH)
+    // // rect(x0-axMargin,y0-axMargin,axW+axMargin*2,axH+axMargin*2,30)
+    // rect(x0-axMargin,y0-axMargin,axW+axMargin*2,axH+axMargin*2,30)
+    
+    translate(x0,yMax);
+    
+    // Draw axes
+    const tickSize = 10;
+    strokeWeight(1)
+    stroke(0);
+    line(0,0,axW,0);
+    line(axW-tickSize,-tickSize,axW,0)
+    line(axW-tickSize,+tickSize,axW,0)
+    line(0,0,0,-axH);
+    line(-tickSize,-axH+tickSize,0,-axH)
+    line(+tickSize,-axH+tickSize,0,-axH)
+    
+    fill(0)
+    noStroke();
+    textSize(24)
+    textAlign(CENTER,TOP)
+    text('0',0,tickSize*1.5)
+    textAlign(RIGHT,CENTER)
+    text('0',-tickSize*1.5,0)
+    
+    let yTickMax  = initPrey;
+    let yTickDiff = 5;
+    if (maxMax > 20){
+      yTickMax = 50;
+      yTickDiff = 10;
+    }
+    if (maxMax > 50){
+      yTickMax = 100;
+      yTickDiff = 20;
+    }
+    // if (maxMax > 100){
+    //   yTickMax = 200;
+    //   yTickDiff = 20;
+    // }
+    
+    yTickMax = maxMax;
+    
+    // strokeWeight(1)
+    // stroke(0);
+    for (let curY = yTickDiff; curY < yTickMax ; curY += yTickDiff){
+      const thisY =- (curY/maxMax) * axH;
+      stroke(0);
+      line(-tickSize,thisY ,tickSize,thisY );
+      noStroke();
+      text(curY,-tickSize*1.5,thisY);
+    }
+    
+    
+    // Draw data    
+    let prevX = 0;
+    let prevYPrey = -(initPrey/maxMax)*axH;
+    let prevYPred = -(initPred/maxMax)*axH;
+    
+    for (let k = 0; k < historyTime.length; k++) {
+      const thisTime = historyTime[k];
+      const thisPred = historyPred[k];
+      const thisPrey = historyPrey[k];
+      
+      // const dt = 1/maxTime;
+      
+      const timeOfMax = thisTime / maxTime;
+      const preyOfMax = thisPrey / maxMax;
+      const predOfMax = thisPred / maxMax;
+      
+      // const xPos = (timeOfMax * axW) - dt; // Subtract 1 timestep
+      const xPos = timeOfMax * axW; 
+      const yPosPrey = - preyOfMax * axH;
+      const yPosPred = - predOfMax * axH;
+      
+      strokeWeight(3);
+      stroke(clrPrey)
+      point(xPos,yPosPrey,10,10)
+      stroke(clrPred)
+      point(xPos,yPosPred,10,10)
+      // if (k > 0){
+        strokeWeight(2)
+        stroke(clrPrey)
+        line(prevX,prevYPrey,xPos,yPosPrey)
+        stroke(clrPred)
+        line(prevX,prevYPred,xPos,yPosPred)
+        
+        // Show a line on x-axes every XX steps
+        let xTickFreq = 1;
+        if (maxTime > 6){
+          xTickFreq = 2;
+          if (maxTime > 15){
+            xTickFreq = 5;
+            while (maxTime > (xTickFreq * 6)){
+              xTickFreq = xTickFreq * 2
+            }
+          }
+        }
+        
+        
+        // if (maxTime > 30){
+        //   xTickFreq = 10;
+        //   if (maxTime > 60){ 
+        //     xTickFreq = 20
+        //     if (maxTime > 120){ 
+        //       xTickFreq = 50
+        //       if (maxTime > 300){ 
+        //         xTickFreq = 100
+        //       }
+        //     }
+        //   }
+        // } 
+        // if ((k % 5)==4){
+        if ((k % xTickFreq)==(xTickFreq-1)){
+          fill(0);
+          stroke(0);
+          strokeWeight(1);
+        
+          line(xPos,-tickSize,xPos,tickSize)
+          // Show label
+          noStroke();
+          textAlign(CENTER,TOP)
+          text(thisTime,xPos,+tickSize*1.5)
+        }
+      // }
+      prevX = xPos;
+      prevYPred = yPosPred;
+      prevYPrey = yPosPrey;
+      
+    }
+    
+    // Show skulls at extinction events
+    const extinctSize = 30;
+    for (let k = 0; k < extinctPred.length; k++) {
+      const thisTime = extinctPred[k];
+      const timeOfMax = thisTime / maxTime;
+      
+      const xPos = timeOfMax * axW; 
+      // tint(100,0,0);
+      image(imgSkullRed,xPos-extinctSize/2,-extinctSize,extinctSize,extinctSize);
+    }
+    for (let k = 0; k < extinctPrey.length; k++) {
+      const thisTime = extinctPrey[k];
+      const timeOfMax = thisTime / maxTime;
+      
+      const xPos = timeOfMax * axW; 
+      // tint(0,100,0);
+      image(imgSkullGreen,xPos-extinctSize/2,-extinctSize,extinctSize,extinctSize);
+    }
+
+
+    pop()
+    
+  }
   
   // // Examples screen
   // if (flagExamples){
-  // Settings screen
+  // --------------------------------------------------------------  
+  // ------ Settings screen ------
+  // --------------------------------------------------------------  
   if (flagSettings){
     // Separate framecounter for examples screen
     exaFrame += 1; 
@@ -435,7 +750,7 @@ function draw() {
       if (exaFrame < exaFrameMax/2){ 
         image(imgPred,curX-predSize/2,exampleH/2-predSize/2,predSize,predSize);
       } else {
-        image(imgSkull,curX-predSize/2,exampleH/2-predSize/2,predSize,predSize);
+        image(imgSkull2,curX-predSize/2,exampleH/2-predSize/2,predSize,predSize);
       }
 
       translate(exaX2,exampleH/2);
@@ -485,6 +800,19 @@ function draw() {
       pop();
     }
 
+    if (true){
+      push()
+      translate(exaX,exaEatY);
+      translate(0,exampleH*1.5);
+      fill(0);
+      noStroke();
+      textSize(exaFontSize);
+      textAlign(LEFT, CENTER);
+      textStyle(BOLD);
+      text(txtExaMore,0,0)
+      pop();
+    }
+
     pop();
   } else {
     // Hide sliders 
@@ -508,6 +836,9 @@ function mousePressed(){
   }
   if (flagOverRestartButton){
     startSimulation();
+  }
+  if (flagOverInfinityButton){
+    flagInfi = !flagInfi;
   }
 }
 
