@@ -342,7 +342,8 @@ function calcSIRvalues(R0,tInf,redu){
 let allW = firstp5DivElement.offsetWidth;
 let allH = 500;
 let smallW = smallp5DivElement.offsetWidth;
-let smallH = 200;
+// let smallH = 200;
+let smallH = 120;
 
 // Axes
 // let axMargin = 35;
@@ -357,12 +358,16 @@ let ax_H = -allH + axMargin*2;
 // // let xTicksStep = Math.floor(ax_W / ax_NumTicks_X);
 // // let ax_NumTicks_Y = 10;
 
-let axMarginDist = 35;
+let axMarginDist = 40;
+let axMarginDistH = 20;
 let ax_0_X_small = axMarginDist;
-let ax_0_Y_small = smallH-axMarginDist;
-let ax_W_small = smallW-axMarginDist*2;
-let ax_H_small = -smallH + axMarginDist*2;
+let ax_0_Y_small = smallH-axMarginDistH*1.2;
+let ax_W_small = smallW-axMarginDist*2; 
+let ax_H_small = -smallH + axMarginDistH*2;
 
+// sketch.translate(0,-50);
+// sketch.fill(150);
+// sketch.rect(0,0,100,10);
 
 // let ax_W_small = smallW*0.8;
 // let ax_H_small = -smallH*0.7;
@@ -735,7 +740,7 @@ let readAndSet = function(){
 }
 
 // ---- P5 drawing stuff ----
-let backgroundMargin = 10;
+let backgroundMargin = 5;
 
 let drawBackground = (sketch) => {
   sketch.fill(clrBackground);
@@ -744,6 +749,7 @@ let drawBackground = (sketch) => {
   sketch.strokeWeight(3)
 
   sketch.rect(backgroundMargin,backgroundMargin,sketch.width-backgroundMargin*2,sketch.height-backgroundMargin*2);
+  
 }
 
 let drawAxes = (sketch) => {
