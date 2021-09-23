@@ -1,0 +1,44 @@
+Plan:
+
+Introducér mig selv. 
+Mekanism-based mathematical modelling: Taking simple ideas, describe them mathematically, see what the calculations tell us about the real world. 
+(Might be conceptually different approach to data than most people in the room: Top-down from data vs bottom-up toward data)
+A "good" mathematical model: Agrees with data, can be interpreted easily
+Both are difficult, but the second part has an additional challenge: Interpretation by who?
+
+It's not enough that my colleagues understand; other people must also "get it".
+One way: Visualizations. My flavour of choice: Interactive visualizations.
+
+COVID: 
+- A wish to explain mathematical perspective on COVID. 
+- "Videnskab.dk": Danish science-communication website. Subsection written by researchers themselves. 
+(NOTE: In Danish, so figures are in Danish, sorry)
+- SIR-model, or more accurately, exponential growth/decay.
+https://videnskab.dk/forskerzonen/krop-sundhed/delta-varianten-dominerer-danmark-hvad-kan-vi-forvente-herfra 
+- Alfa vs Delta graph. Theoretically -> Data (fig1 and fig2)
+- Working a bit around with the equations -> Logistic-like growth from 0 to 1 (fig 3)
+- Mathematical result (+ experience from Wuhan-strain to Alpha) said that slope at 50% was indicative of competitive advantage. Was in agreement with other studies. (Perhaps mention that its an absolute advantage, not relative)
+
+Exponential growth and uncertainty
+https://videnskab.dk/forskerzonen/naturvidenskab/forstaa-usikkerhed-i-matematiske-modeller-med-disse-interaktive-grafikker
+- Go through figures 1, 2 and the main index
+
+
+SIR-model, and the effect of lockdowns
+https://www.rasmuspedersen.com/Interactive/SIR/ or new article
+
+
+Extra time: Viral-load figure
+Extra time: Summer-prediction
+If no time: Briefly show figures and mention how they were made: By hand ("Artisinal JavaScript"), Bokeh and Chart.js, respectively. 
+Consider also including old agent-based SIR-model.
+
+Conclusion:
+Mechanism-based mathematical modelling is based on relative simple ideas about "the behaviour of stuff", but understanding the results is not always easy. 
+Exponential growth is, fundamentally, difficult to grasp (for mathematicians and non-mathematicians alike)
+[Comic of exp growth]
+Good visualization can make a huge difference in how data and mathematical results are understood. And ready-made tools like Bokeh can make it even easier for scientists to make use of the tools of data-visualization. 
+However, just because a graph is interactive does not make it easy to understand.
+Furthermore, an interacitve graph is not always the best tool for the task. [Even if an electronic screwdriver can be used to put in a nail, a hammer might still be preferable.] 
+Focus should always be on *what* is being communicated, not *how* that thing is communicated.
+[Interactive SIR-graph vs agent-based simulation]
