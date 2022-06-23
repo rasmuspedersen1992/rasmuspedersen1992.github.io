@@ -314,6 +314,7 @@ let yTicksDiff = yMax/ax_NumTicks_Y;
 // Colors
 let clrAxes = [155,200,200];
 let clrBackground = [240,240,255];
+let clrLegend = [220,220,240];
 let clrDataReal = [0,0,0];
 let clrS    = [0,0,255];
 let clrS_li = [100,100,200];
@@ -322,6 +323,7 @@ let clrI_li = [255,50,50];
 let clrR    = [0,255,0];
 // let clrR_li = [50,155,50];
 let clrR_li = [0,255,50];
+let clrR_li2 = [0,205,50];
 // let clrNewInf = [100,100,100];
 // let clrNewInf_li = [150,150,150];
 
@@ -547,8 +549,60 @@ let drawAxes = (sketch) => {
       sketch.text('%',0,-20) 
       
       sketch.pop();
-    }
 
+
+      // Legend 
+      sketch.fill(clrLegend);
+    
+      sketch.stroke(0,50)
+      sketch.strokeWeight(3)
+    
+      // sketch.rect(backgroundMargin,backgroundMargin,sketch.width-backgroundMargin*2,sketch.height-backgroundMargin*2);
+      let legendW = ax_W/4.5;
+      // let legendH = ax_H/4;
+      let legendH = ax_H/5.5;
+      let legendOffsetX = legendW/5;
+      let legendOffsetY = legendH/4;
+      sketch.push();
+      sketch.translate(ax_W-legendW-legendOffsetX,ax_H-legendH-legendOffsetY);
+      sketch.rect(0,0,legendW,legendH);
+      // sketch.rect(ax_W-legendW-legendOffsetX,ax_H-legendH-legendOffsetY,legendW,legendH);
+
+      let legendMarkW = 15;
+
+      sketch.textAlign(sketch.LEFT,sketch.CENTER);
+
+      sketch.translate(legendMarkW/2,legendH+legendMarkW/2);
+      
+      sketch.stroke(0,50)
+      sketch.strokeWeight(3)
+      sketch.fill(clrS_li);
+      sketch.rect(0,0,legendMarkW,legendMarkW);
+      sketch.fill(0);
+      sketch.noStroke();
+      sketch.text('Modtagelige',legendMarkW*1.5,legendMarkW/2)
+      
+      sketch.translate(0,legendMarkW*1.5);
+      sketch.stroke(0,50)
+      sketch.strokeWeight(3)
+      sketch.fill(clrI_li);
+      sketch.rect(0,0,legendMarkW,legendMarkW);
+      sketch.fill(0);
+      sketch.noStroke();
+      sketch.text('Inficerede',legendMarkW*1.5,legendMarkW/2)
+      
+      sketch.translate(0,legendMarkW*1.5);
+      sketch.stroke(0,50)
+      sketch.strokeWeight(3)
+      sketch.fill(clrR_li2);
+      sketch.rect(0,0,legendMarkW,legendMarkW);
+      sketch.fill(0);
+      sketch.noStroke();
+      sketch.text('Immune',legendMarkW*1.5,legendMarkW/2)
+
+      sketch.pop();
+      
+    }
 
   sketch.pop()
 }
@@ -562,18 +616,22 @@ let drawData = (sketch) => {
   let y_0 = valueToScreenY(0);
   let y_100 = valueToScreenY(100);
   
+  // console.log(dataT[dataT.length-1])
   
   if (showAllVar){
     sketch.noStroke();
     sketch.fill(clrS_li);
     // sketch.rect(x,y_RIS,curdx,y_0-y_RIS);
     // sketch.rect(axMargin,y_100,ax_W,y_0-y_100); 
-    sketch.rect(ax_0_X,y_100,ax_W-ax_0_X+axMargin,y_0-y_100); 
+    // sketch.rect(ax_0_X,y_100,ax_W-ax_0_X+axMargin,y_0-y_100); 
+    sketch.rect(ax_0_X,y_100,ax_W,y_0-y_100); 
   }
 
   for (let k = 0; k < dataT.length - 1; k++) {
     const t = dataT[k];
     const t2 = dataT[k+1];
+
+    // console.log(t2);
 
     let x = valueToScreenX(t);
     let x2 = valueToScreenX(t2);
@@ -592,7 +650,7 @@ let drawData = (sketch) => {
       let y2;
 
 
-      if (x < (ax_W+axMargin)){
+      // if (x < (ax_W+axMargin*1.5)){
         if (showAllVar){
           let s = meanS[k];
           let i = meanI[k];
@@ -666,7 +724,7 @@ let drawData = (sketch) => {
           
           
         }
-      }
+      // }
 
     // Uncomment for dashed lines:
       // showThis = false;
@@ -677,6 +735,12 @@ let drawData = (sketch) => {
     
     
   }
+
+  // // Test
+  // let curT = dataT[dataT.length-1];
+  // let curX = valueToScreenX(curT);
+  // sketch.line(curX,0,curX,1000)
+  // sketch.noLoop();
 }
 
 
