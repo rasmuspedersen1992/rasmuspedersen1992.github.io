@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Rasmus Kristoffer Pedersen</title>
+	
+	<!-- 
+
+		Bielefeld talk
+		Communicating science and mathematics with interactive visualizations: Some examples of public-communication about COVID-19
+
+		Short description of speaker: 
+		"Rasmus Kristoffer Pedersen is a mathematician and postdoctoral researcher at Roskilde University, Denmark. 
+		In his work, Rasmus works with mathematical modelling of epidemic diseases and how to communicate mathematical insights to a broad audience."
+
+		Short description of talk:
+		Mathematical modelling can provide valuable insight about the world around us. 
+		The COVID-19 pandemic made this clear, with mathematical predictions becoming part of epidemic response.
+		However, communicating mathematical results (and their limitations) can be incredibly difficult. 
+		In his talk, Rasmus will talk about his recent experiences with communicating mathematical results using interactive visualizations embedded within online articles for a general audience. 
+		Examples include an article on the next COVID-19-wave and a more general article on mathematical uncertainty.
+
+		NOTE:
+		Speaker notes for reveal.js is not currently set up to work here, as it requires a server to be running.
+
+	-->
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-84095938-1"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-84095938-1');
+	</script>
+
+    <script src="js/reveal.js" type="text/javascript"></script>
+
+    <script src="js/p5.min.js" type="text/javascript"></script>
+    <script src="js/p5.dom.min.js" type="text/javascript"></script>
+
+		<link rel="stylesheet" href="./css/reveal.css">
+		<link rel="stylesheet" href="./css/theme/moon.css"> <!-- More reveal.js themes can be found online -->
+		
+  </head>
+  <body>
+    
+   
+   
+    <div class="reveal"><div class="slides">
+
+<section>
+	<h2> Communicating science and mathematics with interactive visualizations</h2> 
+	<h5> Some examples of public communication about COVID-19</h5>
+	<p> Bielefeld, Germany - August 9th 2022</p>
+ 	<p><small>
+		by <a href="http://rasmuspedersen.com">Rasmus Kristoffer Pedersen</a> <br> 
+		Postdoc, Mathematical Modelling, Roskilde University <br>
+		Slides available on <a href="http://rasmuspedersen.com/talks/Bielefeld">rasmuspedersen.com/talks/Bielefeld</a>
+		</small>
+	</p> 
+</section>
+
+<!-- Introduction -->
+<section>
+	<section>
+		<h3>Who I am, and what I do</h3>
+		
+		
+		<p class="fragment"> Postdoc in applied mathematics at Roskilde University, Denmark.</p>
+		<p class="fragment"> Ph.D. in mechanism-based mathematical modelling.</p>
+		<p class="fragment"> Worked with blood cancers, solid-tumor cancers and disease-spread.</p>
+		<p class="fragment"> Part of the PandemiX research-group, working with some of Denmark's most well-known epidemiologists. </p>
+		
+		
+		
+	</section>
+	<section>
+		<h3>Mechanism-based Mathematical Modelling</h3>
+<!-- 		
+		<p class="fragment"> Simple ideas -> Mathematical calculations -> Insight about the world</p>
+		 -->
+		<p class="fragment"> Simple ideas → Mathematical expressions and calculations </p>
+		<p class="fragment"> → Insight about the world around us</p>
+		
+		<p class="fragment"> A good mathematical model:</p>
+		<ol>
+			<li class="fragment">Can be analysed mathematically.</li>
+			<li class="fragment">Agrees with data.</li>
+			<li class="fragment">Can be interpreted easily</li>
+			<p class="fragment"> Interpretation by who? </p>
+		</ol>
+		<p class="fragment"> How? Visualizations! </p>
+		<p class="fragment"> And if possible, interactive visualizations. </p>
+		<p class="fragment"> (Not only of data, but also the model)</p>
+	
+		
+	</section>
+	<!-- <section>
+		<h3>COVID-19 communication</h3>
+		<p class="fragment"> Mathematical perspective on COVID-19.</p>
+		<p class="fragment"> Communication-articles published at "Videnskab.dk" </p>
+		<p class="fragment"> Aimed at a general audidence: </p>
+		
+		<ol>
+			<li class="fragment">Focus on intuition, not mathematics.</li>
+			<li class="fragment">Preliminary results or "back-of-the-envelope" calculations</li>
+			<li class="fragment">Not a thorough textbook-style description.</li> 
+		</ol>
+		
+	</section> -->
+	
+	<section>
+		<h3>What I will show today</h3>
+		<!-- <p class="fragment"> Some specific examples. </p>		 -->
+			<ol>
+				<li class="fragment"> Exponential growth and uncertainty.</li>
+				<p class="fragment"> Interactive figures for a general mathematical topic</p>
+				<li class="fragment"> The SIR-model.</li>
+				<p class="fragment"> Two types of visualizations of a classic mathematical model. </p>
+				<li class="fragment"> If time permits: COVID-19, Alpha-variant vs Delta-variant.</li>
+				<p class="fragment"> An example of good agreement between theory and data. </p>
+				<p class="fragment"> ... no interactivity though.</p>
+				<!-- <li class="fragment"> The SIR-model and uncertainty.</li>
+				<p class="fragment"> A classic model, explained (hopefully)</p> -->
+			</ol>
+			
+		<p class="fragment"> All figures originally used in danish articles for "Videnskab.dk" and for danish high-school students. </p>	
+		<p class="fragment"> So apologies for danish text in figures.</p>	
+	</section>
+	
+</section>
+<section>	
+	<section>
+		<h3> Exponential growth and uncertainty</h3>		
+		<p class="fragment"> Mathematical models can make predictions. </p>
+		<p class="fragment"> However, predictions aren't perfect. </p>
+		<p class="fragment"><img src="Examples/SSIfigure.PNG" width = "400 px"> </p>
+		
+		
+		<!-- <p class="fragment"> However, "mathematical uncertainty" is difficult to explain.  </p>	 
+		<p class="fragment"> Article goal: Demonstrate this in a "simple" case.</p>
+		<p class="fragment"> <a href="https://videnskab.dk/forskerzonen/naturvidenskab/forstaa-usikkerhed-i-matematiske-modeller-med-disse-interaktive-grafikker" >Article link </a></p>
+		 -->
+	</section>
+	
+	<!-- <section>
+		
+	</section> -->
+	<section>
+		<h3> Exponential growth and uncertainty</h3>		
+		<p> Mathematical models can make predictions. </p>
+		<p> However, predictions aren't perfect. </p>
+		<p> But we can describe how trustworthy it is. </p>
+		<p class="fragment"> However, "mathematical uncertainty" is difficult to explain.  </p>	 
+		<p class="fragment"> Article goal: Demonstrate this in a "simple" case.</p>
+		<p class="fragment"> <a href="https://videnskab.dk/forskerzonen/naturvidenskab/forstaa-usikkerhed-i-matematiske-modeller-med-disse-interaktive-grafikker" >Article link </a></p>
+		
+	</section>
+	
+	<section data-state="ExpInit1">
+		<h3> Exponential growth and uncertainty</h3>
+		<iframe id="ExpIframe"
+			title="Exponential growth"
+			width="700"
+			height="550"
+			style="background: #ffffff;"
+			src="Examples/Usikkerhed/1/index.html">
+		</iframe>
+		<br>
+		<input type="button"
+               id="btn" 
+               value="Reload simulation." /> 
+  
+        <script> 
+            function reloadExp1() { 
+                document.getElementById('ExpIframe').src += ''; 
+            } 
+            btn.onclick = reloadExp1; 
+        </script> 
+	</section>
+	
+	<section data-state="ExpInit2">
+		<h3> Exponential growth and uncertainty</h3>
+		<iframe id="ExpIframe2"
+			title="Exponential growth"
+			width="700"
+			height="550"
+			style="background: #ffffff;"
+			src="Examples/Usikkerhed/2/index.html">
+		</iframe>
+		<br>
+		<input type="button"
+               id="btn" 
+               value="Reload simulation." /> 
+  
+        <script> 
+            function reloadExp2() { 
+                document.getElementById('ExpIframe2').src += ''; 
+            } 
+            btn.onclick = reloadExp2; 
+        </script> 
+	</section>
+	
+	
+	<section data-state="ExpInit3">
+		<h3> Exponential growth and uncertainty</h3>
+		<iframe id="ExpIframe3"
+			title="Exponential growth"
+			width="700"
+			height="550"
+			style="background: #ffffff;"
+			src="Examples/Usikkerhed/3/index.html">
+		</iframe>
+		<br>
+		<input type="button"
+               id="btn" 
+               value="Reload simulation." /> 
+  
+        <script> 
+            function reloadExp3() { 
+                document.getElementById('ExpIframe3').src += ''; 
+            } 
+            btn.onclick = reloadExp3; 
+        </script> 
+	</section>
+	
+</section>
+
+<section>
+	<section>
+		<h3>The SIR-model</h3>
+		<p class="fragment"> A "classic" within mathematical modelling.</p>
+		<p class="fragment"> Describes progression of an epidemic in a population. </p>
+		<p class="fragment"> Works well for un-mitigated epidemics. </p>
+		<!-- <p class="fragment"> Two main parameters:  </p> -->
+		<ol>
+			<li class="fragment"> How much do people transmit the disease?</li>
+			<p class="fragment"> Often described in terms of the "reproduction-number, R0" <br> (Danish: Kontakttallet) </p>
+			<li class="fragment"> How long are people infected? </li>
+			<p class="fragment"> "Infectious period" </p>
+		</ol>
+		<p class="fragment"> ... and here also an additional parameter: The effect of lockdown. </p>
+		<p class="fragment"> <a href="https://videnskab.dk/forskerzonen/krop-sundhed/tilbage-til-begyndelsen-to-kurver-og-en-ukendt-sygdom" >Article link, published a couple of hours ago </a></p>
+		
+	</section>	
+	
+	<section data-state="SIRgraphInit">
+		<h3> The SIR-model </h3>
+		<p> <a href="Examples/SIR/index.html">Link for full-screen</a> </p>
+		<iframe id="SIRgraphIframe"
+			title="SIR-model-graph"
+			width="700"
+			height="550"
+			style="width:100%; background: #ffffff;"
+			src="Examples/SIR/index.html">
+		</iframe>
+		<br>
+		<input type="button"
+               id="btn" 
+               value="Reload simulation." /> 
+        <script> 
+            function reloadSIRGraph() { 
+                document.getElementById('SIRgraphIframe').src += ''; 
+            } 
+            btn.onclick = reloadSIRGraph; 
+        </script> 
+	</section>
+	
+	
+	<section>
+		<h3>The SIR-model (Agent-based implementation)</h3>
+		
+		<p class="fragment"> Interactive graphs are not always the best choice.</p>
+		
+		<p class="fragment"> Instead, implementing the same ideas in a visual way can be better.</p>
+		
+		<p class="fragment"> Representing a person in a crowd by a circle, with color showing their status: </p> 
+		
+		<ol>
+			<li class="fragment"> <font color="green">Susceptible</font> </li>
+			<p class="fragment"> Can become infected. </p>
+			<li class="fragment"> <font color="red">Infected</font> </li>
+			<p class="fragment"> Currently infectious and able to transmit disease to the susceptible.</p>
+			<li class="fragment"> <font color="magenta">Recovered</font></li>
+			<p class="fragment"> Immune to infections. (Post-infection or due to vaccination)</p>
+		</ol>
+		
+		<!-- <p class="fragment"> <font color="green">Susceptible</font>, <font color="red">Infected</font> and <font color="magenta">Recovered</font>. </p> -->
+		
+		<!-- <p class="fragment"> Originally, considers Susceptible, Infected and Recovered persons, but many extensions exists.</p> -->
+		
+		<!-- <p class="fragment"> Herd immunity.</p>-->
+		
+		<!-- <p class="fragment"> How do you communicate it to someone who hasn't spent a whole career working with it. </p>  -->
+		
+  
+	</section>
+	
+	<section data-state="SIRInit">
+		<h3> The SIR-model (Agent-based implementation)</h3>
+		<iframe id="SIRIframe"
+			title="SIR-model"
+			width="700"
+			height="550"
+			style="width:100%;"
+			src="Examples/SIRagent/index.html">
+		</iframe>
+		<br>
+		<input type="button"
+               id="btn" 
+               value="Reload simulation." /> 
+  
+        <script> 
+            function reloadSIR() { 
+                document.getElementById('SIRIframe').src += ''; 
+            } 
+            btn.onclick = reloadSIR; 
+        </script> 
+	</section>
+	
+</section>
+
+<section>
+	<section>
+		<!-- <p> Down arrow-key if there's plenty of time, right arrow-key if not.</p> -->
+		<p> Conclusion →</p>
+		<p> Bonus slides ↓</p>
+	</section>
+	<section>
+		<h3>Alpha vs Delta</h3>
+		<p class="fragment"> Summer 2021 in Denmark.</p>
+		<p class="fragment"> Total COVID-19 cases dropping. </p>
+		<p class="fragment"> But Delta-variant cases increasing.</p>
+		<p class="fragment"> Well-explained by the SIR-model.</p>
+		<p class="fragment"> ... or more accurately, by exponential growth and decay.</p>
+		<p class="fragment"> Assuming no major changes in restrictions: Easy to predict future.</p>
+		<p class="fragment"> <a href="https://videnskab.dk/forskerzonen/krop-sundhed/delta-varianten-dominerer-danmark-hvad-kan-vi-forvente-herfra" >Article link </a></p>
+	</section>
+	<section>
+		<h3>Alpha vs Delta</h3>
+	    <p> <img src="Examples/Delta/fig1.png"> </span> </p>	 
+	</section>
+	<section>
+		<h3>Alpha vs Delta</h3>
+	    <p> <img src="Examples/Delta/fig2.png"> </span> </p>	 
+	</section>
+	<section>
+		<h3>Alpha vs Delta, share of cases</h3>
+	    <p> <img src="Examples/Delta/fig3.png"> </span> </p>	 
+		<p class="fragment"> Mathematical result: Slope at 50% determines advantage of delta-variant.</p>
+		<p class="fragment"> Result agreed with observations from UK.</p>
+	</section>	
+</section>	
+
+
+<section>
+	<section data-state="Conclusion">	
+	<h3> Final comments </h3>
+	
+	<p class="fragment"> Mathematical modelling is based on simple ideas, but the results can be difficult to grasp.</p>
+	<p class="fragment"> Good communication and visualization is a necessity. </p>
+	<p class="fragment"> Visulization tools like Bokeh, d3.js or Chart.js are very useful! </p>
+	<p class="fragment"> ... but a data-plot is not always the best solution, even if it's interactive. </p>
+	<p class="fragment"> Focus on what is <font color="red">important to communicate</font>, <br> not just what is <font color="red">easy to show</font>. </p>
+<!-- 	
+	<p class="fragment"> Videnskabelig formidling har aldrig været vigtigere for samfundet.</p>
+		<p class="fragment"> Kreative måder er visualisere matematikken på er nødvendige.</p>
+		<p class="fragment"> IT-værktøjer der gør det nemmere at udvikle visualiseringer er utroligt nyttige (f.eks. Processing, p5.js, manim, samt andre).</p>
+		<p class="fragment"> Værdien af gode visualiseringer ses flere steder:</p>
+
+		<ul>
+			<li class="fragment">  De fleste nyhedsmediers Coronavirus dækning. </li>
+			<li class="fragment">  <a href="https://wapo.st/corona-simulator"> Washington Post "Corona-Simulator".  </a> </li>
+			<li class="fragment">  <a href="https://artistoo.net/"> Artistoo, simulering af celler i din browser.  </a> </li>
+			<li class="fragment">  <a href="https://www.youtube.com/channel/UCYO_jab_esuFRV4b17AJtAw"> 3Blue1Brown på Youtube. </a> </li>
+		</ul>
+		 -->
+		<!--
+		<p class="fragment"> Heldigvis er dette også gået op for andre at gode visualisering er brugbare. <a href="https://wapo.st/corona-simulator"> (Washington Post) </a> </p>
+		
+		
+		-->
+		<!--<p class="fragment"> Even my bug-filled, hastily-written and somewhat uninviting visualizations have had a much better reception among my colleagues than expected. </p> -->
+		<!-- <p class="fragment"> Science communication is fundamental for society.</p>
+		<p class="fragment"> Creative coding can a way to make science more relatable.</p>
+		<p class="fragment"> Important to have tools that make visualization and interactivity easy (e.g. Processing and p5.js) </p>
+		<p class="fragment"> With my limited experience with p5.js, I have still made something useful for communicating science.</p> -->
+	
+	<!-- 
+	Bringing it back up to a higher level again
+	Scientists and creative coders working together
+	Scientists need training in creative coding
+	
+	Main point: The importance of accessible tools like processing and p5.js
+	
+	Minor point: I'm not particularly experienced with creative coding, but the examples shown here were relatively easy to make and the reception among scientific collaques has been much better than anticipated.
+	
+	
+	SPEND QUITE SOME TIME ON THIS SLIDE!
+	
+	
+	(Perhaps a shout-out to 3blue1brown and his manim package?)
+	-->
+	
+	</section>	
+	<section>	
+	
+		<h3> Thank you for your attention!</h3>
+		
+		<h3> Any questions?</h3>
+		
+		<br>
+		<br>
+		<br>
+		<small>
+		<p><a href="http://rasmuspedersen.com"> Website: rasmuspedersen.com </a></p>
+		<p><a href="mailto:rasmuspedersen1992@gmail.com"> Email: rasmuspedersen1992@gmail.com </a></p>
+		<p>For more examples of interactive visualizations: Go to my website, or my articles on Videnskab.dk:</p>
+		<p><a href="https://videnskab.dk/author/author/4315"> https://videnskab.dk/author/author/4315 </a></p>
+	</small>
+		
+	</section>	
+	
+	
+	
+</section>
+
+
+    <script>
+
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: false,
+				progress: false,
+				slideNumber: 'c/t',
+
+			});
+			Reveal.addEventListener( 'ExpInit1', function() {
+				reloadExp1();
+			} );
+			Reveal.addEventListener( 'ExpInit2', function() {
+				reloadExp2();
+			} );
+			Reveal.addEventListener( 'ExpInit3', function() {
+				reloadExp3();
+			} );
+			Reveal.addEventListener( 'SIRInit', function() {
+				reloadSIR();
+			} );
+			Reveal.addEventListener( 'SIRgraphInit', function() {
+				reloadSIRGraph();
+			} );
+			
+			Reveal.addEventListener( 'Conclusion', function() {
+				// Restart simulations 
+				// reloadExp1();
+				// reloadExp2();
+				// reloadExp3();
+				// Restart SIR-simulation
+				reloadSIR();
+			} );
+			
+			
+    </script>
+
+
+<!--
+
+			window.addEventListener('load', function () {
+			 reload();
+			 reloadSIR();
+			})
+			document.addEventListener("DOMContentLoaded", function(event){
+				reloadSIR();
+			});
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script>
+-->
+<!--
+    <script type="text/javascript" async src="/home/urp/git/MathJax/MathJax.js?config=TeX-AMS_CHTML"></script>
+	
+	
+    <script src="../lib/js/head.min.js" type="text/javascript"></script>
+    -->    <!-- <script src="js/p5.sound.js" type="text/javascript"></script> 
+-->
+   
+	<!--
+    <script src="sketches/CancerGrowth.js" type="text/javascript"></script>
+    <script src="sketches/SIR.js" type="text/javascript"></script>
+
+    <script>
+	p5_CancerGrowth = new p5(CancerGrowth, "CancerGrowth");
+	p5_SIR = new p5(SIR, "SIR");
+    </script>
+	-->
+    <!--
+	p5_SIR = new p5(SIR, "SIR");
+	p5_VisualODE = new p5(VisualODE, "VisualODE");
+    <style> body {padding: 0; margin: 0;} canvas {vertical-align: top;} </style>
+    -->
+
+  </body>
+</html>
+
+
+

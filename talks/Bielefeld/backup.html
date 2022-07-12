@@ -1,0 +1,65 @@
+
+	<section data-state="CancerInit">
+		<h3>Matematisk modellering af sygdomsspredning</h3>
+		
+		<p class="fragment"> Matematik der beskriver hvordan en sygdom spredes i en population.</p>
+		
+		<p class="fragment"> Forskellige modeller for en lang række sygdomme, heriblandt Covid-19, Ebola og mæslinger.</p>
+		
+		<p class="fragment"> Klassiskeren: SIR modellen (<font color="green">Susceptible</font>, <font color="red">Infected</font> og <font color="magenta">Recovered</font>). </p>
+		
+		<p class="fragment"> Aldrig været vigtigere at kunne formidle det! </p>
+		<!-- Vigtigheden af at gøre disse modeller forståelige. Pludseligt en global udfordring at gøre det forståeligt for alle! -->
+		
+		
+		<!-- <h3>Modelling the spread of infectious diseases</h3>
+		
+		<p class="fragment"> Diseases that spread in a population of people.</p>
+		
+		<p class="fragment"> Predict how fast diseases like e.g. Ebola, Measles or Corona-virus spread.</p>
+		
+		<p class="fragment"> Classic example: The SIR model (<font color="green">Susceptible</font>, <font color="red">Infected</font> and <font color="magenta">Recovered</font>,). </p>-->
+		<!-- <p class="fragment"> Originally, considers Susceptible, Infected and Recovered persons, but many extensions exists.</p> -->
+		
+		<!-- <p class="fragment"> Herd immunity.</p>-->
+		
+		<!-- <p class="fragment"> How do you communicate it to someone who hasn't spent a whole career working with it. </p>  -->
+		
+		<aside class="notes">
+		
+		Something about how old the SIR model is
+		Something about how it is actually used in day-to-day life (e.g. the use of R_0)
+		Mention ebola outbreak?
+		The concept of herd immunity, and the challenges of communicating it.
+		(The researchers have an intuitive understanding of the concept, but how can that be transfered to someone who HASN'T used 30 years researching the topic?)
+		
+		</aside>
+  
+	</section>
+	<section data-state="SIRInit">
+		<h3>Interaktiv simulering af sygdomsspredning</h3>
+		<!--<div id="CancerGrowth" align=center style="margin: 0 auto; border:1px solid; width: 500px"></div> -->
+		<!--<div id="SIR" align=center style="border:1px solid;"></div>-->
+		<iframe id="SIRIframe"
+			title="SIR model"
+			style="width:100%"
+			height="540"
+			src="http://www.rasmuspedersen.com/SIR/index.html">
+		</iframe>        
+		<input type="button"
+               id="btnSIR" 
+               value="Opdater simuleringsvindue" /> 
+  
+        <script> 
+            function reloadSIR() { 
+                document.getElementById('SIRIframe').src += ''; 
+            } 
+            btnSIR.onclick = reloadSIR(); 
+        </script> 
+		<!-- <p> Oh wow, it's a simulation of disease!</p>
+		
+			src="http://www.rasmuspedersen.com/SIR/">
+			src="SIR"
+		-->
+	</section>
+</section>

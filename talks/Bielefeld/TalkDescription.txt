@@ -1,0 +1,8 @@
+Communicating science and mathematics with interactive visualization: Some examples of public-communication about COVID-19
+
+Short description of me: 
+"Rasmus Kristoffer Pedersen is a mathematician from the PandemiX research center at Roskilde University, working with mathematical modelling of biological systems. He has previously worked with modelling the progression of blood cancers as well as the COVID-19 pandemic"
+
+Short description of talk:
+Mathematical modelling can provide valuable insight about the world around us, as demonstrated during the COVID-19 pandemic. However, communicating mathematical results and predictions (and their limitations) can be incredibly difficult. 
+In his talk, Rasmus will talk about his recent experiences with communicating mathematical results using interactive visualizations embedded within online articles for a general audience. Examples include a prediction of COVID-19 hospitalizations and a more general article on mathematical uncertainty.
