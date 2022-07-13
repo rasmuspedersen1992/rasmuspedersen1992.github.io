@@ -8,31 +8,31 @@ const tempSketch = ( sketch ) => {
   }
 }
 let p5func = new p5(tempSketch);
-let firstp5DivElement = document.getElementById('p5Div2'); // For using CSS sizes
-// let smallp5DivElement = document.getElementById('p5DivDist'); // For using CSS sizes
+// let firstp5DivElement = document.getElementById('p5Div1'); // For using CSS sizes
+let smallp5DivElement = document.getElementById('p5DivDist'); // For using CSS sizes
 
 // --- Find interactive elements --- 
-let ini_slider = document.getElementById('ini_slider2');
+let ini_slider = document.getElementById('ini_slider3');
 // let ini_slider2 = document.getElementById('ini_slider2');
 // let ini_slider3 = document.getElementById('ini_slider3');
-let grow_slider = document.getElementById('grow_slider2');
+let grow_slider = document.getElementById('grow_slider3');
 // let grow_slider2 = document.getElementById('grow_slider2');
 // let grow_slider3 = document.getElementById('grow_slider3');
-let ini_dist_slider = document.getElementById('ini_dist_slider');
+let ini_dist_slider = document.getElementById('ini_dist_slider2');
 // let ini_dist_slider2 = document.getElementById('ini_dist_slider2');
-let grow_dist_slider = document.getElementById('grow_dist_slider');
+let grow_dist_slider = document.getElementById('grow_dist_slider2');
 // let grow_dist_slider2 = document.getElementById('grow_dist_slider2');
 
 // let ini_label = document.getElementById('ini_label');
-let ini_label2 = document.getElementById('ini_label2');
-// let ini_label3 = document.getElementById('ini_label3');
+// let ini_label2 = document.getElementById('ini_label2');
+let ini_label3 = document.getElementById('ini_label3');
 // let grow_label = document.getElementById('grow_label');
-let grow_label2 = document.getElementById('grow_label2');
-// let grow_label3 = document.getElementById('grow_label3');
-let ini_dist_label = document.getElementById('ini_dist_label');
-// let ini_dist_label2 = document.getElementById('ini_dist_label2');
-let grow_dist_label = document.getElementById('grow_dist_label');
-// let grow_dist_label2 = document.getElementById('grow_dist_label2');
+// let grow_label2 = document.getElementById('grow_label2');
+let grow_label3 = document.getElementById('grow_label3');
+// let ini_dist_label = document.getElementById('ini_dist_label');
+let ini_dist_label2 = document.getElementById('ini_dist_label2');
+// let grow_dist_label = document.getElementById('grow_dist_label');
+let grow_dist_label2 = document.getElementById('grow_dist_label2');
 
 
 // Define parameters for "real" models
@@ -52,11 +52,11 @@ let readInputs = function(){
 // --- Set labels beneath inputs --
 let setLabels = function(){
   // ini_label.innerHTML  = 'Antal i starten: '+expInit;
-  ini_label2.innerHTML = 'Antal i starten: '+expInit;
-  // ini_label3.innerHTML = 'Antal i starten: '+expInit;
+  // ini_label2.innerHTML = 'Antal i starten: '+expInit;
+  ini_label3.innerHTML = 'Starting value: '+expInit;
   // grow_label.innerHTML  = 'Vækstrate: '+expGrowthRate;
-  grow_label2.innerHTML = 'Vækstrate: '+expGrowthRate;
-  // grow_label3.innerHTML = 'Vækstrate: '+expGrowthRate;
+  // grow_label2.innerHTML = 'Vækstrate: '+expGrowthRate;
+  grow_label3.innerHTML = 'Growthrate: '+expGrowthRate;
 }
 
 // -- Functions for getting random values from distributions --
@@ -82,10 +82,10 @@ let getRandomExpAlpha = function(){
 
 // Define sizes of everything
 // let allW = 450
-let allW = firstp5DivElement.offsetWidth;
+// let allW = firstp5DivElement.offsetWidth;
+let allW = smallp5DivElement.offsetWidth*2;
 let allH = 350;
-// let smallW = smallp5DivElement.offsetWidth;
-let smallW = 300;
+let smallW = smallp5DivElement.offsetWidth;
 let smallH = 200;
 
 // Axes
@@ -857,18 +857,18 @@ const sketchDist2 = ( sketch ) => {
 // --------------------------------
 
 // let firstP5 = new p5(sketch1,document.getElementById('p5Div1'));
-let secondP5 = new p5(sketch2,document.getElementById('p5Div2'));
-// let distP5 = new p5(sketchDist,document.getElementById('p5DivDist'));
-// let dist2P5 = new p5(sketchDist2,document.getElementById('p5DivDist2'));
+// let secondP5 = new p5(sketch2,document.getElementById('p5Div2'));
+let distP5 = new p5(sketchDist,document.getElementById('p5DivDist'));
+let dist2P5 = new p5(sketchDist2,document.getElementById('p5DivDist2'));
 
 
 let mainFunc = function(){
   readAndSet();
   calcData();
   // firstP5.resetAnimations();
-  secondP5.resetAnimations();
-  // distP5.resetRandoms();
-  // dist2P5.resetRandoms();
+  // secondP5.resetAnimations();
+  distP5.resetRandoms();
+  dist2P5.resetRandoms();
 }
 
 // Read, set and update everything on first run-through
@@ -883,20 +883,20 @@ mainFunc();
 //   // Run main function 
 //   mainFunc();
 // }
-ini_slider2.onchange = function(){
-  // Set the value of the other slider as well
-  // ini_slider.value = ini_slider2.value;
-  // ini_slider3.value = ini_slider2.value;
-  // Run main function 
-  mainFunc();
-}
-// ini_slider3.onchange = function(){
+// ini_slider2.onchange = function(){
 //   // Set the value of the other slider as well
-//   ini_slider.value = ini_slider3.value;
-//   ini_slider2.value = ini_slider3.value;
+//   ini_slider.value = ini_slider2.value;
+//   ini_slider3.value = ini_slider2.value;
 //   // Run main function 
 //   mainFunc();
 // }
+ini_slider3.onchange = function(){
+  // Set the value of the other slider as well
+  // ini_slider.value = ini_slider3.value;
+  // ini_slider2.value = ini_slider3.value;
+  // Run main function 
+  mainFunc();
+}
 
 // grow_slider.onchange = function(){
 //   // Set the value of the other slider as well
@@ -905,44 +905,44 @@ ini_slider2.onchange = function(){
 //   // Run main function 
 //   mainFunc();
 // }
-grow_slider2.onchange = function(){
+// grow_slider2.onchange = function(){
+//   // Set the value of the other slider as well
+//   grow_slider.value = grow_slider2.value;
+//   grow_slider3.value = grow_slider2.value;
+//   // Run main function 
+//   mainFunc();
+// }
+grow_slider3.onchange = function(){
   // // Set the value of the other slider as well
-  // grow_slider.value = grow_slider2.value;
-  // grow_slider3.value = grow_slider2.value;
+  // grow_slider.value = grow_slider3.value;
+  // grow_slider2.value = grow_slider3.value;
   // Run main function 
   mainFunc();
 }
-// grow_slider3.onchange = function(){
-//   // Set the value of the other slider as well
-//   grow_slider.value = grow_slider3.value;
-//   grow_slider2.value = grow_slider3.value;
-//   // Run main function 
-//   mainFunc();
-// }
 
-ini_dist_slider.onchange = function(){
-  // Set the value of the other slider as well
-  // ini_dist_slider2.value = ini_dist_slider.value;
-  // Run main function 
-  mainFunc();
-}
-// ini_dist_slider2.onchange = function(){
+// ini_dist_slider.onchange = function(){
 //   // Set the value of the other slider as well
-//   ini_dist_slider.value = ini_dist_slider2.value;
+//   ini_dist_slider2.value = ini_dist_slider.value;
 //   // Run main function 
 //   mainFunc();
 // }
+ini_dist_slider2.onchange = function(){
+  // Set the value of the other slider as well
+  // ini_dist_slider.value = ini_dist_slider2.value;
+  // Run main function 
+  mainFunc();
+}
 
-grow_dist_slider.onchange = function(){
-  // Set the value of the other slider as well
-  // grow_dist_slider2.value = grow_dist_slider.value;
-  // Run main function 
-  mainFunc();
-}
-// grow_dist_slider2.onchange = function(){
+// grow_dist_slider.onchange = function(){
 //   // Set the value of the other slider as well
-//   grow_dist_slider.value = grow_dist_slider2.value;
+//   grow_dist_slider2.value = grow_dist_slider.value;
 //   // Run main function 
 //   mainFunc();
 // }
+grow_dist_slider2.onchange = function(){
+  // Set the value of the other slider as well
+  // grow_dist_slider.value = grow_dist_slider2.value;
+  // Run main function 
+  mainFunc();
+}
 

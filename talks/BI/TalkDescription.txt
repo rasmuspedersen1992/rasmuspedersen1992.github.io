@@ -1,0 +1,13 @@
+Title:
+Communicating mathematics with interactive visualizations: Examples of public communication about COVID-19
+
+Short description of speaker: 
+"Rasmus Kristoffer Pedersen is a mathematician and postdoctoral researcher at Roskilde University, Denmark. 
+In his daily work, Rasmus works with mathematical modelling of epidemic diseases and how to communicate mathematical subjects to a broad audience."
+
+Short description of talk:
+Mathematics can help us understand the world around us. 
+The COVID-19 pandemic made this clear, with mathematical predictions becoming part of the public discussion.
+However, it can be difficult to communicate mathematical ideas and concepts in a way that everyone can understand.
+Recently, Rasmus has published online communication-articles on mathematical subjects in which interactive visualizations embedded in the articles are a key component.
+In his talk, Rasmus will talk about his personal experience with communicating mathematics, and how successful science communication plays an important role in his life as a researcher.

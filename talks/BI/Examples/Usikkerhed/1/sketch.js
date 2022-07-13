@@ -51,10 +51,12 @@ let readInputs = function(){
 
 // --- Set labels beneath inputs --
 let setLabels = function(){
-  ini_label.innerHTML  = 'Antal i starten: '+expInit;
+  ini_label.innerHTML  = 'Starting value: '+expInit;
+  // ini_label.innerHTML  = 'Antal i starten: '+expInit;
   // ini_label2.innerHTML = 'Antal i starten: '+expInit;
   // ini_label3.innerHTML = 'Antal i starten: '+expInit;
-  grow_label.innerHTML  = 'Vækstrate: '+expGrowthRate;
+  grow_label.innerHTML  = 'Growthrate: '+expGrowthRate;
+  // grow_label.innerHTML  = 'Vækstrate: '+expGrowthRate;
   // grow_label2.innerHTML = 'Vækstrate: '+expGrowthRate;
   // grow_label3.innerHTML = 'Vækstrate: '+expGrowthRate;
 }
@@ -88,7 +90,6 @@ let allH = 350;
 let smallW = 200;
 let smallH = 200;
 
-console.log(allW)
 
 // Axes
 let axMargin = 35;
