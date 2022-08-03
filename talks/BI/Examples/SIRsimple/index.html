@@ -40,12 +40,14 @@
         </div>
         <div class="slider-container">
           <div class="flex-item"> 
-            <input type="range" min="0" max="1" value="0.1" step="0.05" class="slider" id="R0_dist_slider">
+            <!-- <input type="range" min="0" max="1" value="0.1" step="0.05" class="slider" id="R0_dist_slider"> -->
+            <input type="range" min="0" max="1" value="0" step="0.05" class="slider" id="R0_dist_slider">
             <p id="R0_dist_label">Reproduction-number, R0; spread</p>
           </div>
           <div class="flex-item"> 
             <!-- <input type="range" min="0" max="0.25" value="0.04" step="0.01" class="slider" id="tInf_dist_slider"> -->
-            <input type="range" min="0" max="3" value="0.5" step="0.5" class="slider" id="tInf_dist_slider">
+            <!-- <input type="range" min="0" max="3" value="0.5" step="0.5" class="slider" id="tInf_dist_slider"> -->
+            <input type="range" min="0" max="3" value="0" step="0.5" class="slider" id="tInf_dist_slider">
             <p id="tInf_dist_label">Infectious period, spread</p>
           </div>
         </div>
@@ -66,10 +68,10 @@
               <label for="checkRoed"> Vis udæmpet epidemi (Rød kurve)</label><br>
               <input type="checkbox" id="checkGroen" name="checkGroen" value="checkGroen">
               <label for="checkGroen"> Vis dæmpet epidemi (Grøn kurve)</label><br> -->
-              <input type="checkbox" id="checkAnim" name="checkAnim" value="checkAnim">
+              <input type="checkbox" id="checkAnim" name="checkAnim"  value="checkAnim" checked='true'>
               <label for="checkAnim"> Show random examples</label><br>
               <input type="checkbox" id="checkConf" name="checkConf" value="checkConf">
-              <label for="checkConf"> Show confidensinterval</label><br>
+              <label for="checkConf"> Show confidence intervals</label><br>
               <!-- <input type="checkbox" id="checkSliders" name="checkSliders" value="checkSliders">
               <label for="checkSliders"> Vis parameter sliders</label> -->
             </form>

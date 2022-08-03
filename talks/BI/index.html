@@ -36,14 +36,21 @@
 	  gtag('config', 'UA-84095938-1');
 	</script>
 
-    <script src="js/reveal.js" type="text/javascript"></script>
+
+	
+
+<link rel="stylesheet" href="dist/reset.css">
+<link rel="stylesheet" href="dist/reveal.css">
+<link rel="stylesheet" href="dist/theme/moon.css">
+<!-- <link rel="stylesheet" href="./css/reveal.css"> -->
+<!-- <link rel="stylesheet" href="./css/theme/moon.css"> -->
+<link rel="stylesheet" href="./css/RasmusExtra.css">
+
+    <!-- <script src="js/reveal.js" type="text/javascript"></script> -->
 
     <script src="js/p5.min.js" type="text/javascript"></script>
     <script src="js/p5.dom.min.js" type="text/javascript"></script>
 
-		<link rel="stylesheet" href="./css/reveal.css">
-		<link rel="stylesheet" href="./css/theme/moon.css"> <!-- More reveal.js themes can be found online -->
-		<link rel="stylesheet" href="./css/RasmusExtra.css">
 		
   </head>
   <body>
@@ -55,15 +62,19 @@
 <section>
 	<!-- Communicating mathematics with interactive visualizations: Examples of public communication about COVID-19 -->
 	<h2> Communicating mathematics with interactive visualizations</h2> 
-	<h5> Examples of public communication about COVID-19</h5>
+	<!-- <h5> An example from COVID-19 public communication </h5> -->
+	<p> Studienfonds Community Conference</p>
 	<p> Bielefeld, Germany - August 9th 2022</p><br>
  	<p><small>
-		by <a href="http://rasmuspedersen.com">Rasmus Kristoffer Pedersen</a> <br> 
+		<a href="http://rasmuspedersen.com">Rasmus Kristoffer Pedersen</a> <br> 
 		Postdoc, Mathematical Modelling, Roskilde University <br><br>
 		Slides available online: <a href="http://rasmuspedersen.com/talks/BI">rasmuspedersen.com/talks/BI</a>
 		</small>
 	</p> 
 </section>
+
+
+	
 
 <!-- Introduction -->
 <section>
@@ -71,11 +82,12 @@
 		<h3>Who I am, and what I do</h3>
 		
 		
-		<p class="fragment"> Postdoc in applied mathematics at Roskilde University, Denmark.</p>
-		<p class="fragment"> Ph.D. in mechanism-based mathematical modelling of cancer.</p>
+		<p class="fragment"> Postdoc in <font color="tan">applied mathematics</font> at Roskilde University, Denmark.</p>
+		<!-- <p class="fragment"> Ph.D. in mechanism-based mathematical modelling of cancer.</p> -->
+		<p class="fragment"> Ph.D. in <font color="tan">mathematical modelling</font> of leukemia</p>
 		<!-- <p class="fragment"> Worked with blood cancers, solid-tumor cancers and disease-spread.</p> -->
-		<p class="fragment"> Currently part of the PandemiX research-group, working on COVID-19 as well as historical epidemics. </p>
-		<p class="fragment"> Multiple public-communication articles related to COVID-19 over the last two years.</p>
+		<p class="fragment"> Part of the <font color="tan">PandemiX research-group</font>, working on historical epidemics and COVID-19. </p>
+		<p class="fragment"> Written multiple <font color="tan">public-communication articles</font> about COVID-19 over the last two years.</p>
 		
 		
 		<!-- <p class="fragment"> Part of the PandemiX research-group, working with some of Denmark's most well-known epidemiologists. </p> -->
@@ -83,23 +95,25 @@
 		
 		
 	</section>
+
+	  
 	<section>
-		<h3>Mechanism-based Mathematical Modelling</h3>
-<!-- 		
-		<p class="fragment"> Simple ideas -> Mathematical calculations -> Insight about the world</p>
-		 -->
-		<!-- <p class="fragment"> Simple ideas → Mathematical expressions and calculations </p> -->
-		<p class="fragment"> Simple ideas about something in the real world </p>
-		<p class="fragment"> → Mathematical expression and formulation of the real world </p>
-		<p class="fragment"> → Simulations, calculations and mathematical results </p>
-		<p class="fragment"> → Insight that (hopefully) apply to the real world </p>
+		<h3>Mathematical Modelling</h3>
+		
+		<!-- <ul>
+			<li class="fragment"> Starting with something occurring in the real world</li>
+			<li class="fragment"> Abstract description of reality</li>
+			<li class="fragment"> A mathematical model (e.g. equations, formulas, etc.)</li>
+			<li class="fragment"> Simulations, calculations and mathematical results </li>
+			<li class="fragment"> Insight that (hopefully) also apply to the real world</li>
+		</ul> -->
+		<!-- <img src="img/ModellingCycle.PNG"   width = "800 px"> -->
+		<img src="img/ModellingCycleSimpler.PNG"   width = "800 px">
 		<br>
 
-		<p class="fragment"> But how does one bring mathematical results back to the real world? </p>
-		
-		<br> 
-		<p class="fragment"> Someone has to interpret the results. </p>
-		<p class="fragment"> But who? And how?</p>
+		<p class="fragment"> But how does one bring math <font color="tan">back to the real world?</font> </p>
+		<p class="fragment"> Someone has to <font color="tan">interpret</font> the results. </p>
+		<!-- <p class="fragment"> But who? And how?</p> -->
 		
 		<!-- <p class="fragment"> A good mathematical model:</p>
 		<ol>
@@ -118,6 +132,21 @@
 	</section>
 
 	
+	<section data-auto-animate="a">
+		<h3>Examples of articles</h3>
+		<img src="img/Videnskabdk_Example.png"   width = "300 px">
+		<img src="img/Videnskabdk_Example2.png"   width = "300 px">
+		<img src="img/Videnskabdk_Example3.png"   width = "250 px">
+		<!-- <img src="img/Videnskabdk_Example4.png"   width = "250 px"> -->
+	  </section>
+	  <section data-auto-animate="a">
+		<h3>Examples of articles</h3>
+		<img src="img/Figure_Example2.png"   width = "280 px">
+		<img src="img/Figure_Example.png"   width = "340 px">
+		<img src="img/Figure_Example3.png"   width = "440 px">
+	  </section>
+
+
 	<!-- <section>
 		<h3>COVID-19 communication</h3>
 		<p class="fragment"> Mathematical perspective on COVID-19.</p>
@@ -147,142 +176,52 @@
 	 -->
 </section>
 
-
-<section>	
-	<section>
-		<h3> Mathematical uncertainty</h3>		
-		<p class="fragment"> Mathematical models can make predictions. </p>
-		<p class="fragment"> However, predictions aren't exact statements about the future. </p>
-		<p class="fragment"> We can describe a range of possibilities, in exact mathematical terms. </p>
-		<p class="fragment step-fade-in-then-out"><img src="img/SSIpredictionEnglish.png" width = "300 px"> </p>
-		<!-- <p class="fragment"><img src="Examples/SSIfigure.PNG" width = "400 px"> </p> -->
-		<p class="fragment"> But this "mathematical uncertainty" is not easy to understand.  </p>	 
-		<p class="fragment"> Article goal: Demonstrate this in a "simple" case.</p>
-		<p class="fragment"> <a href="https://videnskab.dk/forskerzonen/naturvidenskab/forstaa-usikkerhed-i-matematiske-modeller-med-disse-interaktive-grafikker" >(Link to article) </a></p>
-		
-		
-		
-		<!-- <p class="fragment"> However, "mathematical uncertainty" is difficult to explain.  </p>	 
-		<p class="fragment"> Article goal: Demonstrate this in a "simple" case.</p>
-		<p class="fragment"> <a href="https://videnskab.dk/forskerzonen/naturvidenskab/forstaa-usikkerhed-i-matematiske-modeller-med-disse-interaktive-grafikker" >Article link </a></p>
-		 -->
-	</section>
-	
-	<!-- <section>
-		
-	</section> -->
-	<!-- <section>
-		<h3> Exponential growth and uncertainty</h3>		
-		<p> Mathematical models can make predictions. </p>
-		<p> However, predictions aren't perfect. </p>
-		<p> But we can describe how trustworthy it is. </p>
-		<p class="fragment"> However, "mathematical uncertainty" is difficult to explain.  </p>	 
-		<p class="fragment"> Article goal: Demonstrate this in a "simple" case.</p>
-		<p class="fragment"> <a href="https://videnskab.dk/forskerzonen/naturvidenskab/forstaa-usikkerhed-i-matematiske-modeller-med-disse-interaktive-grafikker" >Article link </a></p>
-		
-	</section>
-	 -->
-	<section data-state="ExpInit1">
-		<h3> Exponential growth and uncertainty</h3>
-		<iframe id="ExpIframe"
-			title="Exponential growth"
-			width="700"
-			height="310"
-			style="background: #ffffff;"
-			src="Examples/Usikkerhed/1/index.html"
-			scrolling="no"
-			>
-		</iframe>
-		<br>
-		<input type="button"
-               id="btn" 
-               value="Reload simulation." /> 
-  
-        <script> 
-            function reloadExp1() { 
-                document.getElementById('ExpIframe').src += ''; 
-            } 
-            btn.onclick = reloadExp1; 
-        </script> 
-	</section>
-	
-	<section data-state="ExpInit2">
-		<h3> Exponential growth and uncertainty</h3>
-		<iframe id="ExpIframe2"
-			title="Exponential growth"
-			width="700"
-			height="270"
-			style="background: #ffffff;"
-			src="Examples/Usikkerhed/2/index.html"
-			scrolling="no"
-			>
-		</iframe>
-		<br>
-		<input type="button"
-               id="btn2" 
-               value="Reload simulation." /> 
-  
-        <script> 
-            function reloadExp2() { 
-                document.getElementById('ExpIframe2').src += ''; 
-            } 
-            btn2.onclick = reloadExp2; 
-        </script> 
-	</section>
-	
-	
-	<section data-state="ExpInit3">
-		<h3> Exponential growth and uncertainty</h3>
-		<iframe id="ExpIframe3"
-			title="Exponential growth"
-			width="700"
-			height="370"
-			style="background: #ffffff;"
-			src="Examples/Usikkerhed/3/index.html"
-			scrolling="no"
-			>
-		</iframe>
-		<br>
-		<input type="button"
-               id="btn3" 
-               value="Reload simulation." /> 
-  
-        <script> 
-            function reloadExp3() { 
-                document.getElementById('ExpIframe3').src += ''; 
-            } 
-            btn3.onclick = reloadExp3; 
-        </script> 
-	</section>
-	
-</section>
-
 <section>
-	<section>
+	<section data-auto-animate="a">
 		<h3>The SIR-model</h3>
-		<p class="fragment"> A "classic" within mathematical modelling.</p>
-		<p class="fragment"> Describes progression of an epidemic in a population. </p>
-		<p class="fragment"> Works well for un-mitigated epidemics. </p>
-		<!-- <p class="fragment"> Two main parameters:  </p> -->
-		<ol>
-			<li class="fragment"> How much do people transmit the disease?</li>
-			<p class="fragment"> Often described in terms of the "reproduction-number, R0" </p>
-			<li class="fragment"> How long are people infected? </li>
-			<p class="fragment"> "Infectious period" </p>
-		</ol>
-		<!-- <p class="fragment"> ... and here also an additional parameter: The effect of lockdown. </p> -->
-		<p class="fragment"> <a href="https://videnskab.dk/forskerzonen/krop-sundhed/tilbage-til-begyndelsen-to-kurver-og-en-ukendt-sygdom" >(Link to article)</a></p>
+		<p class="fragment"> A "classic" model tracing back to early 1900's.</p>
+		<p class="fragment"> Describes progression of an epidemic of an infectious disease in a population. </p>
+		<p class="fragment"> <img src="img/Figure_BoardingSchool.png"   width = "300 px"> </p>
+	</section>
+	<section data-auto-animate="a">
+		<h3>The SIR-model</h3>
+		<p> A "classic" model tracing back to early 1900's.</p>
+		<p> Describes progression of an epidemic of an infectious disease in a population. </p>
+		<p class="fragment"> <img src="img/Figure_Example_SIR.png"   width = "700 px"> </p>
+	</section>
+	<section data-auto-animate="a">
+		<h3>The SIR-model</h3>
+		<p> A "classic" model tracing back to early 1900's.</p>
+		<p> Describes progression of an epidemic of an infectious disease in a population. </p>
+		<p > <img src="img/Figure_Example_SIR_New.PNG"   width = "700 px"> </p>
 		
-	</section>	
-	
+		<p class="fragment"> Examples of model-parameters:</p>
+		<ul>
+			<li class="fragment"> How long are people infectious? </li>
+			<li class="fragment"> How many are immune before the epidemic? </li>
+			<li class="fragment"> How much do people transmit the disease?</li>
+			<p class="fragment"> <small>Often described in terms of the "reproduction-number, R0" </small></p>
+		</ul>
+		<p class="fragment"> <a href="https://videnskab.dk/forskerzonen/krop-sundhed/tilbage-til-begyndelsen-to-kurver-og-en-ukendt-sygdom" >(Link to article)</a></p>
+	  </section>
+
+<!-- 
+	  <ol>
+		<li class="fragment"> How much do people transmit the disease?</li>
+		<p class="fragment"> Often described in terms of the "reproduction-number, R0" </p>
+		<li class="fragment"> How long are people infected? </li>
+		<p class="fragment"> "Infectious period" </p>
+	</ol> -->
+
+	<!-- width:100%; -->
 	<section data-state="SIRgraphInit">
 		<h4> The SIR-model </h4>
-		<p style="font-size: 0.25em"> <a href="Examples/SIRsimple/index.html">Link for full-screen</a> </p>
+		<!-- <p style="font-size: 0.25em"> <a href="Examples/SIRsimple/index.html">Link for full-screen</a> </p> -->
 		<iframe id="SIRgraphIframe"
 			title="SIR-model-graph"
-			width="700"
-			height="550"
-			style="width:100%; background: #ffffff;"
+			width="1100"
+			height="700"
+			style=" background: #ffffff;"
 			src="Examples/SIRsimple/index.html"
 			scrolling="no">
 		</iframe>
@@ -302,11 +241,11 @@
 	<section>
 		<h3>The SIR-model, a different approach</h3>
 		
-		<p class="fragment"> Interactive graphs are not always the best choice.</p>
+		<p class="fragment"> A graph is not always the best choice, even if it's interactive.</p>
 		
 		<p class="fragment"> Instead, implementing the same ideas in a visual way can be better.</p>
 		
-		<p class="fragment"> Representing a person in a crowd by a circle, with color showing their status: </p> 
+		<p class="fragment"> Let us represent a person by a circle, with color showing their status: </p> 
 		
 		<ol>
 			<li class="fragment"> <font color="green">Susceptible</font> </li>
@@ -332,8 +271,8 @@
 		<h3> The SIR-model, a different approach</h3>
 		<iframe id="SIRIframe"
 			title="SIR-model"
-			width="700"
-			height="550"
+			width="750"
+			height="600"
 			style="width:100%;"
 			src="Examples/SIRagent/index.html">
 		</iframe>
@@ -354,17 +293,22 @@
 
 <section>
 	<section data-state="Conclusion">	
-	<h3> Final comments </h3>
+	<h3> Summing up </h3>
 	
-	<p class="fragment"> Mathematical modelling is based on simple ideas, but the results can be difficult to grasp.</p>
+	<!-- <p class="fragment"> An intuitive understanding of mathematical results is not always easy to get. </p> -->
+	<p class="fragment"> To describe a complex topic, having more than just text is helpful.</p>
+	<p class="fragment"> But even if a figure is simple for you, it might be complicated for someone else. </p>
+	<p class="fragment"> You already have some <font color="yellow">intuition</font> or <font color="yellow">understanding</font> of the topic. </p>
+	<p class="fragment"> What do you want the recipient to also get an intuition about?</p> 
+	<!-- <p class="fragment"> Mathematical modelling is based on simple ideas, but the results can be difficult to grasp.</p>
 	<p class="fragment"> To get an intuitive understanding of mathematical results, simply reading a text is not enough.</p>
-	<p class="fragment"> This does not only apply to mathematics! </p>
+	<p class="fragment"> This does not only apply to mathematics! </p> -->
 	<!-- <p class="fragment"> Good communication and visualization is a necessity. </p> -->
 	<!-- <p class="fragment"> Visulization tools like Bokeh, d3.js or Chart.js are very useful! </p> -->
 	<!-- <p class="fragment"> ... but a data-plot is not always the best solution, even if it's interactive. </p> -->
-	<p class="fragment"> Focus on what is <font color="red">important to communicate</font>, <br> not just what is <font color="red">easy to show</font>. </p>
+	<p class="fragment"> Think about "what is <font color="red">important to communicate</font>", <br> not just "what is <font color="red">easy to show</font>". </p>
 
-	<p class="fragment"> Remember: No one has ever complained that a complex topic was <font color="red">too easy</font> to understand!</p>
+	<!-- <p class="fragment"> Remember: No one has ever complained that a complex topic was <font color="red">too easy</font> to understand!</p> -->
 <!-- 	
 	<p class="fragment"> Videnskabelig formidling har aldrig været vigtigere for samfundet.</p>
 		<p class="fragment"> Kreative måder er visualisere matematikken på er nødvendige.</p>
@@ -419,8 +363,9 @@
 		<p>More examples of interactive visualizations are available on my website:</p>
 		<p>Web: <a href="http://rasmuspedersen.com"> rasmuspedersen.com </a></p>
 		<p>Email: <a href="mailto:rasmuspedersen1992@gmail.com"> rasmuspedersen1992@gmail.com </a></p>
-		<p>Science-communication articles:<a href="https://videnskab.dk/author/author/4315">  https://videnskab.dk/author/author/4315 </a></p>
-		<p>(In Danish, but Google translate might help)</p>
+		<!-- <p>Extra example of interactive figure:<a href="https://www.rasmuspedersen.com/InteractiveViralLoad/"> rasmuspedersen.com/InteractiveViralLoad/</a></p> -->
+		<p>Science-communication articles:<a href="https://videnskab.dk/author/author/4315"> videnskab.dk/author/author/4315 </a></p>
+		<p>(In Danish, but Google Translate might help)</p>
 	</small>
 		
 	</section>	
@@ -428,6 +373,23 @@
 	
 	
 </section>
+
+<script src="dist/reveal.js"></script>
+<!-- <script src="plugin/notes/notes.js"></script> -->
+<!-- <script src="plugin/markdown/markdown.js"></script> -->
+<!-- <script src="plugin/highlight/highlight.js"></script> -->
+<!-- <script>
+	// More info about initialization & config:
+	// - https://revealjs.com/initialization/
+	// - https://revealjs.com/config/
+	Reveal.initialize({
+		hash: true,
+
+		// Learn about plugins: https://revealjs.com/plugins/
+		plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+	});
+</script> -->
+
 
 
     <script>
@@ -437,6 +399,9 @@
 				history: false,
 				progress: false,
 				slideNumber: 'c/t',
+				width: 1100,
+  				height: 800,
+ 				margin: 0.04,
 
 			});
 			Reveal.addEventListener( 'ExpInit1', function() {
@@ -466,8 +431,6 @@
 			
 			
     </script>
-
-
 <!--
 
 			window.addEventListener('load', function () {

@@ -40,6 +40,7 @@ let check_gre = document.getElementById('checkGroen');
 let check_conf = document.getElementById('checkConf'); 
 let check_anim = document.getElementById('checkAnim');
 
+
 // let showRed = check_red.checked;
 // let showGreen = check_gre.checked;
 // let showConf = check_conf.checked;
@@ -168,6 +169,13 @@ let readInputs = function(){
   sirTInfMin = sirTInf - sirTInfDist;
   if (sirTInfMin < 0){
     sirTInfMin = 0;
+  }
+  if (check_anim.checked){
+    maxAniPoints = 50;
+    maxRandoms = 200;
+  } else {
+    maxAniPoints = 0;
+    maxRandoms = 0;
   }
 }
 
@@ -750,7 +758,7 @@ let drawBackground = (sketch) => {
   sketch.fill(clrBackground);
   
   sketch.stroke(0,50)
-  sketch.strokeWeight(3)
+  sketch.strokeWeight(4)
 
   sketch.rect(backgroundMargin,backgroundMargin,sketch.width-backgroundMargin*2,sketch.height-backgroundMargin*2);
   
@@ -783,6 +791,7 @@ let drawAxes = (sketch) => {
     // Ticks (From uncertainty article)
     sketch.noStroke();
     sketch.fill(0);
+    sketch.textSize(14);
     sketch.textAlign(sketch.CENTER,sketch.CENTER);
     sketch.text(0,0,15)
 
@@ -805,7 +814,7 @@ let drawAxes = (sketch) => {
     sketch.fill(0);
     // sketch.text(xTicksDiff*ax_NumTicks_X,0,15)
     sketch.text(xTicksDiff*ax_NumTicks_X*10,0,15)
-    sketch.text('dage',0,25)
+    sketch.text('days',0,25)
 
     sketch.pop();
     // Y-Ticks
@@ -861,7 +870,7 @@ let drawData = (sketch) => {
     // [x,y] = coorToScreenCoor(t,s);
     // [x2,y2] = coorToScreenCoor(t2,s2);
 
-    sketch.strokeWeight(2);
+    sketch.strokeWeight(5);
     // For a dotted line:
     if (showThis) {
 
@@ -1442,7 +1451,7 @@ class aniPoint {
         x = valueToScreenX(t);
         x2 = valueToScreenX(t2);
 
-        sketch.strokeWeight(1);
+        sketch.strokeWeight(3);
         const curAlpha = 100*(stepsToShow - k)/stepsToShow;
 
         
@@ -1654,7 +1663,8 @@ const sketchSir = ( sketch ) => {
   }
 
   sketch.draw = () =>{
-    sketch.background(255);
+    // sketch.background(255);
+    sketch.background(clrBackground);
     drawBackground(sketch)
     
     drawAxes(sketch);
@@ -1749,7 +1759,9 @@ const sketchDist = ( sketch ) => {
   }
 
   sketch.draw = () =>{
-    sketch.background(255);
+    
+    // sketch.background(255);
+    sketch.background(clrBackground);
     drawBackground(sketch);
     drawParameterAxes(sketch);
     
@@ -1921,7 +1933,8 @@ const sketchDist2 = ( sketch ) => {
   }
 
   sketch.draw = () =>{
-    sketch.background(255);
+    // sketch.background(255);
+    sketch.background(clrBackground);
     drawBackground(sketch);
     drawParameterAxes(sketch);
 
@@ -2058,7 +2071,9 @@ const sketchDist3 = ( sketch ) => {
   }
 
   sketch.draw = () =>{
-    sketch.background(255);
+    
+    // sketch.background(255);
+    sketch.background(clrBackground);
     drawBackground(sketch);
     drawParameterAxes(sketch);
 

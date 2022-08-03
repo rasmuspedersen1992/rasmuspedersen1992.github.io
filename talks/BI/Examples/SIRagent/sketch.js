@@ -166,7 +166,7 @@ function setup() {
 	if (divWidth < fieldHeight){
 		divHeight = fieldHeight;
 	} else {
-		divHeight = fieldHeight +200;
+		divHeight = fieldHeight +100;
 	}
 		
 	
