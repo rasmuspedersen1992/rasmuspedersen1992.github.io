@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Excess mortality</title>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script src="libraries/p5.min.js"></script>
+    <!-- <script src="libraries/p5.sound.min.js"></script> -->
+  </head>
+
+  <body>
+    
+    <!-- <div style="width:100%;margin: 00%;"> style="width:600px;text-align: center">-->
+    <div class='mainDiv'> 
+      
+      
+      <div id="p5Div" class='p5Canvas'> </div>
+
+
+        <div class="slider-container">
+          <div class="flex-item"> 
+            <input type="range" min="2000" max="2018" value="2014" step="1" class="slider" id="slider_start">
+            <p id="label_start">Start år</p>
+          </div>
+          <div class="flex-item"> 
+            <input type="range" min="2001" max="2019" value="2019" step="1" class="slider" id="slider_end">
+            <p id="label_end">Sidste år</p>
+          </div>
+          
+        </div>
+        <div class="slider-container">
+          <div class="flex-item"> 
+            <h3>Vælg land</h3>
+            <form>
+              <input type="radio" id="visDK" name="visDKellerSE" checked='true'value="visDK">
+              <label for="visDK">Vis Danmark</label><br>
+              <input type="radio" id="visSE" name="visDKellerSE" value="visSE">
+              <label for="visSE">Vis Sverige</label><br>
+            </form>
+          </div>
+        </div>
+      
+    <script src="sketch.js"></script>
+  </body>
+</html>
