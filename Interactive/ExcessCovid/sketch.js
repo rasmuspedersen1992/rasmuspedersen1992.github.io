@@ -16,10 +16,11 @@ let sketchW = p5DivElement.offsetWidth;
 let sketchH = 400;
 
 // Axes constants
-let axMargin = 30;
-let ax_0_X = axMargin;
+let axMargin = 45;
+let axMarginExtraY = 30;
+let ax_0_X = axMargin + axMarginExtraY;
 let ax_0_Y = sketchH - axMargin;
-let ax_W = sketchW - (2*axMargin);
+let ax_W = sketchW - (2*axMargin) - axMarginExtraY;
 let ax_H = sketchH - (2*axMargin);
 
 // Colors 
@@ -30,9 +31,13 @@ let clrDataReal = [0,0,0];
 let clrDK = [255,0,0];
 let clrSE = [0,0,255];
 
+let clrGood = [50,155,50];
+let clrBad = [155,50,50];
 // Various sizes
 let predictionSize = 10;
 let symbolSize = 10;
+let DKpop =  5800;
+let SEpop = 10350;
 
 
 // Flags / Booleans
@@ -79,15 +84,76 @@ let yearStart = 2000;
 let yearEnd = 2019;
 
 let readInputs = function(){
-  yearStart = parseFloat(slider_start.value);
-  yearEnd  = parseFloat(slider_end.value);
+  // yearStart = parseFloat(slider_start.value);
+  // yearEnd  = parseFloat(slider_end.value);
+
+  // Limit values to be in correct order
+  let newStart = parseFloat(slider_start.value);
+  let newEnd  = parseFloat(slider_end.value);
+
+  // // If sliders are in wrong order
+  // if (newStart > newEnd){
+  //   console.log(newStart);
+  //   console.log(newEnd);
+  //     // If start slider was increased
+  //     if (newStart != yearStart){
+  //       console.log('Start'); 
+  //     }
+  // }
+
+  
+  // yearStart = newStart
+  // yearEnd = newEnd
+
+  // If sliders are in wrong order or equal
+  if (newStart >= newEnd){
+    // If start sliders was increased
+    if (newStart != yearStart){
+      console.log('Start');
+      // Increase end slider accordingly
+      yearStart = newStart 
+      yearEnd = newStart + 1
+      slider_start.value = yearStart
+      slider_end.value = yearEnd
+    // } 
+    // If end sliders was decreased
+    } else if (newEnd != yearEnd){
+      console.log('End');
+      // Increase start slider accordingly
+      yearStart = newEnd - 1
+      yearEnd = newEnd
+      slider_start.value = yearStart
+      slider_end.value = yearEnd
+    }
+  } else {
+    yearStart = newStart
+    yearEnd = newEnd
+  }
+
+  // if (newStart > newEnd){
+  //   yearStart = newStart 
+  //   yearEnd = newStart + 1
+  //   slider_start.value = yearStart
+  //   slider_end.value = yearStart
+  // }
+
+
+  // if (yearStart >= yearEnd){
+  //   yearStart = yearEnd - 1 
+  //   slider_start.value = yearStart
+  // }
+  // if (yearEnd <= yearStart){
+  //   yearEnd = yearStart + 1 
+  //   slider_end.value = yearEnd
+  // }
+
   yearMin = yearStart-1.2;
   yearMax = yearEnd+2.5;
   yearMax = 2021.5;
 
-  // Change limits of sliders
-  slider_start.max = yearEnd;
-  slider_end.min = yearStart;
+  // // Change limits of sliders
+  // slider_start.max = yearEnd;
+  // slider_end.min = yearStart;
 }
 
 // --- Set labels beneath inputs --
@@ -223,7 +289,66 @@ let drawAxes = (sketch) => {
   sketch.line(0,-ax_H,arrowSize/2,-ax_H+arrowSize);
   sketch.line(0,-ax_H,-arrowSize/2,-ax_H+arrowSize);
 
-  // // Ticks
+  sketch.pop()
+  // --- Ticks ---
+  let tickSize = 5;
+  // - Y ticks -
+  let allYticks = [8,8.5,9,9.5,10,10.5,11]
+  // let curTick = 10.5;
+  allYticks.forEach(curTick => {
+    let curY = valueToScreenY(curTick);
+    // If not outside range of axis
+    if ((curY + ax_H > ax_0_Y) & (curY < ax_0_Y)){
+      
+      sketch.stroke(clrAxes);
+      sketch.strokeWeight(2);
+      sketch.line(ax_0_X-tickSize,curY,ax_0_X+tickSize,curY);
+      sketch.noStroke();
+      sketch.fill(0);
+      sketch.textSize(14);
+      sketch.textAlign(sketch.RIGHT,sketch.CENTER);
+      sketch.textStyle(sketch.BOLD);
+      let curText = curTick.toString().replace('.',',');
+      sketch.text(curText,ax_0_X-tickSize*2,curY)
+    }
+  });
+  // - X ticks -
+  for (let curTick = 1999; curTick < 2022; curTick++) {
+    
+    let curX = valueToScreenX(curTick);
+    // If not outside range of axis
+    if (curX > ax_0_X){
+        sketch.stroke(clrAxes);
+        sketch.strokeWeight(2);
+        sketch.line(curX,ax_0_Y-tickSize,curX,ax_0_Y+tickSize);
+
+        // if ((curTick % toModulo) == 0){
+            sketch.noStroke();
+            sketch.fill(0);
+            sketch.textSize(14);
+            sketch.textAlign(sketch.CENTER,sketch.TOP);
+            sketch.textStyle(sketch.BOLD);
+            let curText = curTick.toString().replace('.',',');
+            if (yearStart < 2010){
+              curText = "'" + curText[2] +curText[3]
+            }
+            sketch.text(curText,curX,ax_0_Y+tickSize*2)
+        // }
+    }
+  }
+
+  // -- Y-label -- 
+  sketch.push()
+  sketch.translate(axMarginExtraY,ax_0_Y - ax_H/2)
+  sketch.rotate(-sketch.PI/2);
+  sketch.noStroke();
+  sketch.fill(0);
+  sketch.textSize(18);
+  sketch.textAlign(sketch.CENTER,sketch.CENTER);
+  sketch.textStyle(sketch.NORMAL);
+  sketch.text('Dødsfald per 1000 borgere',0,0)
+  sketch.pop()
+
   // sketch.strokeWeight(2)
   // for (let k = 1; k < ax_NumTicks_X; k++) {
   //   sketch.line(k*xTicksStep,-arrowSize/3,k*xTicksStep,+arrowSize/3)    
@@ -296,7 +421,6 @@ let drawAxes = (sketch) => {
 
 
 
-  sketch.pop()
 }
 // let yearMin = dataYears[0]-1;
 // let yearMax = dataYears[dataYears.length-1]+2;
@@ -340,14 +464,16 @@ let drawData = (sketch) => {
     let yDK = valueToScreenY(curDK);
     let ySE = valueToScreenY(curSE);
 
-    if (flagShowDK){
-      sketch.stroke(clrDK);
-      sketch.point(x,yDK); 
+    if (x > ax_0_X){
+      if (flagShowDK){
+        sketch.stroke(clrDK);
+        sketch.point(x,yDK); 
+      }
+      if (flagShowSE){
+        sketch.stroke(clrSE);
+        sketch.point(x,ySE); 
+      }    
     }
-    if (flagShowSE){
-      sketch.stroke(clrSE);
-      sketch.point(x,ySE); 
-    }    
   }
 
   sketch.strokeWeight(5);
@@ -381,15 +507,47 @@ let drawData = (sketch) => {
 
 }
 
-let averageDK = 0;
-let averageSE = 0;
+
 let maxAll = 0;
 let minAll = 20;
-function calcAverage(){
-  
+function calcYlimits(){
   // For automatic y-limits
   maxAll = 0;
   minAll = 20;
+  
+  let firstToShow = yearStart-dataYears[0];
+  let lastToShow = 20;
+  for (let i = firstToShow; i < lastToShow ; i++) {
+    const curDK = dataDK[i];
+    const curSE = dataSE[i];
+    // For automatic y-limits
+    if (flagShowDK){
+      if (curDK > maxAll){
+        maxAll = curDK;
+      }
+      if (curDK < minAll){
+        minAll = curDK;
+      }
+    }
+    if (flagShowSE){
+      if (curSE > maxAll){
+        maxAll = curSE;
+      }
+      if (curSE < minAll){
+        minAll = curSE;
+      }
+    }
+  }
+  
+  // For automatic y-limits
+  valMax = maxAll*1.05;
+  valMin = minAll*0.95;
+}
+
+let averageDK = 0;
+let averageSE = 0;
+function calcAverage(){
+  
 
   let firstToUse = yearStart-dataYears[0];
   let lastToUse = yearEnd-dataYears[0] +1;
@@ -404,27 +562,11 @@ function calcAverage(){
     averageSE = averageSE + curSE;
     numYears = numYears + 1;
     
-    // For automatic y-limits
-    if (curDK > maxAll){
-      maxAll = curDK;
-    }
-    if (curSE > maxAll){
-      maxAll = curSE;
-    }
-    if (curDK < minAll){
-      minAll = curDK;
-    }
-    if (curSE < minAll){
-      minAll = curSE;
-    }
   }
 
   averageDK = averageDK / numYears;
   averageSE = averageSE / numYears;
 
-  // For automatic y-limits
-  valMax = maxAll*1.05;
-  valMin = minAll*0.95;
 }
 
 
@@ -560,22 +702,22 @@ let drawAverage = (sketch) => {
     sketch.stroke(clrDK);
     sketch.line(ax_0_X,yAvgDK,ax_0_X+ax_W,yAvgDK);
     
-    // Draw prediction
-    sketch.strokeWeight(3);
-    sketch.stroke(155);
-    // sketch.strokeWeight(predictionSize);
-    let predX = valueToScreenX(2020);
-    let predY = yAvgDK;
-    sketch.line(predX-predictionSize,predY,predX+predictionSize,predY);
-    sketch.line(predX,predY+predictionSize,predX,predY-predictionSize);
-    sketch.line(predX-predictionSize*0.66,predY+predictionSize*0.66,predX+predictionSize*0.66,predY-predictionSize*0.66);
-    sketch.line(predX+predictionSize*0.66,predY+predictionSize*0.66,predX-predictionSize*0.66,predY-predictionSize*0.66);
-    predX = valueToScreenX(2021);
-    predY = yAvgDK;
-    sketch.line(predX-predictionSize,predY,predX+predictionSize,predY);
-    sketch.line(predX,predY+predictionSize,predX,predY-predictionSize);
-    sketch.line(predX-predictionSize*0.66,predY+predictionSize*0.66,predX+predictionSize*0.66,predY-predictionSize*0.66);
-    sketch.line(predX+predictionSize*0.66,predY+predictionSize*0.66,predX-predictionSize*0.66,predY-predictionSize*0.66);
+    // // Draw prediction
+    // sketch.strokeWeight(3);
+    // sketch.stroke(155);
+    // // sketch.strokeWeight(predictionSize);
+    // let predX = valueToScreenX(2020);
+    // let predY = yAvgDK;
+    // sketch.line(predX-predictionSize,predY,predX+predictionSize,predY);
+    // sketch.line(predX,predY+predictionSize,predX,predY-predictionSize);
+    // sketch.line(predX-predictionSize*0.66,predY+predictionSize*0.66,predX+predictionSize*0.66,predY-predictionSize*0.66);
+    // sketch.line(predX+predictionSize*0.66,predY+predictionSize*0.66,predX-predictionSize*0.66,predY-predictionSize*0.66);
+    // predX = valueToScreenX(2021);
+    // predY = yAvgDK;
+    // sketch.line(predX-predictionSize,predY,predX+predictionSize,predY);
+    // sketch.line(predX,predY+predictionSize,predX,predY-predictionSize);
+    // sketch.line(predX-predictionSize*0.66,predY+predictionSize*0.66,predX+predictionSize*0.66,predY-predictionSize*0.66);
+    // sketch.line(predX+predictionSize*0.66,predY+predictionSize*0.66,predX-predictionSize*0.66,predY-predictionSize*0.66);
 
   }
   if (flagShowSE){
@@ -583,22 +725,22 @@ let drawAverage = (sketch) => {
     sketch.stroke(clrSE);
     sketch.line(ax_0_X,yAvgSE,ax_0_X+ax_W,yAvgSE);
     
-    // Draw prediction
-    sketch.strokeWeight(3);
-    sketch.stroke(155);
-    // sketch.strokeWeight(predictionSize);
-    let predX = valueToScreenX(2020);
-    let predY = yAvgSE;
-    sketch.line(predX-predictionSize,predY,predX+predictionSize,predY);
-    sketch.line(predX,predY+predictionSize,predX,predY-predictionSize);
-    sketch.line(predX-predictionSize*0.66,predY+predictionSize*0.66,predX+predictionSize*0.66,predY-predictionSize*0.66);
-    sketch.line(predX+predictionSize*0.66,predY+predictionSize*0.66,predX-predictionSize*0.66,predY-predictionSize*0.66);
-    predX = valueToScreenX(2021);
-    predY = yAvgSE;
-    sketch.line(predX-predictionSize,predY,predX+predictionSize,predY);
-    sketch.line(predX,predY+predictionSize,predX,predY-predictionSize);
-    sketch.line(predX-predictionSize*0.66,predY+predictionSize*0.66,predX+predictionSize*0.66,predY-predictionSize*0.66);
-    sketch.line(predX+predictionSize*0.66,predY+predictionSize*0.66,predX-predictionSize*0.66,predY-predictionSize*0.66);
+    // // Draw prediction
+    // sketch.strokeWeight(3);
+    // sketch.stroke(155);
+    // // sketch.strokeWeight(predictionSize);
+    // let predX = valueToScreenX(2020);
+    // let predY = yAvgSE;
+    // sketch.line(predX-predictionSize,predY,predX+predictionSize,predY);
+    // sketch.line(predX,predY+predictionSize,predX,predY-predictionSize);
+    // sketch.line(predX-predictionSize*0.66,predY+predictionSize*0.66,predX+predictionSize*0.66,predY-predictionSize*0.66);
+    // sketch.line(predX+predictionSize*0.66,predY+predictionSize*0.66,predX-predictionSize*0.66,predY-predictionSize*0.66);
+    // predX = valueToScreenX(2021);
+    // predY = yAvgSE;
+    // sketch.line(predX-predictionSize,predY,predX+predictionSize,predY);
+    // sketch.line(predX,predY+predictionSize,predX,predY-predictionSize);
+    // sketch.line(predX-predictionSize*0.66,predY+predictionSize*0.66,predX+predictionSize*0.66,predY-predictionSize*0.66);
+    // sketch.line(predX+predictionSize*0.66,predY+predictionSize*0.66,predX-predictionSize*0.66,predY-predictionSize*0.66);
 
   }
 
@@ -632,21 +774,21 @@ let drawLinear = (sketch) => {
       
     }
 
-    // Draw prediction
-    sketch.stroke(155);
-    // sketch.strokeWeight(predictionSize);
-    let predX = valueToScreenX(2020);
-    let predY = valueToScreenY(pred_linear_2020_DK);
-    sketch.line(predX-predictionSize,predY,predX+predictionSize,predY);
-    sketch.line(predX,predY+predictionSize,predX,predY-predictionSize);
-    sketch.line(predX-predictionSize*0.66,predY-predictionSize*0.66,predX+predictionSize*0.66,predY+predictionSize*0.66);
-    sketch.line(predX+predictionSize*0.66,predY-predictionSize*0.66,predX-predictionSize*0.66,predY+predictionSize*0.66);
-    predX = valueToScreenX(2021);
-    predY = valueToScreenY(pred_linear_2021_DK);
-    sketch.line(predX-predictionSize,predY,predX+predictionSize,predY);
-    sketch.line(predX,predY+predictionSize,predX,predY-predictionSize);
-    sketch.line(predX-predictionSize*0.66,predY-predictionSize*0.66,predX+predictionSize*0.66,predY+predictionSize*0.66);
-    sketch.line(predX+predictionSize*0.66,predY-predictionSize*0.66,predX-predictionSize*0.66,predY+predictionSize*0.66);
+    // // Draw prediction
+    // sketch.stroke(155);
+    // // sketch.strokeWeight(predictionSize);
+    // let predX = valueToScreenX(2020);
+    // let predY = valueToScreenY(pred_linear_2020_DK);
+    // sketch.line(predX-predictionSize,predY,predX+predictionSize,predY);
+    // sketch.line(predX,predY+predictionSize,predX,predY-predictionSize);
+    // sketch.line(predX-predictionSize*0.66,predY-predictionSize*0.66,predX+predictionSize*0.66,predY+predictionSize*0.66);
+    // sketch.line(predX+predictionSize*0.66,predY-predictionSize*0.66,predX-predictionSize*0.66,predY+predictionSize*0.66);
+    // predX = valueToScreenX(2021);
+    // predY = valueToScreenY(pred_linear_2021_DK);
+    // sketch.line(predX-predictionSize,predY,predX+predictionSize,predY);
+    // sketch.line(predX,predY+predictionSize,predX,predY-predictionSize);
+    // sketch.line(predX-predictionSize*0.66,predY-predictionSize*0.66,predX+predictionSize*0.66,predY+predictionSize*0.66);
+    // sketch.line(predX+predictionSize*0.66,predY-predictionSize*0.66,predX-predictionSize*0.66,predY+predictionSize*0.66);
   }
   
   if (flagShowSE){
@@ -674,21 +816,279 @@ let drawLinear = (sketch) => {
       
     }
 
-    // Draw prediction
+    // // Draw prediction
+    // sketch.stroke(155);
+    // // sketch.strokeWeight(predictionSize);
+    // let predX = valueToScreenX(2020);
+    // let predY = valueToScreenY(pred_linear_2020_SE);
+    // sketch.line(predX-predictionSize,predY,predX+predictionSize,predY);
+    // sketch.line(predX,predY+predictionSize,predX,predY-predictionSize);
+    // sketch.line(predX-predictionSize*0.66,predY-predictionSize*0.66,predX+predictionSize*0.66,predY+predictionSize*0.66);
+    // sketch.line(predX+predictionSize*0.66,predY-predictionSize*0.66,predX-predictionSize*0.66,predY+predictionSize*0.66);
+    // predX = valueToScreenX(2021);
+    // predY = valueToScreenY(pred_linear_2021_SE);
+    // sketch.line(predX-predictionSize,predY,predX+predictionSize,predY);
+    // sketch.line(predX,predY+predictionSize,predX,predY-predictionSize);
+    // sketch.line(predX-predictionSize*0.66,predY-predictionSize*0.66,predX+predictionSize*0.66,predY+predictionSize*0.66);
+    // sketch.line(predX+predictionSize*0.66,predY-predictionSize*0.66,predX-predictionSize*0.66,predY+predictionSize*0.66);
+  }
+}
+
+function drawPredictionLineLinear(sketch){
+  if (flagShowDK) {
+    let pred2020 = calcLinear(2020,slopeDK,interDK);
+    let pred2021 = calcLinear(2021,slopeDK,interDK);
+
+    let x
+    let y1
+    let y2
+    let curDiff;
+    // console.log(dataDK);
+    x = valueToScreenX(2020.1);
+    y1 = valueToScreenY(dataDK[20]);
+    y2 = valueToScreenY(pred2020);
+    curDiff = dataDK[20] - pred2020;
+
+    if (dataDK[20] <= pred2020){
+      sketch.stroke(clrGood);
+    } else {
+      sketch.stroke(clrBad);
+    }
+    sketch.strokeWeight(6);
+    sketch.line(x,y1,x,y2);
+
+    // Show a label for excess
+    let curLabel;
+    sketch.strokeWeight(2);
     sketch.stroke(155);
-    // sketch.strokeWeight(predictionSize);
-    let predX = valueToScreenX(2020);
-    let predY = valueToScreenY(pred_linear_2020_SE);
-    sketch.line(predX-predictionSize,predY,predX+predictionSize,predY);
-    sketch.line(predX,predY+predictionSize,predX,predY-predictionSize);
-    sketch.line(predX-predictionSize*0.66,predY-predictionSize*0.66,predX+predictionSize*0.66,predY+predictionSize*0.66);
-    sketch.line(predX+predictionSize*0.66,predY-predictionSize*0.66,predX-predictionSize*0.66,predY+predictionSize*0.66);
-    predX = valueToScreenX(2021);
-    predY = valueToScreenY(pred_linear_2021_SE);
-    sketch.line(predX-predictionSize,predY,predX+predictionSize,predY);
-    sketch.line(predX,predY+predictionSize,predX,predY-predictionSize);
-    sketch.line(predX-predictionSize*0.66,predY-predictionSize*0.66,predX+predictionSize*0.66,predY+predictionSize*0.66);
-    sketch.line(predX+predictionSize*0.66,predY-predictionSize*0.66,predX-predictionSize*0.66,predY+predictionSize*0.66);
+    sketch.line(x+5,(y1+y2)/2,x+10,50);
+    sketch.fill(0);
+    sketch.noStroke();
+    sketch.textSize(12);
+    sketch.textAlign(sketch.CENTER,sketch.CENTER);
+    sketch.textStyle(sketch.NORMAL);
+    curLabel = Math.round(curDiff*DKpop).toString();
+    sketch.text(curLabel,x+10,40)
+    sketch.text('Lineær',x+10,25)
+
+
+    x = valueToScreenX(2021.1);
+    y1 = valueToScreenY(dataDK[21]);
+    y2 = valueToScreenY(pred2021);
+    curDiff = dataDK[21] - pred2021;
+
+    if (dataDK[21] <= pred2021){
+      sketch.stroke(clrGood);
+    } else {
+      sketch.stroke(clrBad);
+    }
+    sketch.strokeWeight(6);
+    sketch.line(x,y1,x,y2);
+
+    // Show a label for excess
+    sketch.strokeWeight(2);
+    sketch.stroke(155);
+    sketch.line(x+5,(y1+y2)/2,x+10,50);
+    sketch.fill(0);
+    sketch.noStroke();
+    sketch.textSize(12);
+    sketch.textAlign(sketch.CENTER,sketch.CENTER);
+    sketch.textStyle(sketch.NORMAL);
+    curLabel = Math.round(curDiff*DKpop).toString();
+    sketch.text(curLabel,x+10,40)
+    sketch.text('Lineær',x+10,25)
+
+  }
+  
+  if (flagShowSE) {
+    let pred2020 = calcLinear(2020,slopeSE,interSE);
+    let pred2021 = calcLinear(2021,slopeSE,interSE);
+
+    let x
+    let y1
+    let y2
+    let curDiff;
+    // console.log(dataSE);
+    x = valueToScreenX(2020.1);
+    y1 = valueToScreenY(dataSE[20]);
+    y2 = valueToScreenY(pred2020);
+    curDiff = dataSE[20] - pred2020;
+
+    if (dataSE[20] <= pred2020){
+      sketch.stroke(clrGood);
+    } else {
+      sketch.stroke(clrBad);
+    }
+    sketch.strokeWeight(6);
+    sketch.line(x,y1,x,y2);
+    // Show a label for excess
+    sketch.strokeWeight(2);
+    sketch.stroke(155);
+    sketch.line(x+5,(y1+y2)/2,x+10,70);
+    sketch.fill(0);
+    sketch.noStroke();
+    sketch.textSize(12);
+    sketch.textAlign(sketch.CENTER,sketch.CENTER);
+    sketch.textStyle(sketch.NORMAL);
+    curLabel = Math.round(curDiff*SEpop).toString();
+    sketch.text(curLabel,x+10,50)
+    sketch.text('Lineær',x+10,30)
+
+    // 2021
+    x = valueToScreenX(2021.1);
+    y1 = valueToScreenY(dataSE[21]);
+    y2 = valueToScreenY(pred2021);
+    curDiff = dataSE[21] - pred2021;
+
+    if (dataSE[21] <= pred2021){
+      sketch.stroke(clrGood);
+    } else {
+      sketch.stroke(clrBad);
+    }
+    sketch.strokeWeight(6);
+    sketch.line(x,y1,x,y2);
+
+    // Show a label for excess
+    sketch.strokeWeight(2);
+    sketch.stroke(155);
+    sketch.line(x+5,(y1+y2)/2,x+10,70);
+    sketch.fill(0);
+    sketch.noStroke();
+    sketch.textSize(12);
+    sketch.textAlign(sketch.CENTER,sketch.CENTER);
+    sketch.textStyle(sketch.NORMAL);
+    curLabel = Math.round(curDiff*SEpop).toString();
+    sketch.text(curLabel,x+10,50)
+    sketch.text('Lineær',x+10,30)
+
+  }
+}
+
+function drawPredictionLineAverage(sketch){
+  if (flagShowDK) {
+    let pred2020 = averageDK
+    let pred2021 = averageDK;
+
+    let x
+    let y1
+    let y2
+    let curDiff;
+    // console.log(dataSE);
+    x = valueToScreenX(2020 - 0.1);
+    y1 = valueToScreenY(dataDK[20]);
+    y2 = valueToScreenY(pred2020);
+    curDiff = dataDK[20] - pred2020;
+
+    if (dataDK[20] <= pred2020){
+      sketch.stroke(clrGood);
+    } else {
+      sketch.stroke(clrBad);
+    }
+    sketch.strokeWeight(6);
+    sketch.line(x,y1,x,y2);
+    // Show a label for excess
+    sketch.strokeWeight(2);
+    sketch.stroke(155);
+    sketch.line(x-5,(y1+y2)/2,x-15,100);
+    sketch.fill(0);
+    sketch.noStroke();
+    sketch.textSize(12);
+    sketch.textAlign(sketch.CENTER,sketch.CENTER);
+    sketch.textStyle(sketch.NORMAL);
+    curLabel = Math.round(curDiff*DKpop).toString();
+    sketch.text(curLabel,x-15,90)
+    sketch.text('Gnmsnit',x-15,75)
+
+
+    x = valueToScreenX(2021 - 0.1);
+    y1 = valueToScreenY(dataDK[21]);
+    y2 = valueToScreenY(pred2021);
+    curDiff = dataDK[21] - pred2021;
+
+    if (dataDK[21] <= pred2021){
+      sketch.stroke(clrGood);
+    } else {
+      sketch.stroke(clrBad);
+    }
+    sketch.strokeWeight(6);
+    sketch.line(x,y1,x,y2);
+
+    // Show a label for excess
+    sketch.strokeWeight(2);
+    sketch.stroke(155);
+    sketch.line(x-5,(y1+y2)/2,x-15,100);
+    sketch.fill(0);
+    sketch.noStroke();
+    sketch.textSize(12);
+    sketch.textAlign(sketch.CENTER,sketch.CENTER);
+    sketch.textStyle(sketch.NORMAL);
+    curLabel = Math.round(curDiff*DKpop).toString();
+    sketch.text(curLabel,x-15,90)
+    sketch.text('Gnmsnit',x-15,75)
+
+
+  }
+  
+  if (flagShowSE) {
+    let pred2020 = averageSE;
+    let pred2021 = averageSE;
+
+    let x
+    let y1
+    let y2
+    // console.log(dataSE);
+    x = valueToScreenX(2020 - 0.1);
+    y1 = valueToScreenY(dataSE[20]);
+    y2 = valueToScreenY(pred2020);
+    curDiff = dataSE[20] - pred2020;
+
+    if (dataSE[20] <= pred2020){
+      sketch.stroke(clrGood);
+    } else {
+      sketch.stroke(clrBad);
+    }
+    sketch.strokeWeight(6);
+    sketch.line(x,y1,x,y2);
+    // Show a label for excess
+    sketch.strokeWeight(2);
+    sketch.stroke(155);
+    sketch.line(x-5,(y1+y2)/2,x-15,100);
+    sketch.fill(0);
+    sketch.noStroke();
+    sketch.textSize(12);
+    sketch.textAlign(sketch.CENTER,sketch.CENTER);
+    sketch.textStyle(sketch.NORMAL);
+    curLabel = Math.round(curDiff*SEpop).toString();
+    sketch.text(curLabel,x-15,90)
+    sketch.text('Gnmsnit',x-15,75)
+
+
+    x = valueToScreenX(2021 - 0.1);
+    y1 = valueToScreenY(dataSE[21]);
+    y2 = valueToScreenY(pred2021);
+    curDiff = dataSE[21] - pred2021;
+
+    if (dataSE[21] <= pred2021){
+      sketch.stroke(clrGood);
+    } else {
+      sketch.stroke(clrBad);
+    }
+    sketch.strokeWeight(6);
+    sketch.line(x,y1,x,y2);
+
+    // Show a label for excess
+    sketch.strokeWeight(2);
+    sketch.stroke(155);
+    sketch.line(x-5,(y1+y2)/2,x-15,100);
+    sketch.fill(0);
+    sketch.noStroke();
+    sketch.textSize(12);
+    sketch.textAlign(sketch.CENTER,sketch.CENTER);
+    sketch.textStyle(sketch.NORMAL);
+    curLabel = Math.round(curDiff*SEpop).toString();
+    sketch.text(curLabel,x-15,90)
+    sketch.text('Gnmsnit',x-15,75)
+
   }
 }
 
@@ -713,13 +1113,18 @@ const sketchMain = ( sketch ) => {
     sketch.background(clrBackground);
     drawBackground(sketch);
     
-    drawAxes(sketch);
    
-    drawData(sketch);
 
     drawAverage(sketch);
 
     drawLinear(sketch);
+
+    drawPredictionLineAverage(sketch);
+    drawPredictionLineLinear(sketch);
+
+    drawData(sketch);
+
+    drawAxes(sketch);
 
   }
 }
@@ -736,6 +1141,7 @@ let mainFunc = function(){
   // readData();
 
   readAndSet();
+  calcYlimits();
   calcAverage();
   calcLinearParameters();
 
