@@ -9,11 +9,15 @@ const tempSketch = ( sketch ) => {
 }
 let p5func = new p5(tempSketch);
 let p5DivElement = document.getElementById('p5Div'); // For using CSS sizes
+let p5DivElementSmall = document.getElementById('p5DivSmall'); // For using CSS sizes
 
 // Window size
 let sketchW = p5DivElement.offsetWidth;
 // let sketchW = 300;
 let sketchH = 400;
+
+let sketchW_small = p5DivElementSmall.offsetWidth;
+let sketchH_small = 200;
 
 // Axes constants
 let axMargin = 45;
@@ -109,7 +113,7 @@ let readInputs = function(){
   if (newStart >= newEnd){
     // If start sliders was increased
     if (newStart != yearStart){
-      console.log('Start');
+      // console.log('Start');
       // Increase end slider accordingly
       yearStart = newStart 
       yearEnd = newStart + 1
@@ -118,7 +122,7 @@ let readInputs = function(){
     // } 
     // If end sliders was decreased
     } else if (newEnd != yearEnd){
-      console.log('End');
+      // console.log('End');
       // Increase start slider accordingly
       yearStart = newEnd - 1
       yearEnd = newEnd
@@ -147,7 +151,8 @@ let readInputs = function(){
   //   slider_end.value = yearEnd
   // }
 
-  yearMin = yearStart-1.2;
+  // yearMin = yearStart-1.2;
+  yearMin = yearStart-0.5; 
   yearMax = yearEnd+2.5;
   yearMax = 2021.5;
 
@@ -264,6 +269,16 @@ dataSE_str.forEach(element => {
 let backgroundMargin = 5;
 
 let drawBackground = (sketch) => {
+  sketch.fill(clrBackground);
+  
+  sketch.stroke(0,50)
+  sketch.strokeWeight(4)
+
+  sketch.rect(backgroundMargin,backgroundMargin,sketch.width-backgroundMargin*2,sketch.height-backgroundMargin*2);
+  
+}
+
+let drawBackgroundSmall = (sketch) => {
   sketch.fill(clrBackground);
   
   sketch.stroke(0,50)
@@ -857,19 +872,19 @@ function drawPredictionLineLinear(sketch){
     sketch.strokeWeight(6);
     sketch.line(x,y1,x,y2);
 
-    // Show a label for excess
-    let curLabel;
-    sketch.strokeWeight(2);
-    sketch.stroke(155);
-    sketch.line(x+5,(y1+y2)/2,x+10,50);
-    sketch.fill(0);
-    sketch.noStroke();
-    sketch.textSize(12);
-    sketch.textAlign(sketch.CENTER,sketch.CENTER);
-    sketch.textStyle(sketch.NORMAL);
-    curLabel = Math.round(curDiff*DKpop).toString();
-    sketch.text(curLabel,x+10,40)
-    sketch.text('Lineær',x+10,25)
+    // // Show a label for excess
+    // let curLabel;
+    // sketch.strokeWeight(2);
+    // sketch.stroke(155);
+    // sketch.line(x+5,(y1+y2)/2,x+10,50);
+    // sketch.fill(0);
+    // sketch.noStroke();
+    // sketch.textSize(12);
+    // sketch.textAlign(sketch.CENTER,sketch.CENTER);
+    // sketch.textStyle(sketch.NORMAL);
+    // curLabel = Math.round(curDiff*DKpop).toString();
+    // sketch.text(curLabel,x+10,40)
+    // sketch.text('Lineær',x+10,25)
 
 
     x = valueToScreenX(2021.1);
@@ -885,18 +900,18 @@ function drawPredictionLineLinear(sketch){
     sketch.strokeWeight(6);
     sketch.line(x,y1,x,y2);
 
-    // Show a label for excess
-    sketch.strokeWeight(2);
-    sketch.stroke(155);
-    sketch.line(x+5,(y1+y2)/2,x+10,50);
-    sketch.fill(0);
-    sketch.noStroke();
-    sketch.textSize(12);
-    sketch.textAlign(sketch.CENTER,sketch.CENTER);
-    sketch.textStyle(sketch.NORMAL);
-    curLabel = Math.round(curDiff*DKpop).toString();
-    sketch.text(curLabel,x+10,40)
-    sketch.text('Lineær',x+10,25)
+    // // Show a label for excess
+    // sketch.strokeWeight(2);
+    // sketch.stroke(155);
+    // sketch.line(x+5,(y1+y2)/2,x+10,50);
+    // sketch.fill(0);
+    // sketch.noStroke();
+    // sketch.textSize(12);
+    // sketch.textAlign(sketch.CENTER,sketch.CENTER);
+    // sketch.textStyle(sketch.NORMAL);
+    // curLabel = Math.round(curDiff*DKpop).toString();
+    // sketch.text(curLabel,x+10,40)
+    // sketch.text('Lineær',x+10,25)
 
   }
   
@@ -921,18 +936,18 @@ function drawPredictionLineLinear(sketch){
     }
     sketch.strokeWeight(6);
     sketch.line(x,y1,x,y2);
-    // Show a label for excess
-    sketch.strokeWeight(2);
-    sketch.stroke(155);
-    sketch.line(x+5,(y1+y2)/2,x+10,70);
-    sketch.fill(0);
-    sketch.noStroke();
-    sketch.textSize(12);
-    sketch.textAlign(sketch.CENTER,sketch.CENTER);
-    sketch.textStyle(sketch.NORMAL);
-    curLabel = Math.round(curDiff*SEpop).toString();
-    sketch.text(curLabel,x+10,50)
-    sketch.text('Lineær',x+10,30)
+    // // Show a label for excess
+    // sketch.strokeWeight(2);
+    // sketch.stroke(155);
+    // sketch.line(x+5,(y1+y2)/2,x+10,70);
+    // sketch.fill(0);
+    // sketch.noStroke();
+    // sketch.textSize(12);
+    // sketch.textAlign(sketch.CENTER,sketch.CENTER);
+    // sketch.textStyle(sketch.NORMAL);
+    // curLabel = Math.round(curDiff*SEpop).toString();
+    // sketch.text(curLabel,x+10,50)
+    // sketch.text('Lineær',x+10,30)
 
     // 2021
     x = valueToScreenX(2021.1);
@@ -948,18 +963,18 @@ function drawPredictionLineLinear(sketch){
     sketch.strokeWeight(6);
     sketch.line(x,y1,x,y2);
 
-    // Show a label for excess
-    sketch.strokeWeight(2);
-    sketch.stroke(155);
-    sketch.line(x+5,(y1+y2)/2,x+10,70);
-    sketch.fill(0);
-    sketch.noStroke();
-    sketch.textSize(12);
-    sketch.textAlign(sketch.CENTER,sketch.CENTER);
-    sketch.textStyle(sketch.NORMAL);
-    curLabel = Math.round(curDiff*SEpop).toString();
-    sketch.text(curLabel,x+10,50)
-    sketch.text('Lineær',x+10,30)
+    // // Show a label for excess
+    // sketch.strokeWeight(2);
+    // sketch.stroke(155);
+    // sketch.line(x+5,(y1+y2)/2,x+10,70);
+    // sketch.fill(0);
+    // sketch.noStroke();
+    // sketch.textSize(12);
+    // sketch.textAlign(sketch.CENTER,sketch.CENTER);
+    // sketch.textStyle(sketch.NORMAL);
+    // curLabel = Math.round(curDiff*SEpop).toString();
+    // sketch.text(curLabel,x+10,50)
+    // sketch.text('Lineær',x+10,30)
 
   }
 }
@@ -986,18 +1001,19 @@ function drawPredictionLineAverage(sketch){
     }
     sketch.strokeWeight(6);
     sketch.line(x,y1,x,y2);
-    // Show a label for excess
-    sketch.strokeWeight(2);
-    sketch.stroke(155);
-    sketch.line(x-5,(y1+y2)/2,x-15,100);
-    sketch.fill(0);
-    sketch.noStroke();
-    sketch.textSize(12);
-    sketch.textAlign(sketch.CENTER,sketch.CENTER);
-    sketch.textStyle(sketch.NORMAL);
-    curLabel = Math.round(curDiff*DKpop).toString();
-    sketch.text(curLabel,x-15,90)
-    sketch.text('Gnmsnit',x-15,75)
+
+    // // Show a label for excess
+    // sketch.strokeWeight(2);
+    // sketch.stroke(155);
+    // sketch.line(x-5,(y1+y2)/2,x-15,100);
+    // sketch.fill(0);
+    // sketch.noStroke();
+    // sketch.textSize(12);
+    // sketch.textAlign(sketch.CENTER,sketch.CENTER);
+    // sketch.textStyle(sketch.NORMAL);
+    // curLabel = Math.round(curDiff*DKpop).toString();
+    // sketch.text(curLabel,x-15,90)
+    // sketch.text('Gnmsnit',x-15,75)
 
 
     x = valueToScreenX(2021 - 0.1);
@@ -1013,18 +1029,18 @@ function drawPredictionLineAverage(sketch){
     sketch.strokeWeight(6);
     sketch.line(x,y1,x,y2);
 
-    // Show a label for excess
-    sketch.strokeWeight(2);
-    sketch.stroke(155);
-    sketch.line(x-5,(y1+y2)/2,x-15,100);
-    sketch.fill(0);
-    sketch.noStroke();
-    sketch.textSize(12);
-    sketch.textAlign(sketch.CENTER,sketch.CENTER);
-    sketch.textStyle(sketch.NORMAL);
-    curLabel = Math.round(curDiff*DKpop).toString();
-    sketch.text(curLabel,x-15,90)
-    sketch.text('Gnmsnit',x-15,75)
+    // // Show a label for excess
+    // sketch.strokeWeight(2);
+    // sketch.stroke(155);
+    // sketch.line(x-5,(y1+y2)/2,x-15,100);
+    // sketch.fill(0);
+    // sketch.noStroke();
+    // sketch.textSize(12);
+    // sketch.textAlign(sketch.CENTER,sketch.CENTER);
+    // sketch.textStyle(sketch.NORMAL);
+    // curLabel = Math.round(curDiff*DKpop).toString();
+    // sketch.text(curLabel,x-15,90)
+    // sketch.text('Gnmsnit',x-15,75)
 
 
   }
@@ -1049,18 +1065,18 @@ function drawPredictionLineAverage(sketch){
     }
     sketch.strokeWeight(6);
     sketch.line(x,y1,x,y2);
-    // Show a label for excess
-    sketch.strokeWeight(2);
-    sketch.stroke(155);
-    sketch.line(x-5,(y1+y2)/2,x-15,100);
-    sketch.fill(0);
-    sketch.noStroke();
-    sketch.textSize(12);
-    sketch.textAlign(sketch.CENTER,sketch.CENTER);
-    sketch.textStyle(sketch.NORMAL);
-    curLabel = Math.round(curDiff*SEpop).toString();
-    sketch.text(curLabel,x-15,90)
-    sketch.text('Gnmsnit',x-15,75)
+    // // Show a label for excess
+    // sketch.strokeWeight(2);
+    // sketch.stroke(155);
+    // sketch.line(x-5,(y1+y2)/2,x-15,100);
+    // sketch.fill(0);
+    // sketch.noStroke();
+    // sketch.textSize(12);
+    // sketch.textAlign(sketch.CENTER,sketch.CENTER);
+    // sketch.textStyle(sketch.NORMAL);
+    // curLabel = Math.round(curDiff*SEpop).toString();
+    // sketch.text(curLabel,x-15,90)
+    // sketch.text('Gnmsnit',x-15,75)
 
 
     x = valueToScreenX(2021 - 0.1);
@@ -1076,18 +1092,18 @@ function drawPredictionLineAverage(sketch){
     sketch.strokeWeight(6);
     sketch.line(x,y1,x,y2);
 
-    // Show a label for excess
-    sketch.strokeWeight(2);
-    sketch.stroke(155);
-    sketch.line(x-5,(y1+y2)/2,x-15,100);
-    sketch.fill(0);
-    sketch.noStroke();
-    sketch.textSize(12);
-    sketch.textAlign(sketch.CENTER,sketch.CENTER);
-    sketch.textStyle(sketch.NORMAL);
-    curLabel = Math.round(curDiff*SEpop).toString();
-    sketch.text(curLabel,x-15,90)
-    sketch.text('Gnmsnit',x-15,75)
+    // // Show a label for excess
+    // sketch.strokeWeight(2);
+    // sketch.stroke(155);
+    // sketch.line(x-5,(y1+y2)/2,x-15,100);
+    // sketch.fill(0);
+    // sketch.noStroke();
+    // sketch.textSize(12);
+    // sketch.textAlign(sketch.CENTER,sketch.CENTER);
+    // sketch.textStyle(sketch.NORMAL);
+    // curLabel = Math.round(curDiff*SEpop).toString();
+    // sketch.text(curLabel,x-15,90)
+    // sketch.text('Gnmsnit',x-15,75)
 
   }
 }
@@ -1095,15 +1111,6 @@ function drawPredictionLineAverage(sketch){
 // ---- Main sketch ----
 const sketchMain = ( sketch ) => {
   
-
-  // let numAniPointsIni = 0;
-  // let numAniPoints = maxAniPoints;
-  // // let numAniPoints = 0;
-  // // let numAniPoints = 1;
-  // let allAniPoints = [];
-  // let allAniPoints_redu = [];
-  // let framesBetweenNewAni = 5;
-
   sketch.setup = () =>{
     sketch.createCanvas(sketchW,sketchH);
   }
@@ -1130,11 +1137,259 @@ const sketchMain = ( sketch ) => {
 }
 
 
+// function drawSmall(sketch){
+//   pred_linear_2020_DK
+// }
+// ---- Small sketch ----
+const sketchSmall = ( sketch ) => {
+  
+  sketch.setup = () =>{
+    sketch.createCanvas(sketchW_small,sketchH_small);
+  }
+
+  sketch.draw = () =>{
+    sketch.background(clrBackground);
+    drawBackgroundSmall(sketch);
+    
+
+    let pred2020;
+    let pred2021;
+
+    // let diffLin20 = DKpop * (pred_linear_2020_DK - dataDK[20]);
+    // let diffLin21 = DKpop * (pred_linear_2021_DK - dataDK[21]);
+    let diffLin20;
+    let diffLin21;
+    let diffAvg20;
+    let diffAvg21;
+    if (flagShowDK){
+      pred2020 = calcLinear(2020,slopeDK,interDK);
+      pred2021 = calcLinear(2021,slopeDK,interDK);
+      diffLin20 = DKpop * (dataDK[20] - pred2020);
+      diffLin21 = DKpop * (dataDK[21] - pred2021);
+      diffAvg20 = DKpop * (dataDK[20] - averageDK);
+      diffAvg21 = DKpop * (dataDK[21] - averageDK);
+    } 
+    if (flagShowSE){
+      pred2020 = calcLinear(2020,slopeSE,interSE);
+      pred2021 = calcLinear(2021,slopeSE,interSE);
+      diffLin20 = SEpop * (dataSE[20] - pred2020);
+      diffLin21 = SEpop * (dataSE[21] - pred2021);
+      diffAvg20 = SEpop * (dataSE[20] - averageSE);
+      diffAvg21 = SEpop * (dataSE[21] - averageSE);
+    } 
+
+    // Determine max and minimum value
+    let maxVal = 0;
+    if (diffLin20 > maxVal){
+      maxVal = diffLin20;
+    }
+    if (diffLin21 > maxVal){
+      maxVal = diffLin21;
+    }
+    if (diffAvg20 > maxVal){
+      maxVal = diffAvg20;
+    }
+    if (diffAvg21 > maxVal){
+      maxVal = diffAvg21;
+    }
+    let minVal = 0;
+    if (diffLin20 < minVal){
+      minVal = diffLin20;
+    }
+    if (diffLin21 < minVal){
+      minVal = diffLin21;
+    }
+    if (diffAvg20 < minVal){
+      minVal = diffAvg20;
+    }
+    if (diffAvg21 < minVal){
+      minVal = diffAvg21;
+    }
+
+    // Determine largest absolute value
+    let maxAbs = maxVal;
+    if (Math.abs(minVal) > maxVal){
+      maxAbs = Math.abs(minVal);
+    }
+
+    // console.log(maxAbs);
+
+    let barWidth = 40;
+
+    // let x1 = sketchW_small*1/4;
+    // let x2 = sketchW_small*3/4;
+    let x1 = sketchW_small*3/4;
+    let x2 = sketchW_small*1/4;
+    let ybot = sketchH_small* 3 / 4;
+
+    let ytop = sketchH_small* 1 / 4;
+    let ymid = sketchH_small/2;
+
+    // let yH_max = ybot-ytop;
+    let yH_max = ymid-ytop;
+    
+    let hLin20 =- yH_max * diffLin20 / maxAbs;
+    let hLin21 =- yH_max * diffLin21 / maxAbs;
+    let hAvg20 =- yH_max * diffAvg20 / maxAbs;
+    let hAvg21 =- yH_max * diffAvg21 / maxAbs;
+    // console.log(hLin20);
+
+    
+
+
+
+
+    // let curData;
+    // let curPred;
+    // let curExc;
+
+    // curData = dataDK[20];
+    // curPred = pred_linear_2020_DK;
+    // curExc = curPred-curData;
+
+    // sketch.point(x1,ybot);
+    // // sketch.point(x1,ymid);
+    // sketch.point(x1,ytop);
+    sketch.line(axMargin/2,ymid,sketchW_small-axMargin/2,ymid);
+    
+    let curClr;
+    let curText;
+    let curDiffRel;
+    let curTextOffset;
+    sketch.textAlign(sketch.CENTER,sketch.CENTER);
+    sketch.textStyle(sketch.BOLD);
+
+    // - Linear -
+    sketch.noStroke();
+    sketch.fill(0);
+    sketch.textAlign(sketch.CENTER,sketch.BOTTOM);
+    sketch.textSize(14);
+    sketch.text('Lineær',x1,ytop-25);
+    sketch.textAlign(sketch.CENTER,sketch.TOP);
+    sketch.text('Total: '+(Math.round(diffLin20)+Math.round(diffLin21)).toString(),x1,ybot+25);
+
+    // Linear, 2020
+    curText = Math.round(diffLin20).toString();
+    curDiffRel = hLin20;
+
+    curClr = clrBad;
+    sketch.textAlign(sketch.CENTER,sketch.BOTTOM);
+    curTextOffset = -6;
+    if (curDiffRel > 0){
+      curClr = clrGood
+      sketch.textAlign(sketch.CENTER,sketch.TOP);
+      curTextOffset = 6;
+    }
+    sketch.stroke(curClr);
+    sketch.fill(curClr);
+    sketch.rect(x1 - barWidth*1.25,ymid , barWidth , curDiffRel);
+
+    sketch.noStroke();
+    sketch.fill(0);
+    sketch.text(curText,x1-barWidth*1.25 + barWidth/2,ymid + curDiffRel + curTextOffset);
+
+    // Linear, 2021
+    curText = Math.round(diffLin21).toString();
+    curDiffRel = hLin21;
+
+    curClr = clrBad;
+    sketch.textAlign(sketch.CENTER,sketch.BOTTOM);
+    curTextOffset = -6;
+    if (curDiffRel > 0){
+      curClr = clrGood
+      sketch.textAlign(sketch.CENTER,sketch.TOP);
+      curTextOffset = 6;
+    }
+    sketch.stroke(curClr);
+    sketch.fill(curClr);
+    sketch.rect(x1 + barWidth*0.25,ymid , barWidth , curDiffRel);
+
+    sketch.noStroke();
+    sketch.fill(0);
+    sketch.text(curText,x1+barWidth*0.25 + barWidth/2,ymid + curDiffRel + curTextOffset);
+    
+    // - Average -
+    sketch.noStroke();
+    sketch.fill(0);
+    sketch.textAlign(sketch.CENTER,sketch.BOTTOM);
+    sketch.textSize(14);
+    sketch.text('Gennemsnit',x2,ytop-25);
+    sketch.textAlign(sketch.CENTER,sketch.TOP);
+    sketch.text('Total: '+(Math.round(diffAvg20)+Math.round(diffAvg21)).toString(),x2,ybot+25);
+
+    
+    sketch.textSize(12);
+    // Average, 2020
+    curText = Math.round(diffAvg20).toString();
+    curDiffRel = hAvg20;
+
+    curClr = clrBad;
+    sketch.textAlign(sketch.CENTER,sketch.BOTTOM);
+    curTextOffset = -6;
+    if (curDiffRel > 0){
+      curClr = clrGood
+      sketch.textAlign(sketch.CENTER,sketch.TOP);
+      curTextOffset = 6;
+    }
+    sketch.stroke(curClr);
+    sketch.fill(curClr);
+    sketch.rect(x2 - barWidth*1.25,ymid , barWidth , curDiffRel);
+
+    sketch.noStroke();
+    sketch.fill(0);
+    sketch.text(curText,x2-barWidth*1.25 + barWidth/2,ymid + curDiffRel + curTextOffset);
+
+    // Average, 2021
+    curText = Math.round(diffAvg21).toString();
+    curDiffRel = hAvg21;
+
+    curClr = clrBad;
+    sketch.textAlign(sketch.CENTER,sketch.BOTTOM);
+    curTextOffset = -6;
+    if (curDiffRel > 0){
+      curClr = clrGood
+      sketch.textAlign(sketch.CENTER,sketch.TOP);
+      curTextOffset = 6;
+    }
+    sketch.stroke(curClr);
+    sketch.fill(curClr);
+    sketch.rect(x2 + barWidth*0.25,ymid , barWidth , curDiffRel);
+
+    sketch.noStroke();
+    sketch.fill(0);
+    sketch.text(curText,x2+barWidth*0.25 + barWidth/2,ymid + curDiffRel + curTextOffset);
+
+    // // Average, 2020
+    // curClr = clrBad;
+    // if (hAvg20 > 0){
+    //   curClr = clrGood
+    // }
+    // sketch.stroke(curClr);
+    // sketch.fill(curClr);
+    // sketch.rect(x2 - barWidth*1.25,ymid , barWidth , hAvg20);
+
+    // // Average, 2021
+    // curClr = clrBad;
+    // if (hAvg21 > 0){
+    //   curClr = clrGood
+    // }
+    // sketch.stroke(curClr);
+    // sketch.fill(curClr);
+    // sketch.rect(x2 + barWidth*0.25,ymid , barWidth , hAvg21);
+
+
+  }
+
+
+}
+
+
 // --------------------------------
 // ---- Final things ----
 // --------------------------------
 
 let mainP5 = new p5(sketchMain,document.getElementById('p5Div'));
+let smallP5 = new p5(sketchSmall,document.getElementById('p5DivSmall'));
 
 
 let mainFunc = function(){
