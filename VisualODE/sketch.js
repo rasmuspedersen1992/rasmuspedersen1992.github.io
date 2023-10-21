@@ -106,7 +106,7 @@ let xNullclinePosis = [];
 let yNullclinePosis = [];
 let xNullclineShow = [];
 let yNullclineShow = [];
-let maxNullclineArraySize = 1000;
+let maxNullclineArraySize = 100000;
 //let maxNullclineArraySize = 300000;
 //let maxNullclineArraySize = 0;
 
